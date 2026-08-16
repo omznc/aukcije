@@ -1,0 +1,48 @@
+{
+  "name": "aukcije",
+  "version": "1.0.0",
+  "description": "An open, structured index of court auction notices (sudske prodaje) in Bosnia and Herzegovina.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/omznc/aukcije.git"
+  },
+  "homepage": "https://sudskeprodaje.omarzunic.com",
+  "private": true,
+  "scripts": {
+    "test": "node --test src/**/*.test.ts",
+    "scrape": "node src/main.ts",
+    "typecheck": "tsc --noEmit",
+    "build": "astro build && pagefind --site dist && node scripts/verify-build.ts",
+    "dev": "astro dev",
+    "verify": "node scripts/verify.ts",
+    "discover": "node scripts/discover-courts.ts"
+  },
+  "keywords": [
+    "bosnia",
+    "court-auctions",
+    "sudske-prodaje",
+    "open-data",
+    "scraper"
+  ],
+  "author": "Omar Zunic",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@astrojs/tailwind": "^6.0.2",
+    "astro": "^7.2.2",
+    "mammoth": "^1.12.1",
+    "p-limit": "^7.3.1",
+    "p-retry": "^8.0.0",
+    "pagefind": "^1.5.2",
+    "tailwindcss": "^3.4.19",
+    "unpdf": "^1.8.1",
+    "word-extractor": "^1.0.4",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "playwright": "^1.62.1",
+    "tsx": "^4.23.12",
+    "typescript": "^7.0.2"
+  }
+}

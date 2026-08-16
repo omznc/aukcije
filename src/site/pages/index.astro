@@ -1,0 +1,418 @@
+---
+import Base from '../layouts/Base.astro';
+import ListingRow from '../components/ListingRow.astro';
+import { upcoming, listings, past, courts, generatedAt, formatDate, TAG_BY_ID } from '../lib/data.ts';
+import { headline } from '../lib/headline.ts';
+import {
+  weeks,
+  typeSlices,
+  courtSlices,
+  publishedByYear,
+  activeCourtCount,
+  medianDiscount,
+  formatPercent,
+  discount,
+} from '../lib/stats.ts';
+
+const types = typeSlices(upcoming);
+const activeCourts = courtSlices(upcoming);
+const years = publishedByYear();
+
+const maxWeek = Math.max(1, ...weeks.map((w) => w.count));
+const maxType = Math.max(1, ...types.map((t) => t.count));
+const maxCourt = Math.max(1, ...activeCourts.map((c) => c.count));
+const maxYear = Math.max(1, ...years.map((y) => y.count));
+const lastHearing = upcoming.at(-1)?.saleDate ?? null;
+const lastHearingLabel = lastHearing ? formatDate(lastHearing) : '';
+
+/**
+ * In a narrow column every court would truncate to "Općinski sud u …", so the
+ * bars are labelled by the part that differs — the seat. The full name stays on
+ * the row as a tooltip.
+ */
+const place = (name: string) => name.replace(/^.*?\bsud(?:a)?\s+(?:u\s+|za\s+)?/i, '');
+
+/** Filter chip: outlined until pressed, then solid ink like the design. */
+const CHIP =
+  'type border border-edge px-2.5 py-2 text-[11.5px] font-medium leading-none text-ink-mid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white';
+
+const refreshed = new Intl.DateTimeFormat('bs-BA', {
+  dateStyle: 'short',
+  timeStyle: 'short',
+  timeZone: 'Europe/Sarajevo',
+}).format(new Date(generatedAt));
+
+const stats = [
+  { value: String(upcoming.length), label: 'AKTUELNIH', accent: false },
+  { value: listings.length.toLocaleString('bs-BA'), label: `UKUPNO OD ${years[0]?.year ?? ''}.`, accent: false },
+  { value: String(courts.length), label: `SUDOVA · ${activeCourtCount} AKTIVNIH`, accent: false },
+  {
+    value: medianDiscount === null ? '—' : formatPercent(medianDiscount),
+    label: 'MEDIJAN POČETNE',
+    accent: true,
+  },
+];
+---
+
+<Base title="Sudske prodaje u BiH — aktuelne licitacije">
+  <section class="gut grid gap-8 border-b border-rule pb-[26px] pt-[34px] lg:grid-cols-[1fr_320px]">
+    <div>
+      <h1 class="max-w-[15ch] font-serif text-[38px] leading-[1.04] tracking-tight sm:text-[46px]">
+        Šta sudovi u BiH prodaju ove sedmice.
+      </h1>
+      <p class="mt-3.5 max-w-[54ch] text-pretty text-[14.5px] leading-relaxed text-muted">
+        {upcoming.length} licitacija je još otvoreno. Uz njih {past.length.toLocaleString('bs-BA')}{' '}
+        završenih prodaja iz arhive — za provjeru cijena. Podaci se izvlače automatski iz oglasa sa
+        pravosudje.ba; mjerodavan je isključivo sudski dokument.
+      </p>
+    </div>
+
+    <dl class="grid grid-cols-2 gap-px border border-rule bg-rule">
+      {
+        stats.map((s) => (
+          <div class="bg-sheet px-3.5 py-3">
+            <dd class:list={['font-mono text-[26px] font-bold leading-none', s.accent && 'text-pine']}>
+              {s.value}
+            </dd>
+            <dt class="mt-[5px] font-mono text-[10.5px] leading-tight text-dim">{s.label}</dt>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  {
+    weeks.length > 0 && (
+      <section class="gut border-b border-rule bg-band pb-7 pt-[26px]">
+        <div class="grid gap-5 md:grid-cols-3">
+          <div>
+            <h3 class="border-b border-rule pb-[7px] text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim">
+              Aktuelno po vrsti
+            </h3>
+            <div class="mt-[11px] flex flex-col gap-[7px]">
+              {types.map((t) => (
+                <div class="grid grid-cols-[92px_1fr_28px] items-center gap-2 text-[12px] leading-none">
+                  <span>{t.label}</span>
+                  <span class="h-2 bg-track">
+                    <span
+                      class="block h-2 bg-ink"
+                      style={`width:${Math.round((t.count / maxType) * 100)}%`}
+                    />
+                  </span>
+                  <span class="text-right font-mono text-[11px] font-medium">{t.count}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 class="border-b border-rule pb-[7px] text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim">
+              Aktivni sudovi
+            </h3>
+            <div class="mt-[11px] flex flex-col gap-[7px]">
+              {activeCourts.map((c) => (
+                <a
+                  href={`/sudovi/${c.id}/`}
+                  title={c.label}
+                  class="grid grid-cols-[110px_1fr_28px] items-center gap-2 text-[12px] leading-none hover:text-pine"
+                >
+                  <span class="truncate">{place(c.label)}</span>
+                  <span class="h-2 bg-track">
+                    <span
+                      class="block h-2 bg-pine"
+                      style={`width:${Math.round((c.count / maxCourt) * 100)}%`}
+                    />
+                  </span>
+                  <span class="text-right font-mono text-[11px] font-medium">{c.count}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 class="border-b border-rule pb-[7px] text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim">
+              Objave po godini, {years[0]?.year} → {years.at(-1)?.year}
+            </h3>
+            <div class="mt-3 flex h-[72px] items-end gap-[3px]">
+              {years.map((y, i) => (
+                <div
+                  title={`${y.year}: ${y.count}`}
+                  class:list={[
+                    'flex-1',
+                    y.count === 0 ? 'bg-transparent' : i === years.length - 1 ? 'bg-pine' : 'bg-bar',
+                  ]}
+                  style={`height:${y.count === 0 ? 0 : Math.max(2, Math.round((y.count / maxYear) * 100))}%`}
+                />
+              ))}
+            </div>
+            <div class="mt-[7px] flex justify-between font-mono text-[10px] leading-none text-faint">
+              <span>{years[0]?.year}</span>
+              <span>{years.at(-1)?.year}</span>
+            </div>
+            <p class="mt-[11px] text-[12px] leading-relaxed text-muted">
+              Portal je počeo redovno objavljivati 2021. Arhiva prije toga je nepotpuna, ali ostaje
+              korisna kao referenca cijena.
+            </p>
+          </div>
+        </div>
+        <div class="mb-3 mt-7 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <h2 class="font-serif text-[19px] leading-none">
+            Sedmični pregled do zadnjeg ročišta, {lastHearingLabel}
+          </h2>
+          <span class="font-mono text-[11px] leading-none text-dim">KLIK NA SEDMICU FILTRIRA TABELU</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-1.5 sm:grid-cols-5 md:grid-cols-9">
+          {weeks.map((w) => (
+            <button
+              type="button"
+              data-week={`${w.from}..${w.to}`}
+              class="week border border-rule bg-sheet px-2.5 py-[11px] text-left aria-pressed:border-pine"
+              aria-pressed="false"
+            >
+              <div class="font-mono text-[10px] leading-none text-dim">{w.label}</div>
+              <div class="week-count mt-2 font-mono text-[22px] font-bold leading-none">{w.count}</div>
+              <div class="mt-2 flex h-10 items-end">
+                <div
+                  class="week-bar w-full bg-bar"
+                  style={`height:${Math.max(4, Math.round((w.count / maxWeek) * 100))}%`}
+                />
+              </div>
+            </button>
+          ))}
+        </div>
+
+      </section>
+    )
+  }
+
+  {
+    upcoming.length === 0 ? (
+      <p class="gut py-10 text-[14px] text-muted">
+        Trenutno nema najavljenih ročišta. Pogledajte <a class="text-pine underline" href="/arhiva/">arhivu</a>.
+      </p>
+    ) : (
+      <>
+        <div class="gut flex flex-wrap items-center gap-2.5 border-b border-rule py-3.5">
+          <input
+            id="q"
+            type="search"
+            placeholder="Traži: stan, traktor, Živinice…"
+            class="min-w-[220px] flex-1 border border-edge bg-white px-3 py-2.5 text-[13px] text-ink outline-none placeholder:text-faint focus:border-ink"
+          />
+
+          <div class="flex flex-wrap gap-1.5">
+            <button
+              type="button"
+              data-type=""
+              aria-pressed="true"
+              class={CHIP}
+            >
+              Sve {upcoming.length}
+            </button>
+            {types.map((t) => (
+              <button
+                type="button"
+                data-type={t.key}
+                aria-pressed="false"
+                class={CHIP}
+              >
+                {t.label} {t.count}
+              </button>
+            ))}
+          </div>
+
+          <div class="ml-auto flex items-center gap-1.5 font-mono text-[11.5px] leading-none text-dim">
+            <span>SORT:</span>
+            {[
+              { key: 'date', label: 'ROK ↑' },
+              { key: 'price', label: 'CIJENA' },
+              { key: 'disc', label: 'POPUST' },
+            ].map((s, i) => (
+              <>
+                {i > 0 && <span aria-hidden="true">·</span>}
+                <button
+                  type="button"
+                  data-sort={s.key}
+                  aria-pressed={s.key === 'date' ? 'true' : 'false'}
+                  class="sort aria-pressed:font-bold aria-pressed:text-ink"
+                >
+                  {s.label}
+                </button>
+              </>
+            ))}
+          </div>
+        </div>
+
+        <div class="gut hidden grid-cols-[88px_1fr_160px_120px_120px_132px] border-b border-rule py-2.5 font-mono text-[10.5px] leading-none text-dim md:grid">
+          <span>ROK</span>
+          <span>PREDMET</span>
+          <span>SUD</span>
+          <span class="text-right">PROCIJENJENO</span>
+          <span class="text-right">POČETNA</span>
+          <span class="text-right">POPUST</span>
+        </div>
+
+        <div id="rows" class="bg-white">
+          {upcoming.map((l) => (
+            <ListingRow
+              listing={l}
+              bar
+              attrs={{
+                'data-row': '',
+                'data-type': l.saleType,
+                'data-date': l.saleDate,
+                'data-price': String(l.startingPrice?.amount ?? l.appraisedValue?.amount ?? 0),
+                'data-disc': String(discount(l) ?? -1),
+                'data-text': [
+                  headline(l),
+                  l.title,
+                  l.itemDescription,
+                  l.court,
+                  l.caseNumber,
+                  l.location?.municipality,
+                  ...l.itemTags.map((t) => TAG_BY_ID.get(t)?.label ?? t),
+                ]
+                  .filter(Boolean)
+                  .join(' ')
+                  .toLowerCase(),
+              }}
+            />
+          ))}
+        </div>
+
+        <p id="empty" class="gut hidden bg-white py-10 text-[13px] text-muted">
+          Nema rezultata za zadane filtere.
+        </p>
+
+        <div class="gut flex flex-wrap items-center justify-between gap-3 border-t border-rule bg-band py-4">
+          <span class="text-[12.5px] font-medium leading-none">
+            <span id="shown"></span>
+            <button
+              type="button"
+              id="show-all"
+              class="ml-2 text-pine underline"
+            >
+              Prikaži sve
+            </button>
+          </span>
+          <span class="font-mono text-[11px] leading-none text-dim">
+            OSVJEŽENO {refreshed.toUpperCase()} · 2× DNEVNO
+          </span>
+        </div>
+      </>
+    )
+  }
+</Base>
+
+<script>
+  // The upcoming set is a few dozen rows, so filtering and sorting happen in the
+  // DOM rather than by shipping the dataset twice.
+  const container = document.getElementById('rows');
+
+  if (container) {
+    const rows = [...container.querySelectorAll<HTMLElement>('[data-row]')];
+    const q = document.getElementById('q') as HTMLInputElement;
+    const shown = document.getElementById('shown')!;
+    const showAll = document.getElementById('show-all') as HTMLButtonElement;
+    const empty = document.getElementById('empty')!;
+    const typeButtons = [...document.querySelectorAll<HTMLElement>('.type')];
+    const weekButtons = [...document.querySelectorAll<HTMLElement>('.week')];
+    const sortButtons = [...document.querySelectorAll<HTMLElement>('.sort')];
+
+    const PAGE = 12;
+    let type = '';
+    let week = '';
+    let sort = 'date';
+    let expanded = false;
+
+    /** Diacritic-insensitive so "zivinice" finds "Živinice". */
+    const fold = (s: string) =>
+      s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').toLowerCase();
+
+    function press(buttons: HTMLElement[], match: (el: HTMLElement) => boolean) {
+      for (const el of buttons) el.setAttribute('aria-pressed', String(match(el)));
+    }
+
+    function apply() {
+      const needle = fold(q.value.trim());
+      const [weekFrom, weekTo] = week ? week.split('..') : ['', ''];
+
+      const matched = rows.filter((r) => {
+        const date = r.dataset.date ?? '';
+        return (
+          (!needle || fold(r.dataset.text ?? '').includes(needle)) &&
+          (!type || r.dataset.type === type) &&
+          (!week || (date >= weekFrom && date <= weekTo))
+        );
+      });
+
+      matched.sort((a, b) => {
+        if (sort === 'price') return Number(b.dataset.price) - Number(a.dataset.price);
+        if (sort === 'disc') return Number(b.dataset.disc) - Number(a.dataset.disc);
+        return (a.dataset.date ?? '').localeCompare(b.dataset.date ?? '');
+      });
+
+      // Rows are grid containers, and `display:grid` wins over `[hidden]`, so
+      // visibility has to be set inline rather than through the attribute.
+      const show = (r: HTMLElement, on: boolean) => (r.style.display = on ? '' : 'none');
+
+      for (const r of rows) show(r, false);
+      matched.forEach((r, i) => {
+        show(r, expanded || i < PAGE);
+        container!.appendChild(r);
+      });
+
+      const visible = expanded ? matched.length : Math.min(PAGE, matched.length);
+      shown.textContent = matched.length ? `Prikazano ${visible} od ${matched.length}` : '';
+      showAll.hidden = matched.length <= PAGE;
+      showAll.textContent = expanded ? 'Prikaži manje' : 'Prikaži sve';
+      empty.classList.toggle('hidden', matched.length > 0);
+    }
+
+    q.addEventListener('input', () => {
+      expanded = false;
+      apply();
+    });
+
+    for (const el of typeButtons) {
+      el.addEventListener('click', () => {
+        type = el.dataset.type ?? '';
+        expanded = false;
+        press(typeButtons, (b) => (b.dataset.type ?? '') === type);
+        apply();
+      });
+    }
+
+    for (const el of weekButtons) {
+      el.addEventListener('click', () => {
+        // A second click on the active week clears the filter.
+        week = week === el.dataset.week ? '' : (el.dataset.week ?? '');
+        expanded = false;
+        press(weekButtons, (b) => b.dataset.week === week);
+        for (const b of weekButtons) {
+          const on = b.dataset.week === week;
+          b.querySelector('.week-count')?.classList.toggle('text-pine', on);
+          b.querySelector('.week-bar')?.classList.toggle('bg-pine', on);
+          b.querySelector('.week-bar')?.classList.toggle('bg-bar', !on);
+        }
+        apply();
+      });
+    }
+
+    for (const el of sortButtons) {
+      el.addEventListener('click', () => {
+        sort = el.dataset.sort ?? 'date';
+        press(sortButtons, (b) => b.dataset.sort === sort);
+        apply();
+      });
+    }
+
+    showAll.addEventListener('click', () => {
+      expanded = !expanded;
+      apply();
+    });
+
+    apply();
+  }
+</script>

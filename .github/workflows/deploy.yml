@@ -1,0 +1,53 @@
+name: deploy site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  # Called by scrape.yml. A push made with GITHUB_TOKEN — which is how the
+  # scraper commits data/ — deliberately does not trigger `on: push`, so the
+  # refreshed dataset would otherwise sit in the repo and never reach the site.
+  workflow_call:
+
+# One deploy at a time; an older build finishing late must not overwrite a newer
+# one. Superseded runs are cancelled rather than queued.
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      # Node 24: the build runs .ts files directly (scripts/verify-build.ts) and
+      # relies on native type stripping. This is also why the site is built here
+      # rather than by Cloudflare Pages' own build image.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm test
+      - run: npm run typecheck
+
+      # Ends in scripts/verify-build.ts, which fails the job if any route did
+      # not generate. Nothing is uploaded unless that passes.
+      - name: Build
+        run: npm run build
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=sudske-prodaje --branch=main

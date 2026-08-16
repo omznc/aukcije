@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.astro/
+
+# Downloaded court documents. Never commit these: they contain debtor names,
+# addresses and other personal data that the published dataset deliberately omits.
+.cache/
+
+.DS_Store
+*.log
+.env

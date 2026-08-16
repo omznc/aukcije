@@ -1,0 +1,313 @@
+---
+import Base from '../layouts/Base.astro';
+import { listings } from '../lib/data.ts';
+
+/**
+ * The facets worth putting in a sidebar. `sud` and `godina` are also indexed but
+ * have far too many values to list; those are browsable from their own pages.
+ */
+const FACETS = [
+  { key: 'vrsta', label: 'Vrsta' },
+  { key: 'entitet', label: 'Entitet' },
+  { key: 'status', label: 'Status' },
+];
+
+const SORTS = [
+  { key: '', label: 'Relevantnost' },
+  { key: 'datum', label: 'Datum ročišta' },
+  { key: 'cijena', label: 'Cijena, najviša prvo' },
+];
+---
+
+<Base title="Pretraga sudskih prodaja — BiH">
+  <div class="gut border-b border-rule pb-[26px] pt-[34px]">
+    <h1 class="font-serif text-[32px] leading-[1.06] tracking-tight sm:text-[40px]">
+      Pretraga svih {listings.length.toLocaleString('bs-BA')} oglasa
+    </h1>
+    <p class="mb-[18px] mt-3 max-w-[60ch] text-[14px] leading-relaxed text-muted">
+      Puni tekst oglasa, uključujući arhivu. Dijakritike se izjednačavaju: „zivinice” nalazi
+      „Živinice”. Indeks se preuzima u dijelovima, pa radi brzo i na mobilnoj vezi.
+    </p>
+
+    <form id="search-form" class="flex max-w-[640px] border border-ink bg-white" role="search">
+      <label class="sr-only" for="q">Pretraga oglasa</label>
+      <input
+        id="q"
+        name="q"
+        type="search"
+        autocomplete="off"
+        placeholder="Traži: stan, traktor, Živinice, k.č. 1188/3…"
+        class="min-w-0 flex-1 border-0 px-3.5 py-3 text-[14px] text-ink outline-none placeholder:text-faint"
+      />
+      <button type="submit" class="bg-ink px-5 text-[13px] font-semibold text-white">Traži</button>
+    </form>
+  </div>
+
+  <div class="grid lg:grid-cols-[250px_1fr]">
+    <aside class="gut border-rule bg-band pb-[30px] pt-[22px] lg:border-r">
+      {
+        FACETS.map((f) => (
+          <div class="mb-[22px]" data-facet={f.key}>
+            <h2 class="border-b border-rule pb-2 text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim">
+              {f.label}
+            </h2>
+            <div class="mt-2 flex flex-col gap-1 text-[12.5px]" data-facet-values>
+              <span class="text-faint">…</span>
+            </div>
+          </div>
+        ))
+      }
+
+      <div>
+        <h2 class="border-b border-rule pb-2 text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim">
+          Sortiraj
+        </h2>
+        <div class="mt-2 flex flex-col gap-1 text-[12.5px]">
+          {
+            SORTS.map((s, i) => (
+              <label class="flex cursor-pointer items-center gap-2">
+                <input
+                  type="radio"
+                  name="sort"
+                  value={s.key}
+                  checked={i === 0}
+                  class="accent-pine"
+                />
+                <span>{s.label}</span>
+              </label>
+            ))
+          }
+        </div>
+      </div>
+
+      <button
+        type="button"
+        id="reset"
+        class="mt-5 border border-edge px-2.5 py-2 text-[11.5px] font-medium leading-none hover:border-ink"
+      >
+        Poništi filtere
+      </button>
+    </aside>
+
+    <div class="gut pb-[30px] pt-5">
+      <p
+        id="status"
+        class="border-b border-rule pb-3 font-mono text-[11.5px] leading-none text-dim"
+        role="status"
+        aria-live="polite"
+      >
+        Učitavanje indeksa…
+      </p>
+
+      <div id="results" class="flex flex-col"></div>
+
+      <button
+        type="button"
+        id="more"
+        hidden
+        class="mt-5 self-start border border-edge px-3 py-2.5 text-[12px] font-semibold leading-none hover:border-ink"
+      >
+        Učitaj još
+      </button>
+
+      <noscript>
+        <p class="pt-4 text-[13px] leading-relaxed text-muted">
+          Pretraga zahtijeva JavaScript. Bez njega koristite
+          <a class="text-pine underline" href="/sudovi/">pregled po sudovima</a> ili
+          <a class="text-pine underline" href="/predmeti/">pregled po predmetima</a>.
+        </p>
+      </noscript>
+    </div>
+  </div>
+</Base>
+
+<!--
+  Pagefind's bundle is produced by its CLI *after* `astro build`, so this stays
+  `is:inline`: Vite would otherwise try to resolve the import at build time and
+  fail on a file that does not exist yet. The default Pagefind widget is not used
+  — results are rendered here so they carry the same columns as the rest of the
+  site (status, hearing date, court, hearing number, price).
+-->
+<script is:inline>
+  (async () => {
+    const form = document.getElementById('search-form');
+    const input = document.getElementById('q');
+    const statusEl = document.getElementById('status');
+    const resultsEl = document.getElementById('results');
+    const moreEl = document.getElementById('more');
+    const resetEl = document.getElementById('reset');
+
+    const PAGE = 12;
+    const selected = new Map(); // facet key -> Set of values
+    let results = [];
+    let rendered = 0;
+
+    let pagefind;
+    try {
+      pagefind = await import('/pagefind/pagefind.js');
+      await pagefind.options({ excerptLength: 30 });
+      if (pagefind.init) await pagefind.init();
+      // Loads the filter index, without which a search reports no facets at all.
+      await pagefind.filters();
+    } catch {
+      statusEl.textContent = 'Indeks pretrage nije dostupan. Pokrenite build sa Pagefind korakom.';
+      return;
+    }
+
+    const escape = (s) =>
+      String(s ?? '').replace(
+        /[&<>"]/g,
+        (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c],
+      );
+
+    /** 1 rezultat, 2–4 rezultata, 5+ rezultata — and 11–14 take the plural. */
+    function plural(n) {
+      const teens = n % 100 >= 11 && n % 100 <= 14;
+      if (!teens && n % 10 === 1) return 'REZULTAT';
+      return 'REZULTATA';
+    }
+
+    function currentFilters() {
+      const filters = {};
+      for (const [key, values] of selected) if (values.size) filters[key] = [...values];
+      return filters;
+    }
+
+    function currentSort() {
+      // The sort radios live in the sidebar, outside the search form.
+      const key = document.querySelector('input[name="sort"]:checked')?.value;
+      if (!key) return undefined;
+      // Newest hearing first, and highest price first — the useful direction for both.
+      return { [key]: 'desc' };
+    }
+
+    function renderFacets(counts) {
+      for (const group of document.querySelectorAll('[data-facet]')) {
+        const key = group.dataset.facet;
+        const box = group.querySelector('[data-facet-values]');
+        const values = Object.entries(counts?.[key] ?? {}).sort((a, b) => b[1] - a[1]);
+        const chosen = selected.get(key) ?? new Set();
+
+        if (!values.length) {
+          box.innerHTML = '<span class="text-faint">nema rezultata</span>';
+          continue;
+        }
+
+        box.innerHTML = values
+          .map(
+            ([value, count]) => `
+              <label class="flex cursor-pointer items-center gap-2 ${count === 0 ? 'text-faint' : ''}">
+                <input type="checkbox" class="accent-pine" data-key="${escape(key)}" value="${escape(value)}" ${
+                  chosen.has(value) ? 'checked' : ''
+                }>
+                <span class="flex-1">${escape(value)}</span>
+                <span class="font-mono text-dim">${count}</span>
+              </label>`,
+          )
+          .join('');
+      }
+    }
+
+    function renderPage() {
+      const slice = results.slice(rendered, rendered + PAGE);
+      rendered += slice.length;
+
+      Promise.all(slice.map((r) => r.data())).then((items) => {
+        resultsEl.insertAdjacentHTML(
+          'beforeend',
+          items
+            .map((d) => {
+              const meta = d.meta ?? {};
+              const line = [meta.status, meta.datum, meta.sud, meta.rociste]
+                .filter(Boolean)
+                .join(' · ')
+                .toUpperCase();
+              return `
+                <a href="${escape(d.url)}" class="block border-b border-hair py-4 hover:bg-band">
+                  <div class="flex justify-between gap-5">
+                    <span class="text-[15px] font-semibold leading-snug">${escape(meta.title)}</span>
+                    <span class="whitespace-nowrap font-mono text-[13px] font-bold leading-none">${escape(meta.cijena ?? '')}</span>
+                  </div>
+                  <p class="mt-[7px] max-w-[78ch] text-[13px] leading-relaxed text-muted">${d.excerpt}</p>
+                  <div class="mt-[9px] font-mono text-[11.5px] leading-none text-dim">${escape(line)}</div>
+                </a>`;
+            })
+            .join(''),
+        );
+        moreEl.hidden = rendered >= results.length;
+      });
+    }
+
+    async function run() {
+      const term = input.value.trim();
+      const started = performance.now();
+      const search = await pagefind.search(term || null, {
+        filters: currentFilters(),
+        sort: currentSort(),
+      });
+
+      results = search.results;
+      rendered = 0;
+      resultsEl.innerHTML = '';
+      renderFacets(search.filters);
+
+      const seconds = ((performance.now() - started) / 1000).toFixed(2).replace('.', ',');
+      const forTerm = term ? ` ZA „${term.toUpperCase()}”` : '';
+      statusEl.textContent = results.length
+        ? `${results.length} ${plural(results.length)}${forTerm} · ${seconds} s`
+        : `NEMA REZULTATA${forTerm}`;
+
+      if (results.length) renderPage();
+      else moreEl.hidden = true;
+
+      const url = new URL(location.href);
+      if (term) url.searchParams.set('q', term);
+      else url.searchParams.delete('q');
+      history.replaceState(null, '', url);
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      run();
+    });
+
+    let debounce;
+    input.addEventListener('input', () => {
+      clearTimeout(debounce);
+      debounce = setTimeout(run, 250);
+    });
+
+    document.addEventListener('change', (e) => {
+      const el = e.target;
+      if (el.matches('input[type="checkbox"][data-key]')) {
+        const set = selected.get(el.dataset.key) ?? new Set();
+        if (el.checked) set.add(el.value);
+        else set.delete(el.value);
+        selected.set(el.dataset.key, set);
+        run();
+      } else if (el.matches('input[name="sort"]')) {
+        run();
+      }
+    });
+
+    moreEl.addEventListener('click', renderPage);
+
+    resetEl.addEventListener('click', () => {
+      selected.clear();
+      document.querySelector('input[name="sort"]').checked = true;
+      run();
+    });
+
+    input.value = new URL(location.href).searchParams.get('q') ?? '';
+    await run();
+    input.focus();
+  })();
+</script>
+
+<style is:global>
+  /* Pagefind returns excerpts with the matched terms already wrapped. */
+  #results mark {
+    background: #dce9a8;
+    color: inherit;
+  }
+</style>

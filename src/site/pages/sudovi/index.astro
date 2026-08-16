@@ -1,0 +1,140 @@
+---
+import Base from '../../layouts/Base.astro';
+import { listings, courts, isUpcoming } from '../../lib/data.ts';
+import { entitySlices, activeCourtCount } from '../../lib/stats.ts';
+
+const ENTITY_LABELS: Record<string, string> = { FBiH: 'FBiH', RS: 'RS', BD: 'Brčko' };
+
+const rows = courts
+  .map((c) => ({
+    ...c,
+    entity: listings.find((l) => l.courtId === c.id)?.entity ?? '—',
+    upcoming: listings.filter((l) => l.courtId === c.id && isUpcoming(l)).length,
+  }))
+  .sort((a, b) => b.upcoming - a.upcoming || b.count - a.count);
+
+const maxCount = Math.max(1, ...rows.map((r) => r.count));
+
+// How concentrated the archive is, in the site's own words rather than a claim
+// that could go stale: the three busiest courts and their combined share.
+const byVolume = [...rows].sort((a, b) => b.count - a.count);
+const topThree = byVolume.slice(0, 3);
+const topShare = Math.round(
+  (topThree.reduce((n, c) => n + c.count, 0) / Math.max(1, listings.length)) * 100,
+);
+
+const CHIP =
+  'chip border border-edge px-2.5 py-2 text-[11.5px] font-medium leading-none text-ink-mid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white';
+---
+
+<Base title="Sudovi koji objavljuju prodaje — BiH">
+  <div class="gut border-b border-rule pb-6 pt-[30px]">
+    <nav class="mb-3 font-mono text-[11px] leading-none text-dim">
+      <a href="/" class="hover:text-ink">AKTUELNE</a> / SUDOVI
+    </nav>
+    <h1 class="font-serif text-[32px] leading-[1.06] tracking-tight sm:text-[40px]">Sudovi</h1>
+    <p class="mt-3 max-w-[64ch] text-[14px] leading-relaxed text-muted">
+      {courts.length} institucija objavljuje prodaje. Broj oglasa je izrazito neujednačen — {
+        topThree.map((c) => c.name).join(', ')
+      } zajedno čine {topShare}% arhive. Postupak se razlikuje po entitetu.
+    </p>
+
+    <div class="mt-4 flex flex-wrap gap-2">
+      <button type="button" data-filter="" aria-pressed="true" class={CHIP}>
+        Svi {courts.length}
+      </button>
+      {
+        entitySlices().map((e) => (
+          <button type="button" data-filter={`entity:${e.key}`} aria-pressed="false" class={CHIP}>
+            {ENTITY_LABELS[e.key] ?? e.key} {e.count}
+          </button>
+        ))
+      }
+      <button type="button" data-filter="active" aria-pressed="false" class={`${CHIP} text-pine`}>
+        Samo aktivni {activeCourtCount}
+      </button>
+    </div>
+  </div>
+
+  <div class="gut hidden grid-cols-[1fr_74px_110px_110px_200px] border-b border-rule py-2.5 font-mono text-[10.5px] leading-none text-dim md:grid">
+    <span>SUD</span>
+    <span>ENTITET</span>
+    <span class="text-right">AKTUELNO</span>
+    <span class="text-right">UKUPNO</span>
+    <span class="pl-6">UDIO U ARHIVI</span>
+  </div>
+
+  <div id="courts" class="bg-white">
+    {
+      rows.map((c) => (
+        <a
+          href={`/sudovi/${c.id}/`}
+          data-court
+          data-entity={c.entity}
+          data-active={c.upcoming > 0 ? 'true' : 'false'}
+          class="gut grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-1 border-b border-hair py-3 hover:bg-band md:grid-cols-[1fr_74px_110px_110px_200px]"
+        >
+          <span class="text-[13.5px] font-medium leading-snug md:pr-5">{c.name}</span>
+          <span class="text-right font-mono text-[9.5px] font-medium text-ink-mid md:text-left">
+            {c.entity}
+          </span>
+          <span
+            class:list={[
+              'font-mono text-[13px] font-bold md:text-right',
+              c.upcoming > 0 ? 'text-pine' : 'text-ghost',
+            ]}
+          >
+            {c.upcoming} <span class="font-normal md:hidden">aktuelnih</span>
+          </span>
+          <span class="text-right font-mono text-[13px] text-muted">
+            {c.count} <span class="md:hidden">ukupno</span>
+          </span>
+          <span class="col-span-2 md:col-span-1 md:pl-6">
+            <span class="block h-2 bg-track">
+              <span class="block h-2 bg-ink" style={`width:${Math.round((c.count / maxCount) * 100)}%`} />
+            </span>
+          </span>
+        </a>
+      ))
+    }
+  </div>
+
+  <p class="gut border-t border-rule bg-band py-4 text-[12.5px] leading-none text-muted">
+    <span id="court-count">Prikazano {rows.length} od {courts.length}</span> · Udio je mjeren prema
+    sudu s najviše oglasa.
+  </p>
+</Base>
+
+<script>
+  const list = document.getElementById('courts');
+
+  if (list) {
+    const rows = [...list.querySelectorAll<HTMLElement>('[data-court]')];
+    const chips = [...document.querySelectorAll<HTMLElement>('.chip')];
+    const count = document.getElementById('court-count')!;
+    let filter = '';
+
+    function apply() {
+      let shown = 0;
+      for (const row of rows) {
+        const match =
+          !filter ||
+          (filter === 'active'
+            ? row.dataset.active === 'true'
+            : row.dataset.entity === filter.slice('entity:'.length));
+        // `display:grid` on the row wins over `[hidden]`, so hide it inline.
+        row.style.display = match ? '' : 'none';
+        if (match) shown++;
+      }
+      count.textContent = `Prikazano ${shown} od ${rows.length}`;
+    }
+
+    for (const chip of chips) {
+      chip.addEventListener('click', () => {
+        filter = chip.dataset.filter ?? '';
+        for (const c of chips) c.setAttribute('aria-pressed', String((c.dataset.filter ?? '') === filter));
+        apply();
+      });
+    }
+  }
+</script>

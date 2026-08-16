@@ -1,0 +1,136 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+const {
+  title,
+  description = 'Pretraživi indeks sudskih prodaja (licitacija) u Bosni i Hercegovini — nekretnine, vozila, tehnika i oprema.',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const path = Astro.url.pathname;
+
+const nav = [
+  { href: '/', label: 'Aktuelne' },
+  { href: '/predmeti/', label: 'Šta se prodaje' },
+  { href: '/sudovi/', label: 'Sudovi' },
+  { href: '/arhiva/', label: 'Arhiva' },
+  { href: '/pretraga/', label: 'Pretraga' },
+  { href: '/kako-se-nadmetati/', label: 'Kako se nadmetati' },
+];
+
+/** The listing and category pages live under their section's nav entry. */
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+
+<!doctype html>
+<html lang="bs" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="alternate" type="application/rss+xml" title="Nove sudske prodaje" href="/rss.xml" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    />
+  </head>
+  <body class="min-h-full bg-paper font-sans text-ink antialiased">
+    <div class="mx-auto min-h-screen max-w-[1180px] border-rule bg-sheet sm:border-x">
+      <header
+        class="gut flex flex-wrap items-center justify-between gap-3 border-b border-rule py-3.5"
+      >
+        <div class="flex items-baseline gap-3.5">
+          <a href="/" class="font-mono text-[15px] font-bold leading-none tracking-tight text-ink">
+            SUDSKE&#8202;PRODAJE<span class="text-pine">.ba</span>
+          </a>
+          <span class="hidden font-mono text-[10px] leading-none text-dim sm:inline">
+            NEZAVISNI INDEKS · NIJE SLUŽBENI IZVOR
+          </span>
+        </div>
+
+        <nav class="flex flex-wrap items-center gap-x-5 gap-y-2 text-[12.5px] font-medium text-ink-mid">
+          {
+            nav.map((item) => (
+              <a
+                href={item.href}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+                class:list={[
+                  'border-b-2 pb-[3px] leading-none hover:text-ink',
+                  isActive(item.href) ? 'border-pine text-ink' : 'border-transparent',
+                ]}
+              >
+                {item.label}
+              </a>
+            ))
+          }
+          <a href="/rss.xml" class="font-mono text-[11px] font-medium leading-none text-rust">RSS</a>
+        </nav>
+      </header>
+
+      <main><slot /></main>
+
+      <footer class="gut flex flex-wrap justify-between gap-8 border-t border-rule pb-[30px] pt-[26px]">
+        <div class="max-w-[56ch]">
+          <div class="font-mono text-[12px] font-bold leading-none">SUDSKE&#8202;PRODAJE.ba</div>
+          <p class="mt-2.5 text-[12px] leading-relaxed text-muted">
+            Nezavisni indeks oglasa o sudskim prodajama u BiH. Podaci se preuzimaju sa pravosudje.ba
+            dva puta dnevno i obrađuju automatski. Mjerodavan je isključivo zaključak suda. Nema
+            računa, kolačića ni praćenja.
+          </p>
+        </div>
+        <div class="flex gap-10 text-[12.5px] leading-[1.9] text-ink-mid">
+          <div class="flex flex-col">
+            <a href="/">Aktuelne</a>
+            <a href="/predmeti/">Šta se prodaje</a>
+            <a href="/sudovi/">Sudovi</a>
+          </div>
+          <div class="flex flex-col">
+            <a href="/arhiva/">Arhiva</a>
+            <a href="/pretraga/">Pretraga</a>
+            <a href="/kako-se-nadmetati/">Kako se nadmetati</a>
+          </div>
+          <div class="flex flex-col">
+            <a href="/privatnost/">Privatnost</a>
+            <a href="/rss.xml" class="text-rust">RSS</a>
+            <a href="/podaci.json">JSON dataset</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <style is:global>
+      /*
+        The sheet's horizontal gutter. It repeats on every band, header and table
+        row, so it lives here once rather than as a pair of classes on each.
+      */
+      .gut {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+      @media (min-width: 768px) {
+        .gut {
+          padding-left: 30px;
+          padding-right: 30px;
+        }
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      footer a:hover,
+      nav a:hover {
+        color: #16181a;
+      }
+    </style>
+  </body>
+</html>

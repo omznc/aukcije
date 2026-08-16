@@ -1,0 +1,224 @@
+---
+import Base from '../../layouts/Base.astro';
+import { past, formatDate, formatMoney } from '../../lib/data.ts';
+import { headline } from '../../lib/headline.ts';
+import {
+  publishedByYear,
+  hearingYears,
+  chainFor,
+  repeatCaseCount,
+  medianDiscount,
+  medianLeadDays,
+  formatPercent,
+  daysLabel,
+} from '../../lib/stats.ts';
+
+const years = publishedByYear();
+const maxYear = Math.max(1, ...years.map((y) => y.count));
+
+// Individual chips for the years worth browsing, one grouped chip for the thin
+// pre-portal tail. Every row is rendered either way, so no year is a dead end.
+const OWN_CHIPS = 6;
+const byYear = hearingYears(past);
+const recentYears = byYear.slice(0, OWN_CHIPS);
+const olderYears = byYear.slice(OWN_CHIPS);
+const olderCount = olderYears.reduce((n, y) => n + y.count, 0);
+const olderRange =
+  olderYears.length === 0
+    ? null
+    : olderYears.length === 1
+      ? String(olderYears[0].year)
+      : `${olderYears.at(-1)!.year}–${olderYears[0].year}`;
+
+const rows = past.map((l) => {
+  const chain = chainFor(l);
+  const position = chain.length ? chain.findIndex((c) => c.id === l.id) + 1 : 1;
+  return { l, position, total: chain.length || 1, year: Number(l.saleDate.slice(0, 4)) };
+});
+
+const lead = medianLeadDays();
+
+const CHIP =
+  'chip border border-edge px-2.5 py-2 text-[11.5px] font-medium leading-none text-ink-mid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white';
+---
+
+<Base title="Arhiva sudskih prodaja — BiH">
+  <div class="gut border-b border-rule pb-6 pt-[30px]">
+    <nav class="mb-3 font-mono text-[11px] leading-none text-dim">
+      <a href="/" class="hover:text-ink">AKTUELNE</a> / ARHIVA
+    </nav>
+    <div class="grid items-end gap-8 lg:grid-cols-[1fr_360px]">
+      <div>
+        <h1 class="font-serif text-[32px] leading-[1.06] tracking-tight sm:text-[40px]">
+          Arhiva: {past.length.toLocaleString('bs-BA')} završenih prodaja
+        </h1>
+        <p class="mt-3 max-w-[60ch] text-[14px] leading-relaxed text-muted">
+          Ročišta koja su prošla. Ne možete se više nadmetati, ali možete vidjeti po kojoj su cijeni
+          stvari bile ponuđene — i koliko je puta isti predmet išao na ponovno nadmetanje.
+        </p>
+      </div>
+      <div>
+        <h2 class="text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim">
+          Objave po godini
+        </h2>
+        <div class="mt-3 flex h-[60px] items-end gap-[3px]">
+          {
+            years.map((y, i) => (
+              <div
+                title={`${y.year}: ${y.count}`}
+                class:list={[
+                  'flex-1',
+                  y.count === 0 ? 'bg-transparent' : i === years.length - 1 ? 'bg-pine' : 'bg-bar',
+                ]}
+                style={`height:${y.count === 0 ? 0 : Math.max(2, Math.round((y.count / maxYear) * 100))}%`}
+              />
+            ))
+          }
+        </div>
+        <div class="mt-1.5 flex justify-between font-mono text-[10px] leading-none text-faint">
+          <span>{years[0]?.year}</span>
+          <span>{years.at(-1)?.year}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gut flex flex-wrap items-center gap-2 border-b border-rule py-3.5">
+    {
+      recentYears.map((y, i) => (
+        <button
+          type="button"
+          data-year={String(y.year)}
+          aria-pressed={i === 0 ? 'true' : 'false'}
+          class={CHIP}
+        >
+          {y.year} <span class="font-normal opacity-70">{y.count}</span>
+        </button>
+      ))
+    }
+    {
+      olderRange && (
+        <button type="button" data-year="older" aria-pressed="false" class={CHIP}>
+          {olderRange} · {olderCount}
+        </button>
+      )
+    }
+    <button type="button" data-year="" aria-pressed="false" class={CHIP}>
+      Sve {past.length.toLocaleString('bs-BA')}
+    </button>
+    <span class="ml-auto font-mono text-[11.5px] leading-none text-dim">
+      PO TEKSTU OGLASA → <a href="/pretraga/" class="text-pine underline">PRETRAGA</a>
+    </span>
+  </div>
+
+  <div class="gut hidden grid-cols-[100px_1fr_160px_116px_116px_120px] border-b border-rule py-2.5 font-mono text-[10.5px] leading-none text-dim md:grid">
+    <span>ROČIŠTE</span>
+    <span>PREDMET</span>
+    <span>SUD</span>
+    <span class="text-right">PROCIJENJENO</span>
+    <span class="text-right">POČETNA</span>
+    <span class="text-right">ROČIŠTE #</span>
+  </div>
+
+  <div id="archive" class="bg-white">
+    {
+      rows.map((r) => (
+        <a
+          href={`/oglas/${r.l.id}/`}
+          data-row
+          data-year={String(r.year)}
+          data-older={recentYears.some((y) => y.year === r.year) ? 'false' : 'true'}
+          class="gut grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-1 border-b border-hair py-3 hover:bg-band md:grid-cols-[100px_1fr_160px_116px_116px_120px]"
+        >
+          <span class="order-1 font-mono text-[12px] text-muted md:order-none">
+            {formatDate(r.l.saleDate)}
+          </span>
+          <span class="order-3 col-span-2 text-[13.5px] font-medium leading-snug md:order-none md:col-span-1 md:pr-5">
+            {headline(r.l)}
+          </span>
+          <span class="order-4 col-span-2 text-[11.5px] leading-snug text-ink-mid md:order-none md:col-span-1">
+            {r.l.court}
+          </span>
+          <span class="order-5 font-mono text-[12.5px] text-dim md:order-none md:text-right">
+            {formatMoney(r.l.appraisedValue) ?? '—'}
+          </span>
+          <span class="order-2 whitespace-nowrap text-right font-mono text-[13px] font-bold md:order-none">
+            {formatMoney(r.l.startingPrice) ?? <span class="font-normal text-ghost">—</span>}
+          </span>
+          <span
+            class:list={[
+              'order-6 font-mono text-[11.5px] md:order-none md:text-right',
+              r.position < r.total ? 'text-rust' : '',
+            ]}
+          >
+            {r.position}. od {r.total}
+          </span>
+        </a>
+      ))
+    }
+  </div>
+
+  <p id="archive-empty" class="gut hidden bg-white py-10 text-[13px] text-muted">
+    Nema prodaja u odabranoj godini.
+  </p>
+
+  <div class="gut grid gap-5 border-t border-rule bg-band pb-[30px] pt-6 md:grid-cols-3">
+    <div>
+      <div class="font-mono text-[24px] font-bold leading-none">{repeatCaseCount}</div>
+      <p class="mt-2 text-[12px] leading-relaxed text-muted">
+        predmeta se pojavljuje na više ročišta. Lanac ponovnih nadmetanja prikazujemo na stranici
+        oglasa.
+      </p>
+    </div>
+    <div>
+      <div class="font-mono text-[24px] font-bold leading-none">
+        {medianDiscount === null ? '—' : formatPercent(medianDiscount)}
+      </div>
+      <p class="mt-2 text-[12px] leading-relaxed text-muted">
+        medijan početne cijene u odnosu na procijenjenu vrijednost, gdje su oba broja poznata.
+      </p>
+    </div>
+    <div>
+      <div class="font-mono text-[24px] font-bold leading-none">
+        {lead === null ? '—' : daysLabel(lead)}
+      </div>
+      <p class="mt-2 text-[12px] leading-relaxed text-muted">
+        medijan od objave oglasa do ročišta. Kapara se obično uplaćuje prije ročišta.
+      </p>
+    </div>
+  </div>
+</Base>
+
+<script>
+  // Every past sale is in the document; the chips decide which year is on show,
+  // so the deep archive stays one click away instead of one search away.
+  const list = document.getElementById('archive');
+
+  if (list) {
+    const rows = [...list.querySelectorAll<HTMLElement>('[data-row]')];
+    const chips = [...document.querySelectorAll<HTMLElement>('.chip')];
+    const empty = document.getElementById('archive-empty')!;
+
+    function apply(year: string) {
+      let shown = 0;
+      for (const row of rows) {
+        const match =
+          !year || (year === 'older' ? row.dataset.older === 'true' : row.dataset.year === year);
+        // `display:grid` on the row wins over `[hidden]`, so hide it inline.
+        row.style.display = match ? '' : 'none';
+        if (match) shown++;
+      }
+      empty.classList.toggle('hidden', shown > 0);
+    }
+
+    for (const chip of chips) {
+      chip.addEventListener('click', () => {
+        const year = chip.dataset.year ?? '';
+        for (const c of chips) c.setAttribute('aria-pressed', String(c === chip));
+        apply(year);
+      });
+    }
+
+    apply(chips.find((c) => c.getAttribute('aria-pressed') === 'true')?.dataset.year ?? '');
+  }
+</script>

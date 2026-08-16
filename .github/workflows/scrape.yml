@@ -1,0 +1,104 @@
+name: scrape court sales
+
+on:
+  schedule:
+    # Twice daily. Courts publish during Sarajevo office hours (UTC+1/+2), so
+    # these land mid-afternoon and late evening local time.
+    - cron: '0 5,17 * * *'
+  workflow_dispatch:
+    inputs:
+      full:
+        description: 'Re-extract every notice, ignoring cached results'
+        type: boolean
+        default: false
+
+# Never let two scrapes race for the same commit.
+concurrency:
+  group: scrape
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      # No OCR toolchain to install: scanned PDFs are transcribed by the model
+      # (src/extract/vision.ts). poppler + tesseract remain an optional local
+      # fallback for running without an API key.
+
+      - run: npm ci
+
+      - name: Restore attachment cache
+        uses: actions/cache@v4
+        with:
+          # Attachments, model analyses and OCR transcripts. Keyed by run so
+          # each run saves a fresh copy, restored from the newest previous one.
+          path: .cache
+          key: cache-${{ github.run_id }}
+          restore-keys: cache-
+
+      - run: npm test
+
+      - name: Scrape
+        run: node src/main.ts ${{ inputs.full && '--full' || '' }}
+        env:
+          # Optional. Without it the pipeline uses rule-based extraction only.
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LLM_MODEL: ${{ vars.LLM_MODEL }}
+
+      - name: Sanity-check the result
+        run: node scripts/verify.ts
+
+      - name: Commit data
+        id: commit
+        run: |
+          git config user.name  "scraper-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/
+          if git diff --staged --quiet; then
+            echo "No changes."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "data: refresh $(date -u +%Y-%m-%d)"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open an issue if the run failed
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = 'Scrape failed';
+            const { data: open } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'scraper',
+            });
+            if (open.some((i) => i.title === title)) return;
+            await github.rest.issues.create({
+              owner: context.repo.owner, repo: context.repo.repo,
+              title,
+              labels: ['scraper'],
+              body: `The scheduled scrape failed.\n\n[Run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\n\nUpstream layout changes are the usual cause — check \`docs/API.md\`.`,
+            });
+
+  # Rebuild the site on the fresh data. This has to be called explicitly:
+  # the commit above is pushed with GITHUB_TOKEN, and GitHub does not fire
+  # `on: push` workflows for those, so deploy.yml would never run on its own.
+  deploy:
+    needs: scrape
+    if: needs.scrape.outputs.changed == 'true'
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit

@@ -1,0 +1,433 @@
+---
+import Base from '../../layouts/Base.astro';
+import SaveToggle from '../../components/SaveToggle.astro';
+import type { Listing } from '../../../schema.ts';
+import {
+  listings,
+  SALE_TYPE_LABELS,
+  ROUND_LABELS,
+  METHOD_LABELS,
+  TAG_BY_ID,
+  formatDate,
+  formatMoney,
+  daysUntil,
+} from '../../lib/data.ts';
+import { headline } from '../../lib/headline.ts';
+import {
+  chainFor,
+  comparables,
+  discount,
+  formatNumber,
+  formatPercent,
+  pricePerM2,
+  daysLabel,
+  urgency,
+  ROUND_SHORT,
+} from '../../lib/stats.ts';
+
+export function getStaticPaths() {
+  return listings.map((l) => ({ params: { id: l.id }, props: { listing: l } }));
+}
+
+interface Props {
+  listing: Listing;
+}
+const { listing: l } = Astro.props;
+
+const days = daysUntil(l.saleDate);
+const state = urgency(days);
+const off = discount(l);
+const perM2 = pricePerM2(l);
+const title = headline(l);
+const chain = chainFor(l);
+const chainPosition = chain.findIndex((c) => c.id === l.id) + 1;
+const similar = comparables(l);
+const cadastral = [
+  ...(l.cadastral?.kc ?? []).map((v) => `k.č. ${v}`),
+  ...(l.cadastral?.zkUlozak ?? []).map((v) => `zk. uložak ${v}`),
+  ...(l.cadastral?.ko ?? []).map((v) => `k.o. ${v}`),
+].join(' · ');
+
+/** Absent values are stated rather than hidden: a bidder needs to know the notice was silent. */
+const NOT_STATED = 'nije navedeno u oglasu';
+
+const facts: Array<[string, string | null, boolean]> = [
+  ['Datum i vrijeme', `${formatDate(l.saleDate)}${l.saleTime ? ` u ${l.saleTime}` : ''}`, false],
+  ['Mjesto', l.auctionLocation, true],
+  ['Način prodaje', l.saleMethod === 'nepoznato' ? null : METHOD_LABELS[l.saleMethod], true],
+  ['Ročište po redu', ROUND_LABELS[l.auctionRound], false],
+  ['Kapara / osiguranje', formatMoney(l.deposit), true],
+  ['Broj predmeta', l.caseNumber, true],
+  ['Objavljeno', formatDate(l.publishedDate), false],
+  ['Pregled predmeta', l.viewingInfo, true],
+  ['Katastar', cadastral || null, false],
+  ['Općina', l.location?.municipality ?? null, false],
+  ['Jezik oglasa', l.language, false],
+];
+
+const scraped = new Intl.DateTimeFormat('bs-BA', {
+  dateStyle: 'short',
+  timeStyle: 'short',
+  timeZone: 'Europe/Sarajevo',
+}).format(new Date(l.scrapedAt));
+
+const CHIP_OUTLINE = 'border border-edge px-2 py-[5px] font-mono text-[10.5px] font-semibold leading-none';
+---
+
+<Base
+  title={`${title.slice(0, 70)} — ${l.court}`}
+  description={`Sudska prodaja: ${title.slice(0, 150)}`}
+>
+  <article data-pagefind-body>
+    <div class="gut border-b border-rule pb-[22px] pt-[26px]">
+      <nav class="mb-3.5 font-mono text-[11px] leading-none text-dim" data-pagefind-ignore>
+        <a href="/" class="hover:text-ink">AKTUELNE</a> / OGLAS {l.id}
+      </nav>
+
+      <div class="mb-3.5 flex flex-wrap gap-[7px]" data-pagefind-ignore>
+        <span class="bg-ink px-2 py-[5px] font-mono text-[10.5px] font-semibold leading-none text-white">
+          {SALE_TYPE_LABELS[l.saleType].toUpperCase()}
+        </span>
+        <span class={CHIP_OUTLINE}>{l.entity}</span>
+        {ROUND_SHORT[l.auctionRound] && <span class={CHIP_OUTLINE}>{ROUND_SHORT[l.auctionRound]!.toUpperCase()}</span>}
+        <span
+          class:list={[
+            'px-2 py-[5px] font-mono text-[10.5px] font-semibold leading-none',
+            state === 'past'
+              ? 'bg-band text-dim'
+              : state === 'later'
+                ? 'border border-edge'
+                : 'bg-due-bg text-brick',
+          ]}
+        >
+          {state === 'past' ? 'ROČIŠTE JE PROŠLO' : `ZA ${daysLabel(days).toUpperCase()}`} · {formatDate(l.saleDate)}
+        </span>
+      </div>
+
+      <h1
+        class="max-w-[26ch] font-serif text-[30px] leading-[1.1] tracking-tight sm:text-[38px]"
+        data-pagefind-meta="title"
+      >
+        {title}
+      </h1>
+      <!-- Reference line, not content: indexing it opened every search excerpt on it. -->
+      <p class="mt-3 max-w-[80ch] font-mono text-[12.5px] leading-relaxed text-dim" data-pagefind-ignore>
+        Naslov iz sudskog dokumenta: „{l.title}”
+      </p>
+
+      <div class="hidden" data-pagefind-filter={`sud:${l.court}`}></div>
+      <div class="hidden" data-pagefind-filter={`vrsta:${SALE_TYPE_LABELS[l.saleType]}`}></div>
+      <div class="hidden" data-pagefind-filter={`entitet:${l.entity}`}></div>
+      <div class="hidden" data-pagefind-filter={`godina:${l.saleDate.slice(0, 4)}`}></div>
+      <div class="hidden" data-pagefind-filter={`status:${state === 'past' ? 'Arhiva' : 'Otvoreno'}`}></div>
+      <div class="hidden" data-pagefind-sort={`datum:${l.saleDate}`}></div>
+      {/* Zero-padded so Pagefind's string ordering matches numeric order; unpriced notices sort last. */}
+      <div
+        class="hidden"
+        data-pagefind-sort={`cijena:${String(
+          Math.round((l.startingPrice ?? l.appraisedValue)?.amount ?? 0),
+        ).padStart(12, '0')}`}
+      >
+      </div>
+      {/*
+        Search results are rendered by this site, so they need the row's own
+        fields. One key per element: Pagefind reads a single `key:value` pair
+        from an attribute, and several of these values contain commas.
+      */}
+      <div class="hidden" data-pagefind-meta={`status:${state === 'past' ? 'Arhiva' : 'Otvoreno'}`}></div>
+      <div class="hidden" data-pagefind-meta={`datum:${formatDate(l.saleDate)}`}></div>
+      <div class="hidden" data-pagefind-meta={`sud:${l.court}`}></div>
+      <div class="hidden" data-pagefind-meta={`rociste:${ROUND_SHORT[l.auctionRound] ?? '—'}`}></div>
+      <div
+        class="hidden"
+        data-pagefind-meta={`cijena:${formatMoney(l.startingPrice ?? l.appraisedValue) ?? '—'}`}
+      >
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-[1fr_340px]">
+      <div class="gut border-rule pb-[30px] pt-6 lg:border-r">
+        <!--
+          Kept out of the search index: the amounts are carried as metadata, and
+          leaving them in the body made every excerpt open on a wall of figures
+          instead of on the description that matched.
+        -->
+        <dl class="grid grid-cols-1 gap-px border border-rule bg-rule sm:grid-cols-3" data-pagefind-ignore>
+          <div class="bg-white px-4 py-3.5">
+            <dt class="font-mono text-[10px] leading-none text-dim">PROCIJENJENA VRIJEDNOST</dt>
+            <dd class="mt-2.5 font-mono text-[20px] leading-none text-dim line-through">
+              {formatMoney(l.appraisedValue) ?? '—'}
+            </dd>
+          </div>
+          <div class="bg-white px-4 py-3.5">
+            <dt class="font-mono text-[10px] leading-none text-dim">POČETNA CIJENA</dt>
+            <dd class="mt-2.5 font-mono text-[20px] font-bold leading-none">
+              {formatMoney(l.startingPrice) ?? <span class="font-normal text-ghost">nije navedena</span>}
+            </dd>
+          </div>
+          <div class="bg-white px-4 py-3.5">
+            <dt class="font-mono text-[10px] leading-none text-dim">
+              POPUST{perM2 && ` · ${formatNumber(perM2)} KM/m²`}
+            </dt>
+            <dd
+              class:list={['mt-2.5 font-mono text-[20px] font-bold leading-none', off && off > 0 && 'text-pine']}
+            >
+              {off === null ? <span class="font-normal text-ghost">—</span> : formatPercent(off)}
+            </dd>
+          </div>
+        </dl>
+
+        <section class="mt-6">
+          <h2 class="border-b border-rule pb-[9px] text-[12px] font-semibold uppercase leading-none tracking-[0.06em] text-dim"
+            data-pagefind-ignore
+          >
+            Predmet prodaje
+          </h2>
+          <p class="mt-3 max-w-[70ch] text-pretty text-[14px] leading-relaxed text-ink-soft">
+            {l.itemDescription ?? 'Opis predmeta nije bilo moguće pročitati iz dokumenta.'}
+          </p>
+          {
+            l.itemTags.length > 0 && (
+              <div class="mt-3.5 flex flex-wrap gap-1.5" data-pagefind-ignore>
+                {l.itemTags.map((t) => (
+                  <a
+                    href={`/predmeti/${t}/`}
+                    class="border border-edge px-2.5 py-[7px] text-[11.5px] font-medium leading-none hover:border-ink"
+                  >
+                    {TAG_BY_ID.get(t)?.label ?? t}
+                  </a>
+                ))}
+              </div>
+            )
+          }
+        </section>
+
+        <section class="mt-7">
+          <h2 class="border-b border-rule pb-[9px] text-[12px] font-semibold uppercase leading-none tracking-[0.06em] text-dim"
+            data-pagefind-ignore
+          >
+            Ročište i podaci
+          </h2>
+          <dl class="mt-1 grid grid-cols-1 sm:grid-cols-[190px_1fr]">
+            {
+              facts
+                .filter(([, value, showWhenMissing]) => value || showWhenMissing)
+                .map(([key, value]) => (
+                  <>
+                    <dt
+                      class="pt-2.5 text-[12.5px] leading-none text-dim sm:border-b sm:border-hair sm:pb-2.5"
+                      data-pagefind-ignore
+                    >
+                      {key}
+                    </dt>
+                    <dd
+                      class:list={[
+                        'border-b border-hair pb-2.5 pt-1 text-[13px] leading-snug sm:pt-2.5',
+                        value ? 'font-medium' : 'text-faint',
+                      ]}
+                    >
+                      {value ?? NOT_STATED}
+                    </dd>
+                  </>
+                ))
+            }
+            <dt
+              class="pt-2.5 text-[12.5px] leading-none text-dim sm:border-b sm:border-hair sm:pb-2.5"
+              data-pagefind-ignore
+            >
+              Sud
+            </dt>
+            <dd class="border-b border-hair pb-2.5 pt-1 text-[13px] font-medium leading-snug sm:pt-2.5">
+              <a href={`/sudovi/${l.courtId}/`} class="text-pine hover:text-ink">{l.court}</a> · {l.entity}
+            </dd>
+          </dl>
+        </section>
+
+        <section class="mt-7 border border-rule bg-white" data-pagefind-ignore>
+          <h2 class="border-b border-rule bg-band px-[18px] py-3.5 text-[13px] font-semibold leading-none">
+            Službeni izvor — jedini mjerodavan zapis
+          </h2>
+          <div class="flex flex-col gap-3 px-[18px] py-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <span class="text-[13px] font-medium leading-snug">
+                Oglas na pravosudje.ba
+                <span class="font-mono text-[11.5px] font-normal text-dim">/{l.articleId}</span>
+              </span>
+              <a
+                href={l.sourceUrl}
+                rel="nofollow noopener"
+                target="_blank"
+                class="shrink-0 bg-ink px-3 py-2 text-[12px] font-semibold leading-none text-white"
+              >
+                Otvori →
+              </a>
+            </div>
+            {
+              l.documents.map((d) => (
+                <div class="flex flex-wrap items-center justify-between gap-3 border-t border-hair pt-3">
+                  <span class="text-[13px] font-medium leading-snug">
+                    {d.name.trim() || 'Dokument suda'}{' '}
+                    <span class="font-mono text-[11px] font-normal text-dim">
+                      {d.type}
+                      {d.sha256 && ` · SHA256 ${d.sha256.slice(0, 4)}…${d.sha256.slice(-4)}`}
+                    </span>
+                  </span>
+                  <a
+                    href={d.url}
+                    rel="nofollow noopener"
+                    target="_blank"
+                    class="shrink-0 border border-rule px-3 py-2 text-[12px] font-semibold leading-none hover:border-ink"
+                  >
+                    Preuzmi
+                  </a>
+                </div>
+              ))
+            }
+          </div>
+        </section>
+
+        <div class="mt-4 border border-warn-edge bg-warn-bg px-4 py-3.5" data-pagefind-ignore>
+          <h2 class="text-[12px] font-semibold leading-none">
+            Podaci na ovoj stranici izvučeni su automatski i mogu biti netačni
+          </h2>
+          <p class="mt-2 max-w-[74ch] text-[12.5px] leading-relaxed text-muted">
+            Cijene, površine i datumi čitani su iz sudskog dokumenta programski. Prije nadmetanja
+            obavezno provjerite original. Ovaj sajt nije sud, nije posrednik i ne prodaje ništa.
+          </p>
+        </div>
+
+        <p class="mt-3 font-mono text-[11px] leading-relaxed text-faint" data-pagefind-ignore>
+          IZVOR PODATAKA: {l.extraction.source.toUpperCase()} · POUZDANOST {l.extraction.confidence.toFixed(2)} ·
+          MODELSKA DOPUNA: {l.extraction.llm ? 'DA' : 'NE'} · PREUZETO {scraped.toUpperCase()}
+        </p>
+      </div>
+
+      <aside class="gut bg-band pb-[30px] pt-6" data-pagefind-ignore>
+        <h2 class="text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim">
+          Odbrojavanje
+        </h2>
+        <div class="mt-2.5 border border-rule bg-sheet p-4">
+          <div
+            class:list={[
+              'font-mono text-[34px] font-bold leading-none',
+              state === 'past' ? 'text-dim' : state === 'later' ? 'text-ink' : 'text-brick',
+            ]}
+          >
+            {state === 'past' ? 'prošlo' : daysLabel(days)}
+          </div>
+          <p class="mt-2.5 text-[12px] leading-relaxed text-muted">
+            {
+              state === 'past'
+                ? `Ročište je održano ${formatDate(l.saleDate)}. Zapis ostaje u arhivi kao referenca cijene.`
+                : `Ročište ${formatDate(l.saleDate)}${l.saleTime ? ` u ${l.saleTime}` : ''}.${l.deposit ? ' Kaparu je potrebno uplatiti prije početka nadmetanja.' : ''}`
+            }
+          </p>
+        </div>
+
+        {
+          chain.length > 1 && (
+            <>
+              <h2 class="mt-7 text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim">
+                Ovo je {chainPosition}. ročište za isti predmet
+              </h2>
+              <ol class="mt-3">
+                {chain.map((c, i) => (
+                  <li class="grid grid-cols-[14px_1fr] gap-3">
+                    <div class="flex flex-col items-center">
+                      <span
+                        class:list={[
+                          'mt-1.5 h-[9px] w-[9px] rounded-full',
+                          c.id === l.id ? 'bg-pine' : 'bg-bar',
+                        ]}
+                      />
+                      {i < chain.length - 1 && <span class="w-px flex-1 bg-rule" />}
+                    </div>
+                    <div class:list={[i < chain.length - 1 && 'pb-4']}>
+                      <div
+                        class:list={[
+                          'font-mono text-[12.5px] font-medium leading-none',
+                          c.id === l.id ? 'text-pine' : 'text-dim',
+                        ]}
+                      >
+                        {formatDate(c.saleDate)} · {ROUND_SHORT[c.auctionRound] ?? `${i + 1}. ročište`}
+                      </div>
+                      <div class="mt-1.5 text-[13.5px] font-medium leading-snug">
+                        {formatMoney(c.startingPrice ?? c.appraisedValue) ?? 'cijena nije navedena'}
+                        {c.id === l.id && state !== 'past' && ' — otvoreno'}
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+              <p class="mt-3 text-[11.5px] leading-relaxed text-dim">
+                Lanac je povezan po broju predmeta iz sudskog dokumenta. Ishod ranijih ročišta se ne
+                objavljuje, pa ga ni mi ne znamo.
+              </p>
+            </>
+          )
+        }
+
+        {
+          similar.length > 0 && (
+            <>
+              <h2 class="mt-7 text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim">
+                Uporedive prodaje — {TAG_BY_ID.get(l.itemTags[0])?.label.toLowerCase() ?? 'slični predmeti'}
+              </h2>
+              <div class="mt-2 flex flex-col">
+                {similar.map((c) => {
+                  const cPerM2 = pricePerM2(c);
+                  return (
+                    <a
+                      href={`/oglas/${c.id}/`}
+                      class="flex justify-between gap-2.5 border-b border-rule py-2.5 text-[12.5px] leading-snug last:border-0 hover:text-pine"
+                    >
+                      <span>{headline(c)}</span>
+                      <span class="shrink-0 font-mono">
+                        {cPerM2
+                          ? `${formatNumber(cPerM2)} KM/m²`
+                          : (formatMoney(c.startingPrice ?? c.appraisedValue) ?? '—')}
+                      </span>
+                    </a>
+                  );
+                })}
+              </div>
+            </>
+          )
+        }
+
+        <div class="mt-6 flex gap-2">
+          <SaveToggle storeKey={`sacuvano:oglas:${l.id}`} label="Sačuvaj oglas" activeLabel="Sačuvano ✓" />
+          <button
+            type="button"
+            id="share"
+            class="border border-rule px-3 py-2.5 text-[12px] font-semibold leading-none hover:border-ink"
+          >
+            Podijeli
+          </button>
+        </div>
+      </aside>
+    </div>
+  </article>
+</Base>
+
+<script>
+  const share = document.getElementById('share') as HTMLButtonElement | null;
+
+  if (share) {
+    share.addEventListener('click', async () => {
+      const url = location.href;
+      const title = document.title;
+      try {
+        if (navigator.share) await navigator.share({ title, url });
+        else {
+          await navigator.clipboard.writeText(url);
+          const original = share.textContent;
+          share.textContent = 'Link kopiran';
+          setTimeout(() => (share.textContent = original), 2000);
+        }
+      } catch {
+        // A dismissed share sheet or a denied clipboard is not an error worth reporting.
+      }
+    });
+  }
+</script>

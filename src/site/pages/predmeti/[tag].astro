@@ -1,0 +1,261 @@
+---
+import Base from '../../layouts/Base.astro';
+import ListingRow from '../../components/ListingRow.astro';
+import SaveToggle from '../../components/SaveToggle.astro';
+import type { Listing } from '../../../schema.ts';
+import { itemCategories, listingsForTag, isUpcoming, formatMoney, formatDate } from '../../lib/data.ts';
+import { headline } from '../../lib/headline.ts';
+import {
+  median,
+  discount,
+  formatPercent,
+  formatNumber,
+  pricePerM2,
+  pricePerM2Histogram,
+  roundSlices,
+  type Histogram,
+  type Slice,
+} from '../../lib/stats.ts';
+
+export function getStaticPaths() {
+  // Astro hoists getStaticPaths above the rest of the frontmatter, so anything
+  // it needs has to be declared inside it — a module-level `const` here is
+  // still in its temporal dead zone when this runs.
+  /** The archive is a price reference, not a catalogue: a long tail adds weight, not insight. */
+  const ARCHIVE_LIMIT = 150;
+
+  return itemCategories.map((t) => {
+    const all = listingsForTag(t.id);
+    const archive = all
+      .filter((l) => !isUpcoming(l))
+      .sort((a, b) => b.saleDate.localeCompare(a.saleDate));
+
+    return {
+      params: { tag: t.id },
+      props: {
+        tagId: t.id,
+        label: t.label,
+        group: t.group,
+        live: all.filter(isUpcoming).sort((a, b) => a.saleDate.localeCompare(b.saleDate)),
+        archive: archive.slice(0, ARCHIVE_LIMIT),
+        archiveTotal: archive.length,
+        firstYear: all.map((l) => l.saleDate).sort()[0]?.slice(0, 4) ?? null,
+        medianAppraisal: median(
+          all.map((l) => l.appraisedValue?.amount).filter((n): n is number => n != null),
+        ),
+        medianOff: median(all.map(discount).filter((d): d is number => d !== null)),
+        rounds: roundSlices(all),
+        histogram: pricePerM2Histogram(all),
+      },
+    };
+  });
+}
+
+interface Props {
+  tagId: string;
+  label: string;
+  group: string;
+  live: Listing[];
+  archive: Listing[];
+  archiveTotal: number;
+  firstYear: string | null;
+  medianAppraisal: number | null;
+  medianOff: number | null;
+  rounds: Slice[];
+  histogram: Histogram | null;
+}
+const {
+  tagId,
+  label,
+  group,
+  live,
+  archive,
+  archiveTotal,
+  firstYear,
+  medianAppraisal,
+  medianOff,
+  rounds,
+  histogram,
+} = Astro.props;
+
+const stats = [
+  { value: String(live.length), label: 'AKTUELNO', accent: false },
+  { value: String(archiveTotal), label: 'ARHIVA', accent: false },
+  {
+    value: medianAppraisal === null ? '—' : `${formatNumber(medianAppraisal)} KM`,
+    label: 'MEDIJAN PROCJENE',
+    accent: false,
+  },
+  {
+    value: medianOff === null ? '—' : formatPercent(medianOff),
+    label: 'MEDIJAN POPUSTA',
+    accent: true,
+  },
+];
+
+const maxBin = histogram ? Math.max(...histogram.bins) : 0;
+const peakBin = histogram ? histogram.bins.indexOf(maxBin) : -1;
+---
+
+<Base
+  title={`${label} na sudskim prodajama u BiH`}
+  description={`Aktuelne i prošle sudske prodaje: ${label.toLowerCase()} u Bosni i Hercegovini.`}
+>
+  <div class="gut border-b border-rule pb-6 pt-[30px]">
+    <nav class="mb-3 font-mono text-[11px] leading-none text-dim">
+      <a href="/" class="hover:text-ink">AKTUELNE</a>{' / '}
+      <a href="/predmeti/" class="hover:text-ink">ŠTA SE PRODAJE</a> / {label.toUpperCase()}
+    </nav>
+    <div class="flex flex-wrap items-end justify-between gap-7">
+      <div>
+        <h1 class="font-serif text-[32px] leading-[1.06] tracking-tight sm:text-[40px]">{label}</h1>
+        <p class="mt-2.5 max-w-[56ch] text-[14px] leading-relaxed text-muted">
+          {live.length > 0 ? `${live.length} otvorenih ročišta` : 'Nema otvorenih ročišta'}, {archiveTotal}
+          {' '}prodaja u arhivi{firstYear ? ` od ${firstYear}.` : '.'} Arhiva je referenca cijena, ne
+          ponuda. <span class="text-dim">Porodica: {group}.</span>
+        </p>
+      </div>
+      <dl class="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">
+        {
+          stats.map((s) => (
+            <div>
+              <dd class:list={['font-mono text-[20px] font-bold leading-none', s.accent && 'text-pine']}>
+                {s.value}
+              </dd>
+              <dt class="mt-[5px] font-mono text-[10px] leading-tight text-dim">{s.label}</dt>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+
+  {
+    live.length > 0 && (
+      <>
+        <h2 class="gut pb-2 pt-5 text-[12px] font-semibold uppercase leading-none tracking-[0.06em] text-dim">
+          Otvorena ročišta
+        </h2>
+        <div class="border-y border-rule bg-white">
+          {live.map((l) => (
+            <ListingRow listing={l} />
+          ))}
+        </div>
+      </>
+    )
+  }
+
+  <div class="grid lg:grid-cols-[1fr_300px]">
+    <section class="gut border-rule pb-[30px] pt-6 lg:border-r">
+      <h2 class="border-b border-rule pb-[9px] text-[12px] font-semibold uppercase leading-none tracking-[0.06em] text-dim">
+        Ranije prodaje — istraživanje cijena
+      </h2>
+
+      {
+        archive.length === 0 ? (
+          <p class="mt-3 text-[13px] text-muted">Još nema završenih prodaja u ovoj kategoriji.</p>
+        ) : (
+          <div class="mt-1 flex flex-col">
+            {archive.map((l) => {
+              const perM2 = pricePerM2(l);
+              return (
+                <a
+                  href={`/oglas/${l.id}/`}
+                  class="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 border-b border-hair py-[11px] hover:bg-band md:grid-cols-[96px_1fr_130px_110px]"
+                >
+                  <span class="order-1 font-mono text-[11.5px] text-dim md:order-none">
+                    {formatDate(l.saleDate)}
+                  </span>
+                  <span class="order-3 col-span-2 text-[13px] font-medium leading-snug md:order-none md:col-span-1">
+                    {headline(l)}
+                  </span>
+                  <span class="order-4 font-mono text-[11.5px] text-dim md:order-none md:text-right">
+                    {perM2 ? `${formatNumber(perM2)} KM/m²` : ''}
+                  </span>
+                  <span class="order-2 whitespace-nowrap text-right font-mono text-[13px] font-bold md:order-none">
+                    {formatMoney(l.startingPrice ?? l.appraisedValue) ?? '—'}
+                  </span>
+                </a>
+              );
+            })}
+          </div>
+        )
+      }
+
+      {
+        archiveTotal > archive.length && (
+          <p class="mt-4 text-[12.5px] leading-none text-dim">
+            Prikazano {archive.length} od {archiveTotal} prodaja u arhivi. Za ostatak koristite{' '}
+            <a href="/pretraga/" class="text-pine underline">
+              pretragu
+            </a>
+            .
+          </p>
+        )
+      }
+    </section>
+
+    <aside class="gut bg-band pb-[30px] pt-6">
+      {
+        histogram && (
+          <>
+            <h2 class="text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim">
+              Cijena po m², arhiva
+            </h2>
+            <div class="mt-3.5 flex h-[70px] items-end gap-1">
+              {histogram.bins.map((count, i) => (
+                <div
+                  title={`${count} prodaja`}
+                  class:list={['flex-1', i === peakBin ? 'bg-pine' : count > 0 ? 'bg-bar' : 'bg-bar-soft']}
+                  style={`height:${count === 0 ? 2 : Math.max(6, Math.round((count / maxBin) * 100))}%`}
+                />
+              ))}
+            </div>
+            <div class="mt-[7px] flex justify-between font-mono text-[10px] leading-none text-faint">
+              <span>{formatNumber(histogram.min)}</span>
+              <span>{formatNumber((histogram.min + histogram.max) / 2)}</span>
+              <span>{formatNumber(histogram.max)}+</span>
+            </div>
+            <p class="mt-3 text-[12px] leading-relaxed text-muted">
+              Raspon je izveden iz opisa gdje se površina može pročitati ({histogram.sampled} od{' '}
+              {histogram.total} zapisa).
+            </p>
+          </>
+        )
+      }
+
+      <h2
+        class:list={[
+          'text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim',
+          histogram && 'mt-6',
+        ]}
+      >
+        Ročišta po redu
+      </h2>
+      <dl class="mt-2 font-mono text-[12.5px] leading-[1.9]">
+        {
+          rounds.map((r) => (
+            <div class="flex justify-between gap-3">
+              <dt>{r.label}</dt>
+              <dd>{r.count}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <div class="mt-6 border border-edge bg-sheet p-[13px]">
+        <h2 class="text-[11px] font-semibold uppercase leading-none tracking-[0.06em]">
+          Pratite kategoriju
+        </h2>
+        <p class="mb-2.5 mt-2 text-[12px] leading-relaxed text-muted">
+          Pamtimo je u vašem pregledniku, bez računa.
+        </p>
+        <SaveToggle
+          storeKey={`prati:predmet:${tagId}`}
+          label="Prati ovu kategoriju"
+          activeLabel="Pratite — ukloni"
+        />
+      </div>
+    </aside>
+  </div>
+</Base>
