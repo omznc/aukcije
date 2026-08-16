@@ -7,6 +7,22 @@
  */
 
 /**
+ * Read an environment variable, treating blank as unset.
+ *
+ * Every one of these is populated from GitHub Actions, where an *unset*
+ * repository variable is not absent — `${{ vars.FOO }}` expands to an empty
+ * string. `??` accepts that empty string as a real value and the default never
+ * applies, which is not a hypothetical: it shipped `LLM_MODEL=""` to
+ * OpenRouter, every call came back "No models provided", and 295 notices
+ * silently fell back to rule-based extraction on a run that then committed and
+ * published the result.
+ */
+export function env(name: string, fallback: string): string {
+  const value = process.env[name]?.trim();
+  return value ? value : fallback;
+}
+
+/**
  * Public identity of this deployment.
  *
  * `SITE_URL` is read from the environment so the same build works on a
@@ -14,9 +30,20 @@
  * canonical tags, RSS, the sitemap and llms.txt are baked in at build time, so
  * this must be set correctly wherever the site is built.
  */
-// `||`, not `??`: CI passes an unset repository variable through as an empty
-// string, which would otherwise be accepted as the site URL.
-export const SITE_URL = process.env.SITE_URL || 'https://sudskeprodaje.omarzunic.com';
+export const SITE_URL = env('SITE_URL', 'https://sudskeprodaje.omarzunic.com');
+
+/**
+ * Default OpenRouter model for extraction and OCR.
+ *
+ * It must support `response_format: json_schema` — extraction asks for a strict
+ * schema and treats the reply as already conforming. A model that ignores the
+ * parameter still answers, just in prose or near-JSON, which is precisely the
+ * plausible-but-wrong output this pipeline is built to avoid.
+ *
+ * Note that this string is part of the analysis cache key, so changing it
+ * re-analyses the whole archive rather than reusing anything.
+ */
+export const DEFAULT_MODEL = 'google/gemini-2.5-flash-lite';
 
 /** Where takedown and correction requests go. Must be a real, monitored address. */
 export const CONTACT_EMAIL = 'contact@omarzunic.com';

@@ -14,18 +14,19 @@
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { DEFAULT_MODEL, env } from '../config.ts';
 
 const ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions';
 const CACHE_DIR = '.cache/ocr';
 
 /** Vision-capable and cheap; override if the default is unavailable. */
-const MODEL = process.env.OCR_MODEL ?? process.env.LLM_MODEL ?? 'google/gemini-2.5-flash-lite';
+const MODEL = env('OCR_MODEL', env('LLM_MODEL', DEFAULT_MODEL));
 
 /**
  * `mistral-ocr` handles scanned pages; `pdf-text` only lifts an existing text
  * layer, which by definition these files do not have.
  */
-const ENGINE = process.env.OCR_ENGINE ?? 'mistral-ocr';
+const ENGINE = env('OCR_ENGINE', 'mistral-ocr');
 
 const PROMPT = `Ovo je skenirani sudski oglas o prodaji iz Bosne i Hercegovine.
 Prepiši SAV tekst iz dokumenta, tačno kako piše, zadržavajući redoslijed redova i sve iznose i datume.
