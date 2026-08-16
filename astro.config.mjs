@@ -1,5 +1,4 @@
 import { defineConfig } from 'astro/config';
-import tailwind from '@astrojs/tailwind';
 
 export default defineConfig({
   srcDir: 'src/site',
@@ -10,6 +9,7 @@ export default defineConfig({
   // `||`, not `??`: CI passes an unset repository variable through as an empty
   // string, which would otherwise be accepted as the site URL.
   site: process.env.SITE_URL || 'https://sudskeprodaje.omarzunic.com',
-  integrations: [tailwind()],
+  // Tailwind is configured through postcss.config.mjs, which Astro reads on its
+  // own — see that file for why the integration is not used.
   build: { format: 'directory' },
 });

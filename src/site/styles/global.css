@@ -1,0 +1,7 @@
+/*
+  Tailwind's entry point. Imported once by the base layout, which is what makes
+  it global; `@astrojs/tailwind` used to inject this automatically.
+*/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
