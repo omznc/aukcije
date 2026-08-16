@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-08-16T21:10:19.799Z",
+  "generatedAt": "2026-08-16T21:42:11.735Z",
   "listings": 2686,
-  "comparable": 2679,
-  "disagreements": 1116,
+  "comparable": 1989,
+  "disagreements": 1022,
   "byField": {
-    "appraisedValue": 664,
-    "caseNumber": 165,
-    "startingPrice": 50,
-    "saleTime": 42,
-    "deposit": 195
+    "appraisedValue": 620,
+    "caseNumber": 137,
+    "startingPrice": 47,
+    "saleTime": 36,
+    "deposit": 182
   },
   "worst": [
     {
@@ -42,24 +42,6 @@
       "id": "65-138613",
       "court": "Općinski sud u Sarajevu",
       "sourceUrl": "https://pravosudje.ba/vstvfo/B/65/article/138613",
-      "field": "appraisedValue",
-      "llm": 127288.5,
-      "rules": 50,
-      "ratio": 2545.77
-    },
-    {
-      "id": "65-136976",
-      "court": "Općinski sud u Sarajevu",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/65/article/136976",
-      "field": "appraisedValue",
-      "llm": 127288.5,
-      "rules": 50,
-      "ratio": 2545.77
-    },
-    {
-      "id": "65-135986",
-      "court": "Općinski sud u Sarajevu",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/65/article/135986",
       "field": "appraisedValue",
       "llm": 127288.5,
       "rules": 50,
@@ -190,6 +172,24 @@
       "llm": 300,
       "rules": 100000,
       "ratio": 333.33
+    },
+    {
+      "id": "51-133749",
+      "court": "Općinski sud u Travniku",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/51/article/133749",
+      "field": "appraisedValue",
+      "llm": 811100,
+      "rules": 5000,
+      "ratio": 162.22
+    },
+    {
+      "id": "51-134795",
+      "court": "Općinski sud u Travniku",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/51/article/134795",
+      "field": "appraisedValue",
+      "llm": 811100,
+      "rules": 5000,
+      "ratio": 162.22
     },
     {
       "id": "90-166553",
@@ -327,21 +327,21 @@
       "ratio": null
     },
     {
-      "id": "32-160581",
-      "court": "Općinski sud u Tuzli",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/32/article/160581",
-      "field": "caseNumber",
-      "llm": "32 0 Ip 038162 20 Ip",
-      "rules": "32 0 Ip 038162 20 Ip 2",
-      "ratio": null
-    },
-    {
       "id": "46-160022",
       "court": "Općinski sud u Bugojnu",
       "sourceUrl": "https://pravosudje.ba/vstvfo/B/46/article/160022",
       "field": "caseNumber",
       "llm": "46 0 P 050444 22 I",
       "rules": "46 0 P 050444 22 I 1",
+      "ratio": null
+    },
+    {
+      "id": "32-160581",
+      "court": "Općinski sud u Tuzli",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/32/article/160581",
+      "field": "caseNumber",
+      "llm": "32 0 Ip 038162 20 Ip",
+      "rules": "32 0 Ip 038162 20 Ip 2",
       "ratio": null
     },
     {
@@ -375,24 +375,6 @@
       "id": "65-138613",
       "court": "Općinski sud u Sarajevu",
       "sourceUrl": "https://pravosudje.ba/vstvfo/B/65/article/138613",
-      "field": "startingPrice",
-      "llm": 63644.25,
-      "rules": 25,
-      "ratio": 2545.77
-    },
-    {
-      "id": "65-136976",
-      "court": "Općinski sud u Sarajevu",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/65/article/136976",
-      "field": "startingPrice",
-      "llm": 63644.25,
-      "rules": 25,
-      "ratio": 2545.77
-    },
-    {
-      "id": "65-135986",
-      "court": "Općinski sud u Sarajevu",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/65/article/135986",
       "field": "startingPrice",
       "llm": 63644.25,
       "rules": 25,
@@ -552,6 +534,24 @@
       "ratio": 4
     },
     {
+      "id": "42-160806",
+      "court": "Općinski sud u Zavidovićima",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/42/article/160806",
+      "field": "startingPrice",
+      "llm": 400,
+      "rules": 1150,
+      "ratio": 2.88
+    },
+    {
+      "id": "42-166449",
+      "court": "Općinski sud u Zavidovićima",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/42/article/166449",
+      "field": "startingPrice",
+      "llm": 100,
+      "rules": 200,
+      "ratio": 2
+    },
+    {
       "id": "80-165731",
       "court": "Osnovni sud u Bijeljini",
       "sourceUrl": "https://pravosudje.ba/vstvfo/B/80/article/165731",
@@ -705,20 +705,20 @@
       "ratio": null
     },
     {
-      "id": "80-106537",
-      "court": "Osnovni sud u Bijeljini",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/80/article/106537",
-      "field": "saleTime",
-      "llm": "08:00",
-      "rules": "15:00",
-      "ratio": null
-    },
-    {
       "id": "80-106536",
       "court": "Osnovni sud u Bijeljini",
       "sourceUrl": "https://pravosudje.ba/vstvfo/B/80/article/106536",
       "field": "saleTime",
       "llm": "11:00",
+      "rules": "15:00",
+      "ratio": null
+    },
+    {
+      "id": "80-106537",
+      "court": "Osnovni sud u Bijeljini",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/80/article/106537",
+      "field": "saleTime",
+      "llm": "08:00",
       "rules": "15:00",
       "ratio": null
     },
@@ -757,15 +757,6 @@
       "llm": 16,
       "rules": 10000,
       "ratio": 625
-    },
-    {
-      "id": "32-128621",
-      "court": "Općinski sud u Tuzli",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/32/article/128621",
-      "field": "deposit",
-      "llm": 20468.5,
-      "rules": 35,
-      "ratio": 584.81
     },
     {
       "id": "126-144672",
@@ -840,18 +831,18 @@
       "ratio": 384.62
     },
     {
-      "id": "126-144631",
+      "id": "126-144628",
       "court": "Općinski sud u Lukavcu",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/126/article/144631",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/126/article/144628",
       "field": "deposit",
       "llm": 30,
       "rules": 10000,
       "ratio": 333.33
     },
     {
-      "id": "126-144628",
+      "id": "126-144631",
       "court": "Općinski sud u Lukavcu",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/126/article/144628",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/126/article/144631",
       "field": "deposit",
       "llm": 30,
       "rules": 10000,
@@ -867,18 +858,18 @@
       "ratio": 333.33
     },
     {
-      "id": "126-114260",
+      "id": "126-114172",
       "court": "Općinski sud u Lukavcu",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/126/article/114260",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/126/article/114172",
       "field": "deposit",
       "llm": 30,
       "rules": 10000,
       "ratio": 333.33
     },
     {
-      "id": "126-114172",
+      "id": "126-114260",
       "court": "Općinski sud u Lukavcu",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/126/article/114172",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/126/article/114260",
       "field": "deposit",
       "llm": 30,
       "rules": 10000,
@@ -906,6 +897,15 @@
       "id": "65-142934",
       "court": "Općinski sud u Sarajevu",
       "sourceUrl": "https://pravosudje.ba/vstvfo/B/65/article/142934",
+      "field": "deposit",
+      "llm": 30,
+      "rules": 10000,
+      "ratio": 333.33
+    },
+    {
+      "id": "65-139437",
+      "court": "Općinski sud u Sarajevu",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/65/article/139437",
       "field": "deposit",
       "llm": 30,
       "rules": 10000,

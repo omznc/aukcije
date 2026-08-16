@@ -21,8 +21,8 @@ pravosudje.ba API  →  attachments (PDF / DOCX / DOC)  →  text
                    →  data/listings.json  →  Astro + Pagefind
 ```
 
-Current dataset: **~1,400 notices from 27 courts**, spanning 2013 to now.
-Roughly 90% carry a parsed price and a case number.
+Current dataset: **2,686 notices from 41 courts**, spanning 2011 to now. 95%
+carry a case number and 77% a parsed price.
 
 ## Quick start
 
@@ -41,6 +41,14 @@ re-extract everything, and `--limit=50` to work on a small sample.
 
 Downloaded attachments are cached under `.cache/` (git-ignored), so re-running
 after a parser change does not re-download anything.
+
+The courts rotate old sales out of the portal's feeds, so a run finds fewer
+notices than the archive holds — currently 1,996 of 2,686. Anything already in
+`data/listings.json` that the crawl no longer sees is **carried forward** rather
+than dropped; without that, a routine run quietly deletes history. Carried-forward
+rows keep their original version stamp, since the source document they were built
+from is gone, but redaction and the sale-date bound are re-applied on the way
+through — those are the two things that stay visible on the site forever.
 
 ## Extraction
 

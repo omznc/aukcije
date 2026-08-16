@@ -430,6 +430,23 @@ export async function run(opts: { full?: boolean; limit?: number } = {}) {
       .filter((l): l is Listing => l !== null),
   ];
 
+  // Notices the portal no longer serves. The courts rotate old sales out of the
+  // feeds, so a dataset built only from the current crawl silently deletes them
+  // — a routine twice-daily run would erode the archive that is half the point
+  // of this project. One such run dropped 690 records before this existed.
+  //
+  // Carrying them forward is also the only remaining path by which a fix to
+  // src/redact.ts reaches them: they can never be rebuilt from source again,
+  // because the source is gone. So redaction is re-applied on the way through
+  // rather than trusting whatever was stored.
+  //
+  // A row deleted from data/listings.json by hand stays deleted — this reads
+  // that file, not a separate cache — which is what makes a takedown stick for
+  // any notice the portal has already dropped.
+  const crawled = new Set(listings.map((l) => l.id));
+  const retained = [...existing.values()].filter((l) => !crawled.has(l.id)).map(carryForward);
+  listings.push(...retained);
+
   listings.sort((a, b) => (a.saleDate < b.saleDate ? 1 : a.saleDate > b.saleDate ? -1 : 0));
 
   await writeJson(PATHS.listings, {
@@ -446,10 +463,39 @@ export async function run(opts: { full?: boolean; limit?: number } = {}) {
     [...courts.values()].sort((a, b) => a.name.localeCompare(b.name, 'bs')),
   );
 
-  report(listings, reused, Date.now() - startedAt, disagreements);
+  report(listings, reused, retained.length, Date.now() - startedAt, disagreements);
 }
 
-function report(listings: Listing[], reused: number, ms: number, disagreements: Disagreement[]) {
+/**
+ * Bring a stored listing forward into a new run.
+ *
+ * Limited to what can be recomputed from the row itself — redaction and the
+ * sale-date bound. The extracted *values* were produced by whatever pipeline
+ * version the row records, and with the source document gone from the portal
+ * there is no honest way to redo that; the row keeps its old version stamp to
+ * say so. Privacy and an impossible date are the two things that must not be
+ * left at whatever they happened to be written with, because both stay visible
+ * on the site forever.
+ */
+function carryForward(l: Listing): Listing {
+  return {
+    ...l,
+    title: redactTitle(l.title),
+    headline: redactText(l.headline),
+    itemDescription: redactText(l.itemDescription),
+    auctionLocation: redactVenue(l.auctionLocation),
+    viewingInfo: redactText(l.viewingInfo),
+    saleDate: plausibleSaleDate(l.saleDate, l.publishedDate) ?? l.publishedDate,
+  };
+}
+
+function report(
+  listings: Listing[],
+  reused: number,
+  retained: number,
+  ms: number,
+  disagreements: Disagreement[],
+) {
   const bySource = new Map<string, number>();
   for (const l of listings) bySource.set(l.extraction.source, (bySource.get(l.extraction.source) ?? 0) + 1);
   const avg =
@@ -460,6 +506,7 @@ function report(listings: Listing[], reused: number, ms: number, disagreements: 
   console.log(`\n── Summary ────────────────────────────`);
   console.log(`  listings         ${listings.length}  (${upcoming} upcoming)`);
   console.log(`  reused cached    ${reused}`);
+  console.log(`  archived         ${retained}  (no longer served by the portal)`);
   console.log(`  courts           ${new Set(listings.map((l) => l.courtId)).size}`);
   console.log(`  text source      ${[...bySource].map(([k, v]) => `${k}=${v}`).join(' ')}`);
   console.log(`  with case no.    ${listings.filter((l) => l.caseNumber).length}`);
