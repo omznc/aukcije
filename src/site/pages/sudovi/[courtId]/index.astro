@@ -50,7 +50,7 @@ const stats = [
 ];
 
 /** Five steps from ink to rule, so the stacked bar reads without a colour key. */
-const BAND = ['bg-ink', 'bg-[#4b6a5e]', 'bg-[#8aa39a]', 'bg-bar', 'bg-rule'];
+const BAND = ['bg-ink', 'bg-moss', 'bg-sage', 'bg-bar', 'bg-rule'];
 ---
 
 <Base title={`${name} - sudske prodaje`}>
@@ -163,7 +163,7 @@ const BAND = ['bg-ink', 'bg-[#4b6a5e]', 'bg-[#8aa39a]', 'bg-bar', 'bg-rule'];
           <Icon name="clock-countdown" size={13} class="text-faint" />
           Otvorena ročišta pred ovim sudom
         </h2>
-        <div class="border-t border-rule bg-white">
+        <div class="border-t border-rule bg-blank">
           {live.map((l) => (
             <ListingRow listing={l} showCourt={false} />
           ))}
@@ -186,7 +186,7 @@ const BAND = ['bg-ink', 'bg-[#4b6a5e]', 'bg-[#8aa39a]', 'bg-bar', 'bg-rule'];
         archive.slice(0, ARCHIVE_LIMIT).map((l) => (
           <a
             href={`/oglas/${l.id}/`}
-            class="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 press border-b border-hair py-[11px] hover:bg-band active:bg-[#eae6dd] md:grid-cols-[96px_1fr_120px_110px]"
+            class="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 press border-b border-hair py-[11px] hover:bg-band active:bg-band-wash-deep md:grid-cols-[96px_1fr_120px_110px]"
           >
             <span class="order-1 font-mono text-[0.71875rem] text-dim md:order-none">
               {formatDate(l.saleDate)}

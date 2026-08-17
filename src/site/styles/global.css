@@ -102,10 +102,66 @@
       which is the window the between-pages flash lives in, while this is what
       actually lands in the computed style. Firefox does not reflect the meta
       into the property, so without this line scrollbars and form controls are
-      still drawn as though the sheet might go dark. It cannot; there is one
-      palette here and it is paper.
+      drawn to one preference while the sheet is painted to another.
+
+      Paper is the floor, not the default: a browser too old for `light-dark()`
+      below never gets past this line, and gets the light sheet it has always
+      had rather than a page of unresolved colours. The `@supports` block widens
+      it to `light dark` where the palette can actually follow.
     */
     color-scheme: light;
+
+    /*
+      The palette, and the only place a colour is spelled out. Everything else
+      in the codebase reaches these through the Tailwind names in
+      `tailwind.config.mjs` - `bg-sheet`, `text-dim`, `border-rule` - so a rule
+      written once is correct on both sheets.
+
+      Light is declared plainly here and the dark half is grafted on below, so
+      the two values of a colour are never far enough apart to drift.
+    */
+    --c-paper: #e9e5dd;
+    --c-sheet: #f7f5f0;
+    --c-band: #f1eee7;
+    --c-blank: #ffffff;
+
+    --c-wash: #faf8f4;
+    --c-wash-deep: #f0ece3;
+    --c-band-wash: #eae7df;
+    --c-band-wash-deep: #e0dcd2;
+
+    --c-rule: #dcd8cf;
+    --c-hair: #ece8e0;
+    --c-edge: #c9c4b8;
+
+    --c-ink: #16181a;
+    --c-ink-soft: #2b2d30;
+    --c-ink-mid: #3d3f42;
+    --c-ink-body: #4a4d50;
+    --c-muted: #55585c;
+    --c-dim: #7c7a74;
+    --c-faint: #9b988f;
+    --c-ghost: #b3b0a7;
+    --c-on-ink: #ffffff;
+
+    --c-pine: #0a5c46;
+    --c-pine-soft: rgb(10 92 70 / 0.4);
+    --c-rust: #a06010;
+    --c-brick: #a02010;
+
+    --c-bar: #bdb8ab;
+    --c-bar-soft: #cfcabd;
+    --c-track: #e4e0d6;
+    --c-mark: #dce9a8;
+    --c-moss: #4b6a5e;
+    --c-sage: #8aa39a;
+
+    --c-land: #f0ece3;
+    --c-coast: #c9c3b6;
+
+    --c-warn-bg: #f3ede2;
+    --c-warn-edge: #ddd0b8;
+    --c-due-bg: #f3ded6;
 
     /*
       One curve and three speeds for the whole site, so nothing invents its own
@@ -123,11 +179,90 @@
   }
 
   /*
+    The dark sheet.
+
+    `light-dark()` picks its second value whenever the root's resolved
+    `color-scheme` is dark, which means the switch is a single property rather
+    than a second copy of the palette under a class and a third under a media
+    query. Left at `light dark`, the sheet follows the system on its own with no
+    script involved; the toggle in the header narrows it to one word as an
+    inline style, which is also what makes an explicit choice outrank the
+    system's.
+
+    Behind `@supports` because the fallback matters: a custom property will
+    happily swallow a function the browser has never heard of and only fail once
+    something tries to use it, by which point the colour is gone rather than
+    wrong. Guarding it means an old browser keeps the paper palette above
+    untouched, and the header hides the toggle it could not honour anyway.
+
+    The dark values are not the light ones inverted. Paper's order is kept -
+    the surround is the darkest thing, the blank field the rows sit on is the
+    lightest - so a page reads the same way in both: recessed surround, sheet,
+    tinted bands, and the rows brightest of all. Text is warm rather than pure
+    white, and the accents are lifted enough to carry on a dark ground, since
+    pine at #0a5c46 is all but invisible there.
+  */
+  @supports (color: light-dark(#fff, #000)) {
+    :root {
+      color-scheme: light dark;
+
+      --c-paper: light-dark(#e9e5dd, #0a0b0c);
+      --c-sheet: light-dark(#f7f5f0, #17191b);
+      --c-band: light-dark(#f1eee7, #101214);
+      --c-blank: light-dark(#ffffff, #1e2123);
+
+      --c-wash: light-dark(#faf8f4, #262a2c);
+      --c-wash-deep: light-dark(#f0ece3, #2f3336);
+      --c-band-wash: light-dark(#eae7df, #191c1e);
+      --c-band-wash-deep: light-dark(#e0dcd2, #23272a);
+
+      --c-rule: light-dark(#dcd8cf, #33373a);
+      --c-hair: light-dark(#ece8e0, #282c2f);
+      --c-edge: light-dark(#c9c4b8, #464b4f);
+
+      --c-ink: light-dark(#16181a, #f2f0eb);
+      --c-ink-soft: light-dark(#2b2d30, #e0ded8);
+      --c-ink-mid: light-dark(#3d3f42, #cecbc5);
+      --c-ink-body: light-dark(#4a4d50, #c0bdb7);
+      --c-muted: light-dark(#55585c, #adaaa4);
+      --c-dim: light-dark(#7c7a74, #918e88);
+      --c-faint: light-dark(#9b988f, #7a7770);
+      --c-ghost: light-dark(#b3b0a7, #63605a);
+      --c-on-ink: light-dark(#ffffff, #14161a);
+
+      --c-pine: light-dark(#0a5c46, #57bb98);
+      --c-pine-soft: light-dark(rgb(10 92 70 / 0.4), rgb(87 187 152 / 0.42));
+      --c-rust: light-dark(#a06010, #d8a04a);
+      --c-brick: light-dark(#a02010, #e8776a);
+
+      --c-bar: light-dark(#bdb8ab, #6d6f72);
+      --c-bar-soft: light-dark(#cfcabd, #4d4f52);
+      --c-track: light-dark(#e4e0d6, #292d30);
+      --c-mark: light-dark(#dce9a8, #4a5a20);
+      --c-moss: light-dark(#4b6a5e, #8fbdaa);
+      --c-sage: light-dark(#8aa39a, #5b8375);
+
+      --c-land: light-dark(#f0ece3, #1b1e20);
+      --c-coast: light-dark(#c9c3b6, #3a3f42);
+
+      --c-warn-bg: light-dark(#f3ede2, #221f19);
+      --c-warn-edge: light-dark(#ddd0b8, #423a29);
+      --c-due-bg: light-dark(#f3ded6, #2b1d1a);
+    }
+  }
+
+  /*
     Type is sized in rem from here down, so raising the browser's text size
     scales the sheet rather than only the paragraphs.
   */
   html {
     font-size: 100%;
+    /*
+      The surround, painted on the root rather than only on <body>: the canvas
+      above and below the sheet is the browser's to fill when scrolling runs
+      past the end of the document, and it takes the colour from here.
+    */
+    background-color: var(--c-paper);
   }
 
   /*
@@ -167,6 +302,21 @@
   */
   .press-give:active {
     transform: scale(var(--press-give));
+  }
+
+  /*
+    The sheet toggle in the header. It ships hidden and is revealed by the head
+    script in Base.astro, which only marks the root themeable once it has found
+    a browser that can resolve the palette above and has written the choice
+    down. Without a script, or on a browser stuck on paper, the control would be
+    a button that does nothing, so there is no button.
+  */
+  .theme-toggle {
+    display: none;
+  }
+
+  :root[data-themeable] .theme-toggle {
+    display: inline-flex;
   }
 
   /*

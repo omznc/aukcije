@@ -85,7 +85,7 @@ const stats = [
         type="button"
         data-filter=""
         aria-pressed="true"
-        class="filter press press-give border border-edge px-2.5 py-2 text-[0.71875rem] font-medium leading-none text-ink-mid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white"
+        class="filter press press-give border border-edge px-2.5 py-2 text-[0.71875rem] font-medium leading-none text-ink-mid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-on-ink"
       >
         Sve {priceDrops.length}
       </button>
@@ -93,7 +93,7 @@ const stats = [
         type="button"
         data-filter="firm"
         aria-pressed="false"
-        class="filter press press-give border border-edge px-2.5 py-2 text-[0.71875rem] font-medium leading-none text-ink-mid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white"
+        class="filter press press-give border border-edge px-2.5 py-2 text-[0.71875rem] font-medium leading-none text-ink-mid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-on-ink"
       >
         Samo potvrđeni pad {firm.length}
       </button>
@@ -117,7 +117,7 @@ const stats = [
         <a class="text-pine underline" href="/">aktuelne prodaje</a>.
       </p>
     ) : (
-      <div id="drops" class="bg-white">
+      <div id="drops" class="bg-blank">
         {priceDrops.map((d) => {
           const l = d.listing;
           const days = daysUntil(l.saleDate);
@@ -126,7 +126,7 @@ const stats = [
               href={`/oglas/${l.id}/`}
               data-drop
               data-firm={d.fromPrevious === null ? 'false' : 'true'}
-              class="gut grid grid-cols-[1fr_auto] items-center gap-x-5 gap-y-2 press border-b border-hair py-3.5 hover:bg-[#faf8f4] active:bg-[#f0ece3] md:grid-cols-[1fr_240px_92px]"
+              class="gut grid grid-cols-[1fr_auto] items-center gap-x-5 gap-y-2 press border-b border-hair py-3.5 hover:bg-wash active:bg-wash-deep md:grid-cols-[1fr_240px_92px]"
             >
               <div class="min-w-0">
                 <div class="text-[0.875rem] font-semibold leading-snug">{headline(l)}</div>
@@ -187,7 +187,7 @@ const stats = [
     )
   }
 
-  <p id="drops-empty" class="gut hidden bg-white py-10 text-[0.8125rem] text-muted">
+  <p id="drops-empty" class="gut hidden bg-blank py-10 text-[0.8125rem] text-muted">
     Nijedno otvoreno ročište nema ranije ročište sa poznatom cijenom u arhivi.
   </p>
 

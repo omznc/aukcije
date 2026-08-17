@@ -38,7 +38,7 @@ const place = (name: string) => name.replace(/^.*?\bsud(?:a)?\s+(?:u\s+|za\s+)?/
 
 /** Filter chip: outlined until pressed, then solid ink like the design. */
 const CHIP =
-  'type press press-give border border-edge px-2.5 py-2 text-[0.71875rem] font-medium leading-none text-ink-mid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white';
+  'type press press-give border border-edge px-2.5 py-2 text-[0.71875rem] font-medium leading-none text-ink-mid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-on-ink';
 
 const refreshed = new Intl.DateTimeFormat('bs-BA', {
   dateStyle: 'short',
@@ -126,7 +126,7 @@ const stats = [
               ]}
             >
               {s.value}
-              <Icon name={s.icon} size={17} class={s.accent ? 'text-pine/40' : 'text-ghost'} />
+              <Icon name={s.icon} size={17} class={s.accent ? 'text-pine-soft' : 'text-ghost'} />
             </dd>
             <dt class="mt-[5px] font-mono text-[0.65625rem] leading-tight text-dim">{s.label}</dt>
           </div>
@@ -262,7 +262,7 @@ const stats = [
               id="q"
               type="search"
               placeholder="Traži: stan, traktor, Živinice…"
-              class="w-full border border-edge bg-white py-2.5 pl-9 pr-3 text-[0.8125rem] text-ink outline-none placeholder:text-faint focus:border-ink"
+              class="w-full border border-edge bg-blank py-2.5 pl-9 pr-3 text-[0.8125rem] text-ink outline-none placeholder:text-faint focus:border-ink"
             />
           </div>
 
@@ -319,7 +319,7 @@ const stats = [
           <span class="text-right">POPUST</span>
         </div>
 
-        <div id="rows" class="bg-white">
+        <div id="rows" class="bg-blank">
           {upcoming.map((l) => (
             <ListingRow
               listing={l}
@@ -348,7 +348,7 @@ const stats = [
         </div>
 
         <!-- Stays a block: the script toggles `hidden`, and a flex row would win over it. -->
-        <p id="empty" class="gut hidden bg-white py-10 text-[0.8125rem] text-muted">
+        <p id="empty" class="gut hidden bg-blank py-10 text-[0.8125rem] text-muted">
           <Icon name="funnel" size={16} class="mr-1.5 text-ghost" />
           Nema rezultata za zadane filtere.
         </p>

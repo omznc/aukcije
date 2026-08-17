@@ -141,7 +141,7 @@ const jsonLd = JSON.stringify(
       </nav>
 
       <div class="mb-3.5 flex flex-wrap gap-[7px]" data-pagefind-ignore>
-        <span class="flex items-center gap-1.5 bg-ink px-2 py-[5px] font-mono text-[0.65625rem] font-semibold leading-none text-white">
+        <span class="flex items-center gap-1.5 bg-ink px-2 py-[5px] font-mono text-[0.65625rem] font-semibold leading-none text-on-ink">
           <Icon name={saleTypeIcon(l.saleType)} size={13} />
           {SALE_TYPE_LABELS[l.saleType].toUpperCase()}
         </span>
@@ -210,7 +210,7 @@ const jsonLd = JSON.stringify(
           instead of on the description that matched.
         -->
         <dl class="grid grid-cols-1 gap-px border border-rule bg-rule sm:grid-cols-3" data-pagefind-ignore>
-          <div class="bg-white px-4 py-3.5">
+          <div class="bg-blank px-4 py-3.5">
             <dt class="flex items-center gap-1.5 font-mono text-[0.625rem] leading-none text-dim">
               <Icon name="receipt" size={13} class="text-ghost" />
               PROCIJENJENA VRIJEDNOST
@@ -219,7 +219,7 @@ const jsonLd = JSON.stringify(
               {formatMoney(l.appraisedValue) ?? '-'}
             </dd>
           </div>
-          <div class="bg-white px-4 py-3.5">
+          <div class="bg-blank px-4 py-3.5">
             <dt class="flex items-center gap-1.5 font-mono text-[0.625rem] leading-none text-dim">
               <Icon name="money" size={13} class="text-ghost" />
               POČETNA CIJENA
@@ -228,7 +228,7 @@ const jsonLd = JSON.stringify(
               {formatMoney(l.startingPrice) ?? <span class="font-normal text-ghost">nije navedena</span>}
             </dd>
           </div>
-          <div class="bg-white px-4 py-3.5">
+          <div class="bg-blank px-4 py-3.5">
             <dt class="flex items-center gap-1.5 font-mono text-[0.625rem] leading-none text-dim">
               <Icon name="trend-down" size={13} class="text-ghost" />
               POPUST{perM2 && ` · ${formatNumber(perM2)} KM/m²`}
@@ -320,7 +320,7 @@ const jsonLd = JSON.stringify(
           single 5% was billing the buyer for the debtor's liability on 451 of
           the archive's 1.168 real-estate notices.
         */}
-        <section class="mt-7 border border-rule bg-white" data-pagefind-ignore>
+        <section class="mt-7 border border-rule bg-blank" data-pagefind-ignore>
           <h2 class="flex items-center gap-2 border-b border-rule bg-band px-[18px] py-3.5 text-[0.8125rem] font-semibold leading-none">
             <Icon name="calculator" size={16} class="text-dim" />
             Šta vas ovo stvarno košta
@@ -517,7 +517,7 @@ const jsonLd = JSON.stringify(
         */}
         {
           unpriced.length > 0 && (
-            <section class="mt-7 border border-rule bg-white" data-pagefind-ignore>
+            <section class="mt-7 border border-rule bg-blank" data-pagefind-ignore>
               <h2 class="flex items-center gap-2 border-b border-rule bg-band px-[18px] py-3.5 text-[0.8125rem] font-semibold leading-none">
                 <Icon name="warning" size={16} class="text-rust" />
                 Šta ovaj račun ne pokriva
@@ -534,7 +534,7 @@ const jsonLd = JSON.stringify(
           )
         }
 
-        <section class="mt-7 border border-rule bg-white" data-pagefind-ignore>
+        <section class="mt-7 border border-rule bg-blank" data-pagefind-ignore>
           <h2 class="flex items-center gap-2 border-b border-rule bg-band px-[18px] py-3.5 text-[0.8125rem] font-semibold leading-none">
             <Icon name="seal-check" size={16} class="text-pine" />
             Službeni izvor - jedini mjerodavan zapis
@@ -549,7 +549,7 @@ const jsonLd = JSON.stringify(
                 href={l.sourceUrl}
                 rel="nofollow noopener"
                 target="_blank"
-                class="flex shrink-0 items-center gap-1.5 bg-ink px-3 py-2 text-[0.75rem] font-semibold leading-none text-white"
+                class="flex shrink-0 items-center gap-1.5 bg-ink px-3 py-2 text-[0.75rem] font-semibold leading-none text-on-ink"
               >
                 <Icon name="arrow-square-out" size={14} />
                 Otvori
@@ -711,7 +711,7 @@ const jsonLd = JSON.stringify(
           <a
             href={`/oglas/${l.id}.ics`}
             download={`rociste-${l.id}.ics`}
-            class="press press-give flex items-center justify-center gap-1.5 border border-ink bg-ink px-3 py-2.5 text-[0.75rem] font-semibold leading-none text-white"
+            class="press press-give flex items-center justify-center gap-1.5 border border-ink bg-ink px-3 py-2.5 text-[0.75rem] font-semibold leading-none text-on-ink"
           >
             <Icon name="calendar-plus" size={14} />
             Preuzmi .ics

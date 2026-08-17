@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import Icon from "../components/Icon.astro";
 import { AD_PREFIX, TAG_PREFIX } from "../lib/saved.ts";
+import { THEME_KEY } from "../lib/theme.ts";
 
 export const REPO = "https://github.com/omznc/aukcije";
 
@@ -83,15 +84,60 @@ const isActive = (href: string) =>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <!--
-          The sheet is paper and only paper - there is no dark variant of it.
-          Saying so keeps a browser set to a dark theme from assuming otherwise
-          and painting its own dark canvas in the moment between one page
-          leaving and the next one drawing, which Firefox shows as a black flash
-          on every navigation. Declared as a meta rather than in the stylesheet
-          because it has to be known before the stylesheet has arrived, which is
-          exactly the window the flash lives in.
+          Both sheets exist, so the browser is told both are on offer. This is
+          what it paints its own canvas with in the moment between one page
+          leaving and the next one drawing - the window Firefox otherwise shows
+          as a flash on every navigation - and it is read before the stylesheet
+          has arrived, which is why it is a meta and not a declaration.
+
+          It resolves to the system's preference, which is right for everyone
+          who has not overridden it and briefly wrong for everyone who has: the
+          only lever available this early is this one, and it cannot see
+          localStorage. The script below closes that gap as soon as there is a
+          document to close it on.
         -->
-        <meta name="color-scheme" content="light" />
+        <meta name="color-scheme" content="light dark" />
+        <!--
+          The visitor's own choice of sheet, applied before anything is painted.
+          Inline, un-bundled and first in the head on purpose: a module would be
+          deferred until after the first paint, and the paint it would come after
+          is the one drawn in the wrong palette. Every page here is its own
+          document, so that flash would be on every navigation rather than once.
+
+          `data-themeable` is what the header's toggle is shown by. Both halves
+          have to hold for it to be worth showing: a browser that can resolve
+          the `light-dark()` palette in global.css, and this script having run to
+          write the choice down. Neither is true of the fallback path, and a
+          control that cannot do anything is worse than no control.
+        -->
+        <script is:inline define:vars={{ themeKey: THEME_KEY }}>
+            (function () {
+                if (
+                    !window.CSS ||
+                    !CSS.supports ||
+                    !CSS.supports("color", "light-dark(#fff, #000)")
+                )
+                    return;
+                var root = document.documentElement;
+                root.dataset.themeable = "";
+                var stored = null;
+                try {
+                    stored = localStorage.getItem(themeKey);
+                } catch (e) {
+                    // Storage can be blocked outright, in which case the sheet
+                    // simply follows the system, as a first visit does.
+                }
+                if (stored !== "light" && stored !== "dark") stored = null;
+                // Left empty when there is no choice, so the stylesheet's
+                // `color-scheme: light dark` keeps tracking the system.
+                root.style.colorScheme = stored || "";
+                root.dataset.theme =
+                    stored ||
+                    (matchMedia("(prefers-color-scheme: dark)").matches
+                        ? "dark"
+                        : "light");
+            })();
+        </script>
         <title>{title}</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={canonical} />
@@ -167,14 +213,62 @@ const isActive = (href: string) =>
                             NEZAVISNI INDEKS · NIJE SLUŽBENI IZVOR
                         </span>
                     </div>
-                    <a
-                        href="/rss.xml"
-                        class="press press-give flex items-center gap-1.5 font-mono text-[0.6875rem] font-medium leading-none text-rust"
-                    >
-                        <Icon name="rss-simple" size={14} />
-                        RSS
-                    </a>
+                    <div class="flex items-center gap-4">
+                        <!--
+                          Hidden until the head script has said the browser can
+                          honour it; see the note there. The two labels sit in
+                          one grid cell and cross-fade, which is what keeps the
+                          header from reflowing when the wider of them arrives.
+                        -->
+                        <button
+                            type="button"
+                            data-theme-toggle
+                            aria-pressed="false"
+                            aria-label="Tamni prikaz"
+                            class="theme-toggle press press-give items-center font-mono text-[0.6875rem] font-medium leading-none text-ink-mid hover:text-ink"
+                        >
+                            <span class="swap">
+                                <span
+                                    data-idle
+                                    class="flex items-center gap-1.5"
+                                >
+                                    <Icon name="moon" size={14} />
+                                    TAMNO
+                                </span>
+                                <span
+                                    data-done
+                                    class="flex items-center gap-1.5"
+                                >
+                                    <Icon name="sun" size={14} />
+                                    SVIJETLO
+                                </span>
+                            </span>
+                        </button>
+                        <a
+                            href="/rss.xml"
+                            class="press press-give flex items-center gap-1.5 font-mono text-[0.6875rem] font-medium leading-none text-rust"
+                        >
+                            <Icon name="rss-simple" size={14} />
+                            RSS
+                        </a>
+                    </div>
                 </div>
+
+                <!--
+                  Which way the toggle is already pointing, written while the
+                  header is still being parsed rather than by the module at the
+                  foot of the page - the same reason as the saved counter below,
+                  and the same shape of fix. The head script has resolved the
+                  theme by now; this only reflects it onto the control.
+                -->
+                <script is:inline>
+                    if (document.documentElement.dataset.theme === "dark") {
+                        var toggle = document.querySelector(
+                            "[data-theme-toggle]",
+                        );
+                        if (toggle) toggle.setAttribute("aria-pressed", "true");
+                    }
+                </script>
 
                 <!--
                   Tabs, drawn like a browser's: the strip sits on the tinted band
@@ -185,7 +279,7 @@ const isActive = (href: string) =>
                 -->
                 <nav
                     id="tabs"
-                    class="gut flex gap-1 overflow-x-auto bg-band pt-2 shadow-[inset_0_-1px_0_#dcd8cf] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                    class="gut flex gap-1 overflow-x-auto bg-band pt-2 shadow-[inset_0_-1px_0_var(--c-rule)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                 >
                     {
                         tabs.map((item) => (
@@ -198,7 +292,7 @@ const isActive = (href: string) =>
                                     "press flex shrink-0 items-center gap-1.5 whitespace-nowrap border border-b-0 px-3 pb-[9px] pt-2 text-[0.78125rem] leading-none",
                                     isActive(item.href)
                                         ? "border-rule bg-sheet font-semibold text-ink"
-                                        : "border-transparent text-ink-mid hover:bg-[#eae7df] hover:text-ink active:bg-[#e0dcd2] active:text-ink",
+                                        : "border-transparent text-ink-mid hover:bg-band-wash hover:text-ink active:bg-band-wash-deep active:text-ink",
                                 ]}
                             >
                                 <Icon
@@ -352,7 +446,9 @@ const isActive = (href: string) =>
 
         <script>
             import { refreshSavedCount } from "../lib/saved-count.ts";
+            import { wireThemeToggle } from "../lib/theme.ts";
 
+            wireThemeToggle();
             refreshSavedCount();
             // Saving in one tab should show up in the others; `storage` only fires on
             // the tabs that did not make the change, which is exactly the gap here.
@@ -452,7 +548,7 @@ const isActive = (href: string) =>
             }
             footer a:hover,
             nav a:hover {
-                color: #16181a;
+                color: var(--c-ink);
             }
         </style>
     </body>

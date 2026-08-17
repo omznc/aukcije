@@ -30,7 +30,7 @@ const SORTS = [
       „Živinice”. Indeks se preuzima u dijelovima, pa radi brzo i na mobilnoj vezi.
     </p>
 
-    <form id="search-form" class="flex max-w-[640px] border border-ink bg-white" role="search">
+    <form id="search-form" class="flex max-w-[640px] border border-ink bg-blank" role="search">
       <label class="sr-only" for="q">Pretraga oglasa</label>
       <input
         id="q"
@@ -42,7 +42,7 @@ const SORTS = [
       />
       <button
         type="submit"
-        class="flex items-center gap-1.5 bg-ink px-5 text-[0.8125rem] font-semibold text-white"
+        class="flex items-center gap-1.5 bg-ink px-5 text-[0.8125rem] font-semibold text-on-ink"
       >
         <Icon name="magnifying-glass" size={15} />
         Traži
@@ -338,7 +338,7 @@ const SORTS = [
 <style is:global>
   /* Pagefind returns excerpts with the matched terms already wrapped. */
   #results mark {
-    background: #dce9a8;
+    background: var(--c-mark);
     color: inherit;
   }
 

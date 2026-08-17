@@ -25,7 +25,7 @@ const topShare = Math.round(
 );
 
 const CHIP =
-  'chip press press-give border border-edge px-2.5 py-2 text-[0.71875rem] font-medium leading-none text-ink-mid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white';
+  'chip press press-give border border-edge px-2.5 py-2 text-[0.71875rem] font-medium leading-none text-ink-mid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-on-ink';
 ---
 
 <Base title="Sudovi koji objavljuju prodaje - BiH">
@@ -65,7 +65,7 @@ const CHIP =
     <span class="pl-6">UDIO U ARHIVI</span>
   </div>
 
-  <div id="courts" class="bg-white">
+  <div id="courts" class="bg-blank">
     {
       rows.map((c) => (
         <a
@@ -73,7 +73,7 @@ const CHIP =
           data-court
           data-entity={c.entity}
           data-active={c.upcoming > 0 ? 'true' : 'false'}
-          class="gut grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-1 press border-b border-hair py-3 hover:bg-band active:bg-[#eae6dd] md:grid-cols-[1fr_74px_110px_110px_200px]"
+          class="gut grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-1 press border-b border-hair py-3 hover:bg-band active:bg-band-wash-deep md:grid-cols-[1fr_74px_110px_110px_200px]"
         >
           <span class="flex items-center gap-2 text-[0.84375rem] font-medium leading-snug md:pr-5">
             <Icon name="bank" size={15} class={c.upcoming > 0 ? 'text-pine' : 'text-ghost'} />

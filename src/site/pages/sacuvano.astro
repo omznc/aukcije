@@ -53,10 +53,10 @@ import { SALE_TYPE_ICONS, iconBody } from '../lib/icons.ts';
       </p>
     </div>
 
-    <div id="ads-rows" class="bg-white"></div>
+    <div id="ads-rows" class="bg-blank"></div>
 
     <template id="ads-empty">
-      <p class="gut bg-white py-10 text-[0.84375rem] leading-relaxed text-muted">
+      <p class="gut bg-blank py-10 text-[0.84375rem] leading-relaxed text-muted">
         <Icon name="bookmark-simple" size={16} class="mr-1.5 text-ghost" />
         Još niste sačuvali nijedan oglas. Otvorite bilo koji oglas i pritisnite{' '}
         <b class="font-semibold text-ink">Sačuvaj oglas</b> - vratit će se ovdje. Počnite od{' '}
@@ -73,7 +73,7 @@ import { SALE_TYPE_ICONS, iconBody } from '../lib/icons.ts';
       </h2>
     </div>
     <!-- Rows hide by class, not by the `hidden` attribute: `display:flex` beats it. -->
-    <div class="gut bg-white pb-5 pt-1">
+    <div class="gut bg-blank pb-5 pt-1">
       {
         itemCategories.map((t) => (
           <div
@@ -110,7 +110,7 @@ import { SALE_TYPE_ICONS, iconBody } from '../lib/icons.ts';
       type="button"
       id="export-ics"
       hidden
-      class="items-center gap-1.5 press press-give border border-ink bg-ink px-3 py-2.5 text-[0.75rem] font-semibold leading-none text-white [&:not([hidden])]:flex"
+      class="items-center gap-1.5 press press-give border border-ink bg-ink px-3 py-2.5 text-[0.75rem] font-semibold leading-none text-on-ink [&:not([hidden])]:flex"
     >
       <Icon name="calendar-plus" size={14} />
       <span id="export-label">Sve u kalendar (.ics)</span>
@@ -174,7 +174,7 @@ import { SALE_TYPE_ICONS, iconBody } from '../lib/icons.ts';
     // former earns the green, exactly as in the listing tables.
     const off = c.o ? `${c.o.startsWith('−') ? 'text-pine' : 'text-dim'}` : '';
     return `
-      <div data-saved-row class="gut flex items-start gap-4 press border-b border-hair py-3.5 hover:bg-[#faf8f4] active:bg-[#f0ece3]">
+      <div data-saved-row class="gut flex items-start gap-4 press border-b border-hair py-3.5 hover:bg-wash active:bg-wash-deep">
         <a href="/oglas/${escape(id)}/" class="min-w-0 flex-1">
           <div class="flex flex-wrap items-baseline justify-between gap-x-5 gap-y-1">
             <span class="text-[0.90625rem] font-semibold leading-snug">${escape(c.h)}</span>
@@ -340,6 +340,6 @@ import { SALE_TYPE_ICONS, iconBody } from '../lib/icons.ts';
   } catch {
     statusEl.textContent = '';
     rowsEl.innerHTML =
-      '<p class="gut bg-white py-10 text-[0.84375rem] leading-relaxed text-muted">Vaš preglednik ne dozvoljava lokalnu pohranu, pa spremanje oglasa ovdje ne radi.</p>';
+      '<p class="gut bg-blank py-10 text-[0.84375rem] leading-relaxed text-muted">Vaš preglednik ne dozvoljava lokalnu pohranu, pa spremanje oglasa ovdje ne radi.</p>';
   }
 </script>

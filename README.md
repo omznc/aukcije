@@ -284,7 +284,9 @@ the source does, in line with BiH's GDPR-aligned Law on Personal Data Protection
   to it.
 - Saving a notice writes one `localStorage` key in the visitor's own browser.
   There is no account and no cookie behind it, nothing is sent anywhere, and
-  `/sacuvano/` is where those keys are read back and can be cleared.
+  `/sacuvano/` is where those keys are read back and can be cleared. Choosing a
+  sheet in the header writes one more (`prikaz:tema`); those two keys are the
+  whole of what this site stores.
 
 Takedown and correction requests: **contact@omarzunic.com**. Include the
 listing id or URL; records are removed or corrected without delay.
@@ -330,6 +332,8 @@ src/
     lib/og.ts          share cards (satori + resvg), cached by what they print
     lib/jsonld.ts      schema.org for listings and for the site
     lib/stats.ts       everything derived: drops, chains, medians, map buckets
+    lib/theme.ts       paper or dark, and the toggle that chooses
+    styles/global.css  fonts, motion, and the one place a colour is spelled out
 scripts/verify.ts      post-scrape assertions
 scripts/build-geo.ts   regenerates site/lib/geo.ts; run by hand, not by the build
 docs/API.md            the reverse-engineered upstream API
@@ -341,6 +345,29 @@ Three libraries under `site/lib/` are deliberately free of any dataset import -
 `data/listings.json` into a client bundle to format a date would ship 4.6 MB to
 do it. `calendar.ts` holds the half of the calendar code that does know about
 listings.
+
+## Two sheets
+
+The site is set on paper and on a dark equivalent of it, and the palette is the
+only difference between them - same type, same rules, same spacing. Every colour
+is a custom property declared once in `src/site/styles/global.css` through
+`light-dark()`, and `tailwind.config.mjs` is a list of names pointing at those
+properties, so no component knows which sheet it is being drawn on.
+
+Which one a visitor gets is decided in this order:
+
+1. their own choice, stored under `prikaz:tema` and applied by a small inline
+   script in the head of `Base.astro` - before the first paint, since every page
+   here is its own document and a late switch would flash on every navigation;
+2. failing that, `prefers-color-scheme`, resolved by CSS alone and followed live
+   as the system turns;
+3. failing that - a browser without `light-dark()`, or with scripting off -
+   paper, exactly as the site shipped before. The header's toggle is hidden in
+   that case rather than offered and ignored.
+
+Share cards stay on paper in both. They are opened in someone else's app, on
+someone else's background, and a card that changed with the author's theme would
+be the odd one out in a chat thread either way.
 
 ## Deployment
 

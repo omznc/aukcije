@@ -91,7 +91,12 @@ const stats = [
         role="img"
         aria-label={`Mapa Bosne i Hercegovine sa ${places.length} mjesta u kojima su vođene sudske prodaje`}
       >
-        <path d={OUTLINE} fill="#f0ece3" stroke="#c9c3b6" stroke-width="2" stroke-linejoin="round" />
+        <path
+          d={OUTLINE}
+          class="fill-land stroke-coast"
+          stroke-width="2"
+          stroke-linejoin="round"
+        />
         {
           dots.map((d) => (
             <a href={`/pretraga/?q=${encodeURIComponent(d.name)}`} class="map-dot">
@@ -100,13 +105,17 @@ const stats = [
                 {d.upcoming > 0 ? `, ${d.upcoming} otvoreno` : ''}
                 {d.approximate ? ' (smješteno prema sjedištu suda)' : ''}
               </title>
+              {/*
+                A place with a hearing still open is pine, the rest of the
+                archive is a grey the eye passes over. Both are palette names
+                rather than fills of their own, so the map turns with the sheet.
+              */}
               <circle
                 cx={d.x}
                 cy={d.y}
                 r={d.r}
-                fill={d.upcoming > 0 ? '#3f5f52' : '#a9a294'}
+                class={d.upcoming > 0 ? 'fill-pine stroke-pine' : 'fill-bar stroke-dim'}
                 fill-opacity={d.upcoming > 0 ? 0.42 : 0.24}
-                stroke={d.upcoming > 0 ? '#3f5f52' : '#8d8677'}
                 stroke-width="1.5"
               />
             </a>
@@ -119,7 +128,7 @@ const stats = [
             return (
               <a href={`/sudovi/${c.id}/`} class="map-dot">
                 <title>{c.name} - {c.upcoming} otvorenih, {c.total} ukupno</title>
-                <rect x={x - 3} y={y - 3} width="6" height="6" fill="#2c2a26" />
+                <rect x={x - 3} y={y - 3} width="6" height="6" class="fill-ink" />
               </a>
             );
           })
@@ -128,11 +137,11 @@ const stats = [
 
       <div class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[0.65625rem] leading-none text-dim">
         <span class="flex items-center gap-1.5">
-          <span class="h-3 w-3 rounded-full border border-pine bg-pine/40"></span>
+          <span class="h-3 w-3 rounded-full border border-pine bg-pine-soft"></span>
           OTVORENO ROČIŠTE
         </span>
         <span class="flex items-center gap-1.5">
-          <span class="h-3 w-3 rounded-full border border-[#8d8677] bg-[#a9a294]/30"></span>
+          <span class="h-3 w-3 rounded-full border border-dim bg-track"></span>
           SAMO ARHIVA
         </span>
         <span class="flex items-center gap-1.5">
@@ -160,7 +169,7 @@ const stats = [
       <button
         type="button"
         id="locate"
-        class="press press-give mt-2.5 flex w-full items-center justify-center gap-1.5 border border-ink bg-ink px-3 py-2.5 text-[0.75rem] font-semibold leading-none text-white"
+        class="press press-give mt-2.5 flex w-full items-center justify-center gap-1.5 border border-ink bg-ink px-3 py-2.5 text-[0.75rem] font-semibold leading-none text-on-ink"
       >
         <Icon name="crosshair" size={14} />
         <span id="locate-label">Nađi najbliže sudove</span>
@@ -214,7 +223,7 @@ const stats = [
     fill-opacity: 0.75;
   }
   .map-dot:hover rect {
-    fill: #7a2f21;
+    fill: var(--c-brick);
   }
 </style>
 

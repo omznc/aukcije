@@ -40,7 +40,7 @@ const rows = past.map((l) => {
 const lead = medianLeadDays();
 
 const CHIP =
-  'chip press press-give border border-edge px-2.5 py-2 text-[0.71875rem] font-medium leading-none text-ink-mid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white';
+  'chip press press-give border border-edge px-2.5 py-2 text-[0.71875rem] font-medium leading-none text-ink-mid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-on-ink';
 ---
 
 <Base title="Arhiva sudskih prodaja - BiH">
@@ -122,7 +122,7 @@ const CHIP =
     <span class="text-right">ROČIŠTE #</span>
   </div>
 
-  <div id="archive" class="bg-white">
+  <div id="archive" class="bg-blank">
     {
       rows.map((r) => (
         <a
@@ -130,7 +130,7 @@ const CHIP =
           data-row
           data-year={String(r.year)}
           data-older={recentYears.some((y) => y.year === r.year) ? 'false' : 'true'}
-          class="gut grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-1 press border-b border-hair py-3 hover:bg-band active:bg-[#eae6dd] md:grid-cols-[100px_1fr_160px_116px_116px_120px]"
+          class="gut grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-1 press border-b border-hair py-3 hover:bg-band active:bg-band-wash-deep md:grid-cols-[100px_1fr_160px_116px_116px_120px]"
         >
           <span class="order-1 font-mono text-[0.75rem] text-muted md:order-none">
             {formatDate(r.l.saleDate)}
@@ -160,7 +160,7 @@ const CHIP =
     }
   </div>
 
-  <p id="archive-empty" class="gut hidden bg-white py-10 text-[0.8125rem] text-muted">
+  <p id="archive-empty" class="gut hidden bg-blank py-10 text-[0.8125rem] text-muted">
     Nema prodaja u odabranoj godini.
   </p>
 
