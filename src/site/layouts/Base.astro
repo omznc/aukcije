@@ -82,6 +82,16 @@ const isActive = (href: string) =>
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!--
+          The sheet is paper and only paper - there is no dark variant of it.
+          Saying so keeps a browser set to a dark theme from assuming otherwise
+          and painting its own dark canvas in the moment between one page
+          leaving and the next one drawing, which Firefox shows as a black flash
+          on every navigation. Declared as a meta rather than in the stylesheet
+          because it has to be known before the stylesheet has arrived, which is
+          exactly the window the flash lives in.
+        -->
+        <meta name="color-scheme" content="light" />
         <title>{title}</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={canonical} />
@@ -109,11 +119,30 @@ const isActive = (href: string) =>
             href="/rss.xml"
         />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <!--
+          The faces themselves are declared in global.css and served from here;
+          see the note there for why they are not fetched from Google. These
+          two are the ones every page is set in - the body and the mono that
+          carries every figure and label - and without a preload the browser
+          only learns it needs them once it has parsed the stylesheet that
+          mentions them. Asking for them alongside that stylesheet instead
+          means the text is set right on the first paint rather than one swap
+          later. The other four faces are the accented and serif cuts, which
+          are worth discovering the ordinary way.
+        -->
         <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif&family=JetBrains+Mono:wght@400;500;700&display=swap"
+            rel="preload"
+            as="font"
+            type="font/woff2"
+            href="/fonts/instrument-sans-latin.woff2"
+            crossorigin
+        />
+        <link
+            rel="preload"
+            as="font"
+            type="font/woff2"
+            href="/fonts/jetbrains-mono-latin.woff2"
+            crossorigin
         />
     </head>
     <body class="min-h-full bg-paper font-sans text-ink antialiased">
