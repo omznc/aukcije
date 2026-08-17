@@ -23,7 +23,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
+      # Explicitly the branch tip, not the commit that triggered the run.
+      # actions/checkout defaults to github.sha, and when scrape.yml calls this
+      # workflow that SHA is the commit from *before* the scraper committed the
+      # refreshed data — so the deploy would rebuild the previous dataset and
+      # report success. It did exactly that on the first scheduled run.
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
 
       # Node 24: the build runs .ts files directly (scripts/verify-build.ts) and
       # relies on native type stripping. This is also why the site is built here
@@ -34,6 +41,14 @@ jobs:
           cache: npm
 
       - run: npm ci
+
+      # What is actually about to be published. A deploy that silently rebuilt
+      # stale data looks identical to a good one without this.
+      - name: Show what is being deployed
+        run: |
+          echo "commit:      $(git rev-parse --short HEAD) — $(git log -1 --pretty=%s)"
+          echo "generatedAt: $(node -p "require('./data/listings.json').generatedAt")"
+          echo "listings:    $(node -p "require('./data/listings.json').count")"
 
       - run: npm test
       - run: npm run typecheck
