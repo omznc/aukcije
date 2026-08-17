@@ -4,7 +4,7 @@
  * The alternative is poppler + tesseract, which means a system install in every
  * environment that runs the scraper, and a rasterise-then-recognise pipeline to
  * maintain. Since the project already talks to a model, sending the PDF itself
- * is both simpler and better at Bosnian/Croatian/Serbian — including the
+ * is both simpler and better at Bosnian/Croatian/Serbian - including the
  * Cyrillic notices from Republika Srpska courts, where tesseract needs the
  * right language pack selected up front to stand a chance.
  *
@@ -31,7 +31,7 @@ const ENGINE = env('OCR_ENGINE', 'mistral-ocr');
 const PROMPT = `Ovo je skenirani sudski oglas o prodaji iz Bosne i Hercegovine.
 Prepiši SAV tekst iz dokumenta, tačno kako piše, zadržavajući redoslijed redova i sve iznose i datume.
 Zadrži originalno pismo (latinicu ili ćirilicu) i sve dijakritike (č, ć, ž, š, đ).
-Ne prevodi, ne sažimaj i ne komentariši — vrati samo prepisani tekst.`;
+Ne prevodi, ne sažimaj i ne komentariši - vrati samo prepisani tekst.`;
 
 export function visionOcrAvailable(): boolean {
   return Boolean(process.env.OPENROUTER_API_KEY);

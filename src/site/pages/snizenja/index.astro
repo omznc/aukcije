@@ -1,0 +1,266 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import { formatDate, formatMoney, daysUntil } from '../../lib/data.ts';
+import { headline } from '../../lib/headline.ts';
+import { saleTypeIcon } from '../../lib/icons.ts';
+import {
+  priceDrops,
+  repeatDrops,
+  chainFallMedian,
+  chainFallSample,
+  repeatCaseCount,
+  formatPercent,
+  daysLabel,
+  urgency,
+  ROUND_SHORT,
+} from '../../lib/stats.ts';
+
+/**
+ * The one page here that answers "why come back".
+ *
+ * A lot that does not sell returns at a lower price, and nothing upstream
+ * announces that it has - the portal republishes a notice, not a price history.
+ * Linking hearings by case number is what makes the fall visible, and it is the
+ * only thing on this site the source cannot tell you.
+ */
+
+const firm = priceDrops.filter((d) => d.fromPrevious !== null);
+const steepest = priceDrops[0] ?? null;
+
+const stats = [
+  { value: String(priceDrops.length), label: 'OTVORENIH ISPOD PROCJENE', accent: false },
+  { value: String(firm.length), label: 'SA POZNATIM RANIJIM ROČIŠTEM', accent: false },
+  {
+    value: steepest ? formatPercent(steepest.best) : '-',
+    label: 'NAJVEĆI PAD',
+    accent: true,
+  },
+  {
+    value: chainFallMedian === null ? '-' : formatPercent(chainFallMedian),
+    label: `MEDIJAN PADA · ${chainFallSample} SLUČAJEVA`,
+    accent: false,
+  },
+];
+---
+
+<Base
+  title="Snižene cijene na sudskim prodajama u BiH"
+  description="Otvorene sudske prodaje čija je cijena pala - ponovljena ročišta i sve što ide ispod procijenjene vrijednosti suda."
+>
+  <div class="gut border-b border-rule pb-6 pt-[30px]">
+    <nav class="mb-3 font-mono text-[0.6875rem] leading-none text-dim">
+      <a href="/" class="hover:text-ink">AKTUELNE</a> / SNIŽENO
+    </nav>
+    <div class="grid items-end gap-8 lg:grid-cols-[1fr_auto]">
+      <div>
+        <h1 class="max-w-[24ch] text-balance font-serif text-[2rem] leading-title tracking-title sm:text-[2.5rem] sm:leading-display sm:tracking-display">
+          Šta je pojeftinilo.
+        </h1>
+        <p class="mt-3 max-w-[62ch] text-pretty text-[0.875rem] leading-relaxed text-muted">
+          Predmet koji se ne proda na prvom ročištu vraća se jeftiniji. Portal to ne objavljuje kao
+          promjenu cijene - objavi novi oglas - pa ovdje povezujemo ročišta po broju predmeta i
+          pokazujemo koliko je cijena pala. Gdje ranije ročište nije u arhivi, mjerimo pad u odnosu
+          na procjenu suda.
+        </p>
+      </div>
+      <dl class="grid grid-cols-2 gap-x-7 gap-y-4 sm:grid-cols-4 lg:grid-cols-2">
+        {
+          stats.map((s) => (
+            <div>
+              <dd class:list={['font-mono text-[1.375rem] tracking-num font-bold leading-none', s.accent && 'text-pine']}>
+                {s.value}
+              </dd>
+              <dt class="mt-[5px] max-w-[16ch] font-mono text-[0.625rem] leading-tight text-dim">{s.label}</dt>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+
+  <div class="gut flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-rule bg-band py-3">
+    <div class="flex flex-wrap gap-1.5">
+      <button
+        type="button"
+        data-filter=""
+        aria-pressed="true"
+        class="filter press press-give border border-edge px-2.5 py-2 text-[0.71875rem] font-medium leading-none text-ink-mid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white"
+      >
+        Sve {priceDrops.length}
+      </button>
+      <button
+        type="button"
+        data-filter="firm"
+        aria-pressed="false"
+        class="filter press press-give border border-edge px-2.5 py-2 text-[0.71875rem] font-medium leading-none text-ink-mid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white"
+      >
+        Samo potvrđeni pad {firm.length}
+      </button>
+    </div>
+    <div class="flex flex-wrap items-center gap-3 font-mono text-[0.6875rem] leading-none text-dim">
+      <a href="/snizenja/rss.xml" class="press flex items-center gap-1.5 text-rust">
+        <Icon name="rss-simple" size={13} />
+        RSS
+      </a>
+      <a href="/snizenja/kalendar.ics" class="press flex items-center gap-1.5 hover:text-ink">
+        <Icon name="calendar-plus" size={13} />
+        KALENDAR
+      </a>
+    </div>
+  </div>
+
+  {
+    priceDrops.length === 0 ? (
+      <p class="gut py-10 text-[0.875rem] text-muted">
+        Trenutno nema otvorenih ročišta sa cijenom ispod procjene. Pogledajte{' '}
+        <a class="text-pine underline" href="/">aktuelne prodaje</a>.
+      </p>
+    ) : (
+      <div id="drops" class="bg-white">
+        {priceDrops.map((d) => {
+          const l = d.listing;
+          const days = daysUntil(l.saleDate);
+          return (
+            <a
+              href={`/oglas/${l.id}/`}
+              data-drop
+              data-firm={d.fromPrevious === null ? 'false' : 'true'}
+              class="gut grid grid-cols-[1fr_auto] items-center gap-x-5 gap-y-2 press border-b border-hair py-3.5 hover:bg-[#faf8f4] active:bg-[#f0ece3] md:grid-cols-[1fr_240px_92px]"
+            >
+              <div class="min-w-0">
+                <div class="text-[0.875rem] font-semibold leading-snug">{headline(l)}</div>
+                <div class="mt-[3px] text-[0.71875rem] leading-snug text-dim">
+                  <Icon name={saleTypeIcon(l.saleType)} size={13} class="mr-1 text-faint" />
+                  {l.court} · {ROUND_SHORT[l.auctionRound] ?? `${d.position}. od ${d.total}`}
+                  {' · '}
+                  <span class:list={['font-medium', urgency(days) === 'due' && 'text-brick']}>
+                    {daysLabel(days)}
+                  </span>
+                  {' · '}
+                  {formatDate(l.saleDate)}
+                </div>
+              </div>
+
+              {/*
+                Two different sentences, and the difference is the whole point of
+                the page: a fall from a real earlier hearing is evidence, a fall
+                from the appraisal is only the court's own opening position.
+              */}
+              <div class="order-3 col-span-2 font-mono text-[0.75rem] leading-none text-dim md:order-none md:col-span-1 md:text-right">
+                {d.fromPrevious !== null && d.previous ? (
+                  <>
+                    <span class="line-through">{formatMoney(d.previous.startingPrice)}</span>
+                    {' → '}
+                    <span class="font-bold text-ink">{formatMoney(l.startingPrice)}</span>
+                    <div class="mt-1 text-[0.625rem] text-faint">
+                      RANIJE ROČIŠTE {formatDate(d.previous.saleDate)}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <span class="line-through">{formatMoney(l.appraisedValue)}</span>
+                    {' → '}
+                    <span class="font-bold text-ink">{formatMoney(l.startingPrice)}</span>
+                    <div class="mt-1 text-[0.625rem] text-faint">PROCJENA SUDA</div>
+                  </>
+                )}
+              </div>
+
+              <div class="order-2 text-right md:order-none">
+                <span
+                  class:list={[
+                    'font-mono text-[1.0625rem] tracking-num font-bold leading-none',
+                    d.fromPrevious !== null ? 'text-pine' : 'text-ink-mid',
+                  ]}
+                >
+                  {formatPercent(d.best)}
+                </span>
+                {d.fromPrevious !== null && (
+                  <div class="mt-1 font-mono text-[0.5625rem] leading-none text-pine">POTVRĐENO</div>
+                )}
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    )
+  }
+
+  <p id="drops-empty" class="gut hidden bg-white py-10 text-[0.8125rem] text-muted">
+    Nijedno otvoreno ročište nema ranije ročište sa poznatom cijenom u arhivi.
+  </p>
+
+  <div class="gut grid gap-5 border-t border-rule bg-band pb-[30px] pt-6 md:grid-cols-3">
+    <div>
+      <div class="font-mono text-[1.5rem] tracking-num font-bold leading-none">
+        {chainFallMedian === null ? '-' : formatPercent(chainFallMedian)}
+      </div>
+      <p class="mt-2 text-[0.75rem] leading-relaxed text-muted">
+        medijan pada između dva uzastopna ročišta istog predmeta, iz {chainFallSample} slučajeva u
+        arhivi gdje su obje cijene poznate.
+      </p>
+    </div>
+    <div>
+      <div class="font-mono text-[1.5rem] tracking-num font-bold leading-none">{repeatCaseCount}</div>
+      <p class="mt-2 text-[0.75rem] leading-relaxed text-muted">
+        predmeta se pojavljuje na više ročišta. Za većinu njih arhiva ima cijenu samo za jedno, pa
+        se pad ne može izmjeriti - otuda razlika prema broju gore.
+      </p>
+    </div>
+    <div>
+      <div class="font-mono text-[1.5rem] tracking-num font-bold leading-none">
+        {repeatDrops.length}
+      </div>
+      <p class="mt-2 text-[0.75rem] leading-relaxed text-muted">
+        otvorenih ročišta ima izmjeren pad u odnosu na svoje ranije ročište. To je jedini podatak
+        ovdje koji ne stoji ni u jednom pojedinačnom oglasu.
+      </p>
+    </div>
+  </div>
+
+  <div class="gut border-t border-rule pb-[30px] pt-5">
+    <div class="border border-warn-edge bg-warn-bg px-4 py-3.5">
+      <h2 class="flex items-center gap-2 text-[0.75rem] font-semibold leading-none">
+        <Icon name="warning" size={15} class="text-rust" />
+        Pad cijene nije procjena vrijednosti
+      </h2>
+      <p class="mt-2 max-w-[74ch] text-[0.78125rem] leading-relaxed text-muted">
+        Predmet se vraća na ročište jer se nije prodao, a razlog za to zna sud i raniji ponuđači, ne
+        mi. Niža cijena može značiti priliku, ali i teret, spor ili stanje koje se iz oglasa ne vidi.
+        Ročišta se povezuju po broju predmeta iz dokumenta; ako je broj pogrešno pročitan, pogrešan
+        je i lanac.
+      </p>
+    </div>
+  </div>
+</Base>
+
+<script>
+  // Both readings are in the document; the chip decides whether the weaker one
+  // (a fall measured only against the court's own appraisal) is on show.
+  const list = document.getElementById('drops');
+
+  if (list) {
+    const rows = [...list.querySelectorAll<HTMLElement>('[data-drop]')];
+    const chips = [...document.querySelectorAll<HTMLElement>('.filter')];
+    const empty = document.getElementById('drops-empty')!;
+
+    function apply(filter: string) {
+      let shown = 0;
+      for (const row of rows) {
+        const match = !filter || row.dataset.firm === 'true';
+        // `display:grid` on the row beats `[hidden]`, so hide it inline.
+        row.style.display = match ? '' : 'none';
+        if (match) shown++;
+      }
+      empty.classList.toggle('hidden', shown > 0);
+    }
+
+    for (const chip of chips) {
+      chip.addEventListener('click', () => {
+        for (const c of chips) c.setAttribute('aria-pressed', String(c === chip));
+        apply(chip.dataset.filter ?? '');
+      });
+    }
+  }
+</script>

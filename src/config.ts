@@ -10,7 +10,7 @@
  * Read an environment variable, treating blank as unset.
  *
  * Every one of these is populated from GitHub Actions, where an *unset*
- * repository variable is not absent — `${{ vars.FOO }}` expands to an empty
+ * repository variable is not absent - `${{ vars.FOO }}` expands to an empty
  * string. `??` accepts that empty string as a real value and the default never
  * applies, which is not a hypothetical: it shipped `LLM_MODEL=""` to
  * OpenRouter, every call came back "No models provided", and 295 notices
@@ -26,7 +26,7 @@ export function env(name: string, fallback: string): string {
  * Public identity of this deployment.
  *
  * `SITE_URL` is read from the environment so the same build works on a
- * Cloudflare Pages preview domain and on the final one without a code change —
+ * Cloudflare Pages preview domain and on the final one without a code change -
  * canonical tags, RSS, the sitemap and llms.txt are baked in at build time, so
  * this must be set correctly wherever the site is built.
  */
@@ -35,7 +35,7 @@ export const SITE_URL = env('SITE_URL', 'https://sudskeprodaje.omarzunic.com');
 /**
  * Default OpenRouter model for extraction and OCR.
  *
- * It must support `response_format: json_schema` — extraction asks for a strict
+ * It must support `response_format: json_schema` - extraction asks for a strict
  * schema and treats the reply as already conforming. A model that ignores the
  * parameter still answers, just in prose or near-JSON, which is precisely the
  * plausible-but-wrong output this pipeline is built to avoid.
@@ -67,7 +67,7 @@ export const LANGS = { bs: 'B', hr: 'H', srLatn: 'S', srCyrl: 'Sc', en: 'E' } as
 
 /**
  * Item categories exposed by the central feed. The portal ships five, not the
- * four that are commonly documented — `Namještaj` is a distinct category.
+ * four that are commonly documented - `Namještaj` is a distinct category.
  */
 export const SALE_TYPES = {
   NEK: 'nekretnine',
@@ -101,8 +101,14 @@ export const PATHS = {
   data: 'data',
   listings: 'data/listings.json',
   courts: 'data/courts.json',
-  /** Where the model and the rules disagreed — a review queue, not a gate. */
+  /** Where the model and the rules disagreed - a review queue, not a gate. */
   quality: 'data/quality-report.json',
   /** Downloaded attachments. Git-ignored: the source documents contain PII. */
   documents: '.cache/documents',
+  /**
+   * Rendered share cards, keyed by what is drawn on them. Rendering one is
+   * ~130 ms and there is one per notice, so an uncached build spends six
+   * minutes redrawing an archive that has not changed.
+   */
+  cards: '.cache/og',
 };

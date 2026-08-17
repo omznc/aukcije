@@ -10,7 +10,9 @@
     "noEmit": true,
     "strict": true,
     "skipLibCheck": true,
-    "lib": ["ES2023"],
+    // DOM is here for src/site/lib/saved*.ts, which the pages import into the
+    // browser rather than run at build time. The scraper never touches it.
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "types": ["node"]
   },
   "include": ["src/**/*.ts", "src/types/*.d.ts"]

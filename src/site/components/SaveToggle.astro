@@ -11,23 +11,37 @@ const { storeKey, label, activeLabel } = Astro.props;
 <button
   type="button"
   data-store={storeKey}
-  data-label={label}
-  data-active-label={activeLabel}
-  class="border border-ink bg-ink px-3 py-2.5 text-[12px] font-semibold leading-none text-white aria-pressed:border-edge aria-pressed:bg-transparent aria-pressed:text-ink"
+  class="press press-give border border-ink bg-ink px-3 py-2.5 text-[0.75rem] font-semibold leading-none text-white aria-pressed:border-edge aria-pressed:bg-transparent aria-pressed:text-ink"
   aria-pressed="false"
 >
-  {label}
+  <!--
+    Both labels ship in the markup so the button is as wide as the longer one
+    from the start; pressing it cross-fades them instead of resizing the button
+    under the finger.
+  -->
+  <span class="swap">
+    <span data-idle>{label}</span>
+    <span data-done aria-hidden="true">{activeLabel}</span>
+  </span>
 </button>
 
 <script>
   // Saved items live in the visitor's own browser: no account, no cookie, and
-  // nothing sent anywhere. Reading it back is the only reason the key exists.
+  // nothing sent anywhere. /sacuvano/ reads the keys back and lists them.
+  import { refreshSavedCount } from '../lib/saved-count.ts';
+
   for (const button of document.querySelectorAll<HTMLButtonElement>('[data-store]')) {
     const key = button.dataset.store!;
 
+    // `aria-pressed` both carries the state and drives the cross-fade, so the
+    // labels are only ever hidden from the screen reader, never rewritten.
+    const idle = button.querySelector('[data-idle]')!;
+    const done = button.querySelector('[data-done]')!;
+
     const render = (on: boolean) => {
       button.setAttribute('aria-pressed', String(on));
-      button.textContent = on ? button.dataset.activeLabel! : button.dataset.label!;
+      idle.toggleAttribute('aria-hidden', on);
+      done.toggleAttribute('aria-hidden', !on);
     };
 
     let saved = false;
@@ -45,6 +59,8 @@ const { storeKey, label, activeLabel } = Astro.props;
       if (saved) localStorage.setItem(key, new Date().toISOString());
       else localStorage.removeItem(key);
       render(saved);
+      // The header carries the count, so it has to move the moment this does.
+      refreshSavedCount();
     });
   }
 </script>

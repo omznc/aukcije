@@ -1,14 +1,14 @@
 # The pravosudje.ba backend, as observed
 
 Everything here was verified live against the portal. None of it is officially
-documented, so treat this file as the reference when something breaks — a
+documented, so treat this file as the reference when something breaks - a
 scrape failure is far more likely to be an upstream change than a bug here.
 
 ## Architecture
 
 Every BiH court website is a tenant of one shared CMS the portal calls
 **vstvfo** (VSTV = Visoko sudsko i tužilačko vijeće). It is a client-rendered
-**Next.js** frontend over an **Express** API backed by **Oracle** — the database
+**Next.js** frontend over an **Express** API backed by **Oracle** - the database
 shows through whenever a required parameter is missing:
 
 ```
@@ -32,7 +32,7 @@ Language segment: `B` Bosanski, `H` Hrvatski, `S` Srpski (latinica),
 
 ### robots.txt
 
-Both hosts return **404** for `/robots.txt` — no crawl directives are published
+Both hosts return **404** for `/robots.txt` - no crawl directives are published
 at all. The scraper self-limits anyway (see `src/config.ts`): ~3 concurrent
 requests, ≥350 ms spacing with jitter, exponential backoff, descriptive
 User-Agent with a contact URL.
@@ -49,7 +49,7 @@ GET /vstvfo-api/sudske-prodaje?page=0&pageSize=200
 Backs `pravosudje.ba/vstvfo/B/10001/sudske-prodaje`. Gotchas:
 
 - `page` is **0-indexed**.
-- Calling it with **no parameters returns 500** — always send paging.
+- Calling it with **no parameters returns 500** - always send paging.
 - The response is a **bare array with no envelope**; the grand total is repeated
   on every row as `total`, with `RB` as the 1-based row number.
 - `pageSize=200` is served without complaint.
@@ -73,7 +73,7 @@ Backs `pravosudje.ba/vstvfo/B/10001/sudske-prodaje`. Gotchas:
 **The category enum has five values, not four.** `Namještaj` (`NAM`) is a
 distinct category alongside Nekretnine, Vozila, Tehnika and Ostalo.
 
-### ⚠ This feed is badly incomplete — do not treat it as canonical
+### ⚠ This feed is badly incomplete - do not treat it as canonical
 
 It looks like the authoritative country-wide source. It is not. Measured across
 every institution on the portal (`npm run discover`):
@@ -88,7 +88,7 @@ institutions publishing sales ....................    41
 Two separate failures:
 
 1. **Courts missing entirely.** 15 institutions return `total: 0` here while
-   publishing normally through their own categories — including Općinski sud u
+   publishing normally through their own categories - including Općinski sud u
    Sarajevu (465+ notices), Osnovni sud u Doboju, Foči, Prijedoru, Tešnju,
    Konjicu, Velikoj Kladuši.
 
@@ -109,7 +109,7 @@ GET /vstvfo-api/vijest/{articleId}?lang=B
 ```
 
 `lang` is **mandatory**; omitting it raises the `ORA-20010` error above.
-Requesting `B` still returns Cyrillic-authored notices in their original script —
+Requesting `B` still returns Cyrillic-authored notices in their original script -
 `jezik.jezik.sifra` tells you which script it actually is.
 
 Fields that matter: `sadrzaj` (HTML body), `dokumenti[]` (attachments),
@@ -117,19 +117,19 @@ Fields that matter: `sadrzaj` (HTML body), `dokumenti[]` (attachments),
 
 `sadrzaj` is pasted out of Microsoft Word and carries large `<style>` blocks and
 `<!--[if gte mso 9]>` conditional comments. Naive tag-stripping leaks CSS into
-the text — see `htmlToText` and `stripStyleNoise` in `src/lib/text.ts`.
+the text - see `htmlToText` and `stripStyleNoise` in `src/lib/text.ts`.
 
 For most courts `sadrzaj` is only a teaser ("Dokument možete preuzeti na linku s
 desne strane."); the operative text lives in the attachment. Measured over a
 random sample of 45 notices, the median inline body was ~275 characters.
 
-### 3. Category news feed — for courts missing from the central feed
+### 3. Category news feed - for courts missing from the central feed
 
 ```
 GET /vstvfo-api/news-categories//news?insId=65&categoryId=11625&rowStart=1&rowEnd=100&lang=B
 ```
 
-The **double slash is genuine** — the frontend interpolates an always-empty
+The **double slash is genuine** - the frontend interpolates an always-empty
 segment there. Paging uses **1-indexed, inclusive** `rowStart`/`rowEnd`, not
 page numbers, and 100 rows per request is served fine.
 
@@ -146,7 +146,7 @@ Discovering which categories hold sales: fetch the court's landing page
 (`/vstvfo/B/{insId}`) and read `__NEXT_DATA__.props.pageProps.navigationItems`.
 Category pages are server-rendered, so the tree is available without executing
 JavaScript. Note the *first page* of a category is in the SSR payload too, but
-**pagination is client-side only** — that is what endpoint 3 is for.
+**pagination is client-side only** - that is what endpoint 3 is for.
 
 ### 4. Attachment download
 
@@ -182,10 +182,10 @@ the Express catch-all rather than a real error. Confirmed absent:
 
 - **Amounts** use `1.234.567,89`, but some courts write `2.000.00`, using the dot
   as both thousands *and* decimal separator. See `parseAmount`.
-- **Case numbers** look like `65 0 Ip 1177038 25 Ip` — court code, a zero, a
+- **Case numbers** look like `65 0 Ip 1177038 25 Ip` - court code, a zero, a
   procedure marker, sequence, two-digit year, marker.
 - **Court names embed their seat in the locative case** ("… u Sarajevu"), which
-  needs a lookup table to get back to the nominative — see
+  needs a lookup table to get back to the nominative - see
   `src/extract/municipality.ts`.
 - **Number labels** are written `br.`, `br` or `broj` interchangeably, and
   `k.o.` appears in both cases; patterns must tolerate all of it.

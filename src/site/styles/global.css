@@ -5,3 +5,176 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    /*
+      One curve and three speeds for the whole site, so nothing invents its own
+      timing. The curve decelerates hard: motion leaves quickly and settles,
+      which is what a press or a hover wants. `press` is short enough to read as
+      instant, `quick` covers hover and state changes, `enter` covers something
+      arriving that was not on screen before.
+    */
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur-press: 90ms;
+    --dur-quick: 150ms;
+    --dur-enter: 240ms;
+    /* How far a small control gives under the finger. */
+    --press-give: 0.97;
+  }
+
+  /*
+    Type is sized in rem from here down, so raising the browser's text size
+    scales the sheet rather than only the paragraphs.
+  */
+  html {
+    font-size: 100%;
+  }
+
+  /*
+    Touch browsers hold a tap for ~300ms to see whether a second one follows.
+    Nothing here reacts to a double tap, so that wait is latency and nothing
+    else.
+  */
+  a,
+  button,
+  label,
+  summary,
+  input,
+  select {
+    touch-action: manipulation;
+  }
+}
+
+@layer components {
+  /*
+    Everything a finger or cursor can land on carries `.press`. It only supplies
+    the timing - the colours stay inline as Tailwind `hover:` / `active:`
+    utilities, next to the element they belong to.
+  */
+  .press {
+    transition:
+      background-color var(--dur-quick) var(--ease-out),
+      border-color var(--dur-quick) var(--ease-out),
+      color var(--dur-quick) var(--ease-out),
+      transform var(--dur-press) var(--ease-out);
+  }
+
+  /*
+    Small controls also give a little on the way down: on touch there is no
+    hover, so without this a chip is dead until the table under it changes.
+    Rows and other full-width surfaces are deliberately left out - scaling a
+    table row reads as a glitch, so those acknowledge with colour alone.
+  */
+  .press-give:active {
+    transform: scale(var(--press-give));
+  }
+
+  /*
+    A button whose label changes - "Podijeli" to "Link kopiran", "Sačuvaj" to
+    "Sačuvano". Both labels sit in the same grid cell, so the wider one sets the
+    width once and the button never resizes mid-press; the two then cross-fade.
+    Writing the new label into the element instead would also throw away any
+    icon beside it, since replacing text content replaces every child.
+  */
+  .swap {
+    display: inline-grid;
+  }
+
+  .swap > * {
+    grid-area: 1 / 1;
+    transition: opacity var(--dur-quick) var(--ease-out);
+  }
+
+  /* Idle by default: the confirmation is the state that has to be switched on. */
+  .swap > [data-done] {
+    opacity: 0;
+  }
+
+  [aria-pressed='true'] > .swap > [data-idle],
+  [data-swapped] > .swap > [data-idle] {
+    opacity: 0;
+  }
+
+  [aria-pressed='true'] > .swap > [data-done],
+  [data-swapped] > .swap > [data-done] {
+    opacity: 1;
+  }
+}
+
+/*
+  A row the visitor just removed from their saved list. Letting it leave before
+  the list is rebuilt makes the gap closing under the cursor read as a result of
+  the press, rather than as the page jumping. Only this list does it: it is one
+  the visitor curates, not one they are reading, and removals are rare.
+*/
+[data-leaving] {
+  opacity: 0;
+  transform: translateX(-0.5rem);
+  transition:
+    opacity var(--dur-quick) var(--ease-out),
+    transform var(--dur-quick) var(--ease-out);
+}
+
+/*
+  The saved counter is written by the browser after the page is built, so it
+  appears rather than loads. Growing it in from the press that caused it ties
+  the two together.
+
+  Both animations are driven by an attribute rather than by the badge merely
+  being visible: every page here is its own document, so a rule that ran when
+  the counter stopped being hidden would replay on every single navigation.
+  saved-count.ts sets these only when a press actually moved the number.
+*/
+@keyframes badge-in {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+}
+
+@keyframes badge-bump {
+  50% {
+    transform: scale(1.25);
+  }
+}
+
+[data-saved-count][data-enter] {
+  animation: badge-in var(--dur-enter) var(--ease-out);
+}
+
+[data-saved-count][data-bump] {
+  animation: badge-bump var(--dur-enter) var(--ease-out);
+}
+
+/*
+  Reduced motion is not no feedback. The colour changes stay and simply land
+  sooner; only the movement goes, since that is what causes trouble.
+*/
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-press: 0ms;
+    --dur-quick: 100ms;
+    --dur-enter: 120ms;
+    --press-give: 1;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  /* The row still fades, it just no longer slides on its way out. */
+  [data-leaving] {
+    transform: none;
+  }
+
+  @keyframes badge-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  [data-saved-count][data-bump] {
+    animation: none;
+  }
+}

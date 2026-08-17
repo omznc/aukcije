@@ -12,7 +12,7 @@ import { getJson, qs } from '../lib/http.ts';
  *  - Calling it with no params at all returns 500; always send paging.
  *  - It only covers courts that file notices through the structured sales
  *    module. Several courts (notably Općinski sud u Sarajevu) publish sales as
- *    ordinary news and are entirely absent here — see ./categories.ts.
+ *    ordinary news and are entirely absent here - see ./categories.ts.
  */
 export interface CentralRow {
   id: number;

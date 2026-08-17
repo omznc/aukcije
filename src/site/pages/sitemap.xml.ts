@@ -11,7 +11,7 @@ const escape = (s: string) =>
  * here, and an integration that crawls the output would also sweep in the JSON
  * and XML endpoints, which are not pages and should not be indexed as such.
  *
- * `changefreq` and `priority` are deliberately omitted — Google ignores both,
+ * `changefreq` and `priority` are deliberately omitted - Google ignores both,
  * and they would be one more thing to keep honest. `lastmod` is not: it is what
  * tells a crawler which of ~3,000 URLs actually changed since the last visit.
  */
@@ -22,10 +22,14 @@ export const GET: APIRoute = ({ site }) => {
   const urls: Array<{ path: string; lastmod: string }> = [
     // Index pages re-render on every scrape, so the build date is their truth.
     { path: '/', lastmod: built },
+    { path: '/snizenja/', lastmod: built },
     { path: '/predmeti/', lastmod: built },
     { path: '/sudovi/', lastmod: built },
+    { path: '/mapa/', lastmod: built },
     { path: '/arhiva/', lastmod: built },
+    { path: '/cijene/', lastmod: built },
     { path: '/pretraga/', lastmod: built },
+    { path: '/sacuvano/', lastmod: built },
     { path: '/kako-se-nadmetati/', lastmod: built },
     { path: '/privatnost/', lastmod: built },
     ...courts.map((c) => ({ path: `/sudovi/${c.id}/`, lastmod: built })),

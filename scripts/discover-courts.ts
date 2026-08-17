@@ -11,7 +11,7 @@ import { fetchInstitution, entityOf } from '../src/sources/courts.ts';
  *
  * This exists because coverage was previously guesswork: the central sales feed
  * silently omits courts that file sales as ordinary news (Općinski sud u
- * Sarajevo among them), and a missing court is invisible — nothing in the
+ * Sarajevo among them), and a missing court is invisible - nothing in the
  * output says "a whole court is absent". Published court counts and inferred
  * institution ids are not trustworthy enough to hardcode, so this asks the API
  * directly and writes the answer to data/coverage.json.

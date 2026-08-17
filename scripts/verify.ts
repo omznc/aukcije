@@ -84,7 +84,7 @@ check(!/\b\d{13}\b/.test(blob), 'no 13-digit national identifiers in the publish
 check(!/[\w.+-]+@[\w-]+\.[a-z]{2,}/i.test(blob), 'no e-mail addresses in the published data');
 
 // Street addresses are forbidden everywhere except `auctionLocation`, which is
-// the courthouse a bidder has to physically attend — public infrastructure, not
+// the courthouse a bidder has to physically attend - public infrastructure, not
 // personal data. That exemption is only safe if the venue really is a court, so
 // assert that separately rather than trusting the field name.
 // A street address needs an actual street *name* between "ul." and the number.
@@ -114,7 +114,7 @@ function namesAPerson(text: string): boolean {
     // Look only at the party clause, not the rest of the sentence.
     const clause = after.split(/[;(]|\bradi\b|\bzbog\b/)[0];
     if (!clause) continue;
-    // Already redacted, or a company — either way, not a leak. The legal-form
+    // Already redacted, or a company - either way, not a leak. The legal-form
     // test runs on a wider window because "d.o.o." contains the very dots a
     // sentence split would break it on.
     if (clause.includes('[uklonjeno]')) continue;
@@ -144,7 +144,7 @@ check(
 
 console.log();
 if (failures.length) {
-  console.error(`${failures.length} check(s) failed — refusing to publish.`);
+  console.error(`${failures.length} check(s) failed - refusing to publish.`);
   process.exit(1);
 }
 console.log(`All checks passed: ${listings.length} listings from ${courts.size} courts.`);

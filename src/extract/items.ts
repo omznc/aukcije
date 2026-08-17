@@ -4,7 +4,7 @@ import { fold } from '../lib/text.ts';
  * Item-level tagging.
  *
  * The portal's own category (`nekretnine` / `vozila` / `tehnika` / `namjestaj` /
- * `ostalo`) is far too coarse to shop with — "tehnika" alone covers monitors,
+ * `ostalo`) is far too coarse to shop with - "tehnika" alone covers monitors,
  * lathes and refrigerators. These tags come from the words in the notice
  * itself, so a buyer can go straight to monitors or tractors.
  *

@@ -89,7 +89,7 @@ export const Listing = z.object({
   auctionRound: AuctionRound,
   saleMethod: SaleMethod,
 
-  /** ISO date (no time) of the sale, from the feed — always present upstream. */
+  /** ISO date (no time) of the sale, from the feed - always present upstream. */
   saleDate: z.string(),
   /** Local wall-clock time of the hearing, "HH:mm", when stated. */
   saleTime: z.string().nullable(),
@@ -120,7 +120,7 @@ export const Listing = z.object({
      */
     pipelineVersion: z.string().default('0'),
     source: z.enum(['inline', 'pdf', 'docx', 'doc', 'ocr', 'none']),
-    /** 0..1 — fraction of high-value fields we managed to fill. */
+    /** 0..1 - fraction of high-value fields we managed to fill. */
     confidence: z.number().min(0).max(1),
     llm: z.boolean().default(false),
   }),

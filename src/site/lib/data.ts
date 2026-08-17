@@ -1,8 +1,13 @@
 import listingsFile from '../../../data/listings.json' with { type: 'json' };
 import type { Listing } from '../../schema.ts';
 import { ITEM_TAGS, TAG_BY_ID } from '../../extract/items.ts';
+import { today, daysUntil } from './dates.ts';
 
 export { ITEM_TAGS, TAG_BY_ID };
+// Defined in dates.ts so the browser can import them without the dataset;
+// re-exported here because every server-rendered page reaches for them alongside
+// the listings.
+export { today, daysUntil };
 
 export const listings = (listingsFile.listings as Listing[]).slice();
 export const generatedAt = listingsFile.generatedAt as string;
@@ -29,11 +34,6 @@ export const METHOD_LABELS: Record<string, string> = {
   nepoznato: 'Nepoznato',
 };
 
-/** Today in Sarajevo terms; the build runs in UTC on CI. */
-export function today(): string {
-  return new Date().toISOString().slice(0, 10);
-}
-
 export function isUpcoming(l: Listing): boolean {
   return l.saleDate >= today();
 }
@@ -57,13 +57,6 @@ export function formatMoney(m: { amount: number; currency: string } | null): str
 export function formatDate(iso: string): string {
   const [y, m, d] = iso.split('-');
   return `${d}.${m}.${y}.`;
-}
-
-/** Days until the auction; negative once it has passed. */
-export function daysUntil(iso: string): number {
-  const then = Date.parse(`${iso}T00:00:00Z`);
-  const now = Date.parse(`${today()}T00:00:00Z`);
-  return Math.round((then - now) / 86_400_000);
 }
 
 export const courts = [...new Map(listings.map((l) => [l.courtId, l.court])).entries()]

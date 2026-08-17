@@ -1,10 +1,11 @@
 ---
-import Base from '../../layouts/Base.astro';
-import ListingRow from '../../components/ListingRow.astro';
-import type { Listing } from '../../../schema.ts';
-import { listings, courts, isUpcoming, formatDate, formatMoney } from '../../lib/data.ts';
-import { headline } from '../../lib/headline.ts';
-import { weeksOf, typeSlices, medianLeadDays, ROUND_SHORT, daysLabel } from '../../lib/stats.ts';
+import Base from '../../../layouts/Base.astro';
+import Icon from '../../../components/Icon.astro';
+import ListingRow from '../../../components/ListingRow.astro';
+import type { Listing } from '../../../../schema.ts';
+import { listings, courts, isUpcoming, formatDate, formatMoney } from '../../../lib/data.ts';
+import { headline } from '../../../lib/headline.ts';
+import { weeksOf, typeSlices, medianLeadDays, ROUND_SHORT, daysLabel } from '../../../lib/stats.ts';
 
 /** Deep archives stay browsable through search rather than one enormous page. */
 const ARCHIVE_LIMIT = 200;
@@ -31,7 +32,7 @@ const { id, name, courtListings } = Astro.props;
 
 const live = courtListings.filter(isUpcoming).sort((a, b) => a.saleDate.localeCompare(b.saleDate));
 const archive = courtListings.filter((l) => !isUpcoming(l));
-const entity = courtListings[0]?.entity ?? '—';
+const entity = courtListings[0]?.entity ?? '-';
 const oldest = [...courtListings].sort((a, b) => a.publishedDate.localeCompare(b.publishedDate))[0];
 const lead = medianLeadDays(courtListings);
 const weeks = weeksOf(live);
@@ -45,36 +46,50 @@ const stats = [
     label: 'ARHIVE BiH',
     accent: false,
   },
-  { value: lead === null ? '—' : daysLabel(lead), label: 'OBJAVA → ROČIŠTE', accent: false },
+  { value: lead === null ? '-' : daysLabel(lead), label: 'OBJAVA → ROČIŠTE', accent: false },
 ];
 
 /** Five steps from ink to rule, so the stacked bar reads without a colour key. */
 const BAND = ['bg-ink', 'bg-[#4b6a5e]', 'bg-[#8aa39a]', 'bg-bar', 'bg-rule'];
 ---
 
-<Base title={`${name} — sudske prodaje`}>
+<Base title={`${name} - sudske prodaje`}>
   <div class="gut border-b border-rule pb-6 pt-[30px]">
-    <nav class="mb-3 font-mono text-[11px] leading-none text-dim">
+    <nav class="mb-3 font-mono text-[0.6875rem] leading-none text-dim">
       <a href="/" class="hover:text-ink">AKTUELNE</a>{' / '}
       <a href="/sudovi/" class="hover:text-ink">SUDOVI</a> / {name.toUpperCase()}
     </nav>
     <div class="flex flex-wrap items-end justify-between gap-7">
       <div>
-        <h1 class="max-w-[22ch] font-serif text-[30px] leading-[1.08] tracking-tight sm:text-[38px]">
+        <h1 class="max-w-[22ch] font-serif text-[1.875rem] leading-title tracking-title sm:text-[2.375rem] sm:leading-display sm:tracking-display">
           {name}
         </h1>
-        <div class="mt-2.5 font-mono text-[12px] leading-none text-dim">
+        <div class="mt-2.5 font-mono text-[0.75rem] leading-none text-dim">
           {entity} · SUD ID {id}{oldest && ` · NAJSTARIJI OGLAS ${formatDate(oldest.publishedDate)}`}
+        </div>
+        <!--
+          A feed per court is the grain people actually want: almost nobody is
+          watching all forty-one.
+        -->
+        <div class="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 font-mono text-[0.6875rem] leading-none text-dim">
+          <a href={`/sudovi/${id}/rss.xml`} class="press flex items-center gap-1.5 text-rust">
+            <Icon name="rss-simple" size={13} />
+            RSS ZA OVAJ SUD
+          </a>
+          <a href={`/sudovi/${id}/kalendar.ics`} class="press flex items-center gap-1.5 hover:text-ink">
+            <Icon name="calendar-plus" size={13} class="text-faint" />
+            KALENDAR ({live.length})
+          </a>
         </div>
       </div>
       <dl class="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">
         {
           stats.map((s) => (
             <div>
-              <dd class:list={['font-mono text-[20px] font-bold leading-none', s.accent && 'text-pine']}>
+              <dd class:list={['font-mono text-[1.25rem] tracking-num font-bold leading-none', s.accent && 'text-pine']}>
                 {s.value}
               </dd>
-              <dt class="mt-[5px] font-mono text-[10px] leading-tight text-dim">{s.label}</dt>
+              <dt class="mt-[5px] font-mono text-[0.625rem] leading-tight text-dim">{s.label}</dt>
             </div>
           ))
         }
@@ -84,7 +99,8 @@ const BAND = ['bg-ink', 'bg-[#4b6a5e]', 'bg-[#8aa39a]', 'bg-bar', 'bg-rule'];
 
   <div class="gut grid gap-7 border-b border-rule bg-band pb-[26px] pt-[22px] md:grid-cols-2">
     <div>
-      <h2 class="border-b border-rule pb-2 text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim">
+      <h2 class="flex items-center gap-1.5 border-b border-rule pb-2 text-[0.6875rem] font-semibold uppercase leading-none tracking-caps text-dim">
+        <Icon name="calendar-dots" size={13} class="text-faint" />
         Sedmice sa ročištima
       </h2>
       {
@@ -98,12 +114,12 @@ const BAND = ['bg-ink', 'bg-[#4b6a5e]', 'bg-[#8aa39a]', 'bg-bar', 'bg-rule'];
                   i === 0 ? 'border-pine' : 'border-rule',
                 ]}
               >
-                <div class="font-mono text-[9px] leading-none text-dim">
+                <div class="font-mono text-[0.5625rem] leading-none text-dim">
                   {w.from.slice(8, 10)}.{w.from.slice(5, 7)}
                 </div>
                 <div
                   class:list={[
-                    'mt-1.5 font-mono text-[15px] font-bold leading-none',
+                    'mt-1.5 font-mono text-[0.9375rem] font-bold leading-none',
                     i === 0 ? 'text-pine' : w.count === 0 ? 'text-ghost' : '',
                   ]}
                 >
@@ -113,13 +129,14 @@ const BAND = ['bg-ink', 'bg-[#4b6a5e]', 'bg-[#8aa39a]', 'bg-bar', 'bg-rule'];
             ))}
           </div>
         ) : (
-          <p class="mt-3 text-[12.5px] text-muted">Ovaj sud trenutno nema najavljenih ročišta.</p>
+          <p class="mt-3 text-[0.78125rem] text-muted">Ovaj sud trenutno nema najavljenih ročišta.</p>
         )
       }
     </div>
 
     <div>
-      <h2 class="border-b border-rule pb-2 text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim">
+      <h2 class="flex items-center gap-1.5 border-b border-rule pb-2 text-[0.6875rem] font-semibold uppercase leading-none tracking-caps text-dim">
+        <Icon name="chart-bar" size={13} class="text-faint" />
         Struktura arhive ovog suda
       </h2>
       <div class="mt-3 flex h-[22px]">
@@ -133,7 +150,7 @@ const BAND = ['bg-ink', 'bg-[#4b6a5e]', 'bg-[#8aa39a]', 'bg-bar', 'bg-rule'];
           ))
         }
       </div>
-      <div class="mt-2.5 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[11px] leading-none text-muted">
+      <div class="mt-2.5 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[0.6875rem] leading-none text-muted">
         {types.map((t) => <span>{t.label.toUpperCase()} {t.count}</span>)}
       </div>
     </div>
@@ -142,7 +159,8 @@ const BAND = ['bg-ink', 'bg-[#4b6a5e]', 'bg-[#8aa39a]', 'bg-bar', 'bg-rule'];
   {
     live.length > 0 && (
       <>
-        <h2 class="gut pb-2 pt-5 text-[12px] font-semibold uppercase leading-none tracking-[0.06em] text-dim">
+        <h2 class="gut flex items-center gap-1.5 pb-2 pt-5 text-[0.75rem] font-semibold uppercase leading-none tracking-label text-dim">
+          <Icon name="clock-countdown" size={13} class="text-faint" />
           Otvorena ročišta pred ovim sudom
         </h2>
         <div class="border-t border-rule bg-white">
@@ -155,31 +173,32 @@ const BAND = ['bg-ink', 'bg-[#4b6a5e]', 'bg-[#8aa39a]', 'bg-bar', 'bg-rule'];
   }
 
   <section class="gut pb-[30px] pt-[22px]">
-    <h2 class="border-b border-rule pb-[9px] text-[12px] font-semibold uppercase leading-none tracking-[0.06em] text-dim">
-      Arhiva ovog suda — {archive.length} prodaja{
+    <h2 class="flex items-center gap-1.5 border-b border-rule pb-[9px] text-[0.75rem] font-semibold uppercase leading-none tracking-label text-dim">
+      <Icon name="archive" size={13} class="text-faint" />
+      Arhiva ovog suda - {archive.length} prodaja{
         archive.length > ARCHIVE_LIMIT ? `, prikaz do ${ARCHIVE_LIMIT}` : ''
       }
     </h2>
     {
       archive.length === 0 ? (
-        <p class="mt-3 text-[13px] text-muted">Nema završenih prodaja u arhivi ovog suda.</p>
+        <p class="mt-3 text-[0.8125rem] text-muted">Nema završenih prodaja u arhivi ovog suda.</p>
       ) : (
         archive.slice(0, ARCHIVE_LIMIT).map((l) => (
           <a
             href={`/oglas/${l.id}/`}
-            class="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 border-b border-hair py-[11px] hover:bg-band md:grid-cols-[96px_1fr_120px_110px]"
+            class="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 press border-b border-hair py-[11px] hover:bg-band active:bg-[#eae6dd] md:grid-cols-[96px_1fr_120px_110px]"
           >
-            <span class="order-1 font-mono text-[11.5px] text-dim md:order-none">
+            <span class="order-1 font-mono text-[0.71875rem] text-dim md:order-none">
               {formatDate(l.saleDate)}
             </span>
-            <span class="order-3 col-span-2 text-[13px] font-medium leading-snug md:order-none md:col-span-1">
+            <span class="order-3 col-span-2 text-[0.8125rem] font-medium leading-snug md:order-none md:col-span-1">
               {headline(l)}
             </span>
-            <span class="order-4 font-mono text-[11.5px] text-dim md:order-none md:text-right">
+            <span class="order-4 font-mono text-[0.71875rem] text-dim md:order-none md:text-right">
               {ROUND_SHORT[l.auctionRound] ?? ''}
             </span>
-            <span class="order-2 whitespace-nowrap text-right font-mono text-[13px] font-bold md:order-none">
-              {formatMoney(l.startingPrice ?? l.appraisedValue) ?? '—'}
+            <span class="order-2 whitespace-nowrap text-right font-mono text-[0.8125rem] font-bold md:order-none">
+              {formatMoney(l.startingPrice ?? l.appraisedValue) ?? '-'}
             </span>
           </a>
         ))

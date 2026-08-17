@@ -1,0 +1,303 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { listings, TAG_BY_ID } from '../lib/data.ts';
+import { saleTypeIcon } from '../lib/icons.ts';
+import {
+  pricePerM2,
+  pricePerM2ByMunicipality,
+  priceByTag,
+  priceBySaleType,
+  priceByYear,
+  discountByRound,
+  chainFallMedian,
+  chainFallSample,
+  medianDiscount,
+  formatNumber,
+  formatPercent,
+} from '../lib/stats.ts';
+
+/**
+ * What things actually go for.
+ *
+ * The archive's only real use is as a price reference, and until now that was
+ * buried: a single price-per-m² histogram on each category page and nothing
+ * that let you compare two places or two years. Every figure here is a median
+ * with its sample size printed beside it, because the samples are small and a
+ * bare median off four observations is the kind of number people quote back at
+ * each other as fact.
+ */
+
+const perM2 = pricePerM2ByMunicipality();
+const byTag = priceByTag().slice(0, 18);
+const byType = priceBySaleType();
+const years = priceByYear();
+const rounds = discountByRound();
+
+const maxPerM2 = Math.max(1, ...perM2.map((r) => r.median));
+const maxTag = Math.max(1, ...byTag.map((r) => r.median));
+const maxYear = Math.max(1, ...years.map((y) => y.medianStarting ?? 0));
+
+/**
+ * Two different counts, and conflating them would overstate the table: how many
+ * notices state a surface at all, and how many of those fall in a municipality
+ * that cleared the five-sale threshold and so actually appears below.
+ */
+const measurable = listings.filter((l) => pricePerM2(l) !== null).length;
+const inTable = perM2.reduce((n, r) => n + r.n, 0);
+
+const stats = [
+  {
+    value: medianDiscount === null ? '-' : formatPercent(medianDiscount),
+    label: 'MEDIJAN ISPOD PROCJENE',
+    accent: true,
+  },
+  {
+    value: chainFallMedian === null ? '-' : formatPercent(chainFallMedian),
+    label: `PAD PO ROČIŠTU · n=${chainFallSample}`,
+    accent: false,
+  },
+  { value: String(measurable), label: 'MJERLJIVIH KM/m²', accent: false },
+  { value: String(perM2.length), label: 'OPĆINA SA DOVOLJNO PODATAKA', accent: false },
+];
+
+const SECTION =
+  'flex items-center gap-1.5 border-b border-rule pb-[9px] text-[0.75rem] font-semibold uppercase leading-none tracking-label text-dim';
+---
+
+<Base
+  title="Cijene na sudskim prodajama u BiH"
+  description="Šta se postiže na sudskim prodajama: medijan cijene po m² po općinama, po kategoriji predmeta i kretanje kroz godine."
+>
+  <div class="gut border-b border-rule pb-6 pt-[30px]">
+    <nav class="mb-3 font-mono text-[0.6875rem] leading-none text-dim">
+      <a href="/" class="hover:text-ink">AKTUELNE</a>{' / '}
+      <a href="/arhiva/" class="hover:text-ink">ARHIVA</a> / CIJENE
+    </nav>
+    <div class="grid items-end gap-8 lg:grid-cols-[1fr_auto]">
+      <div>
+        <h1 class="max-w-[22ch] font-serif text-[2rem] leading-title tracking-title sm:text-[2.5rem] sm:leading-display sm:tracking-display">
+          Po čemu se prodaje.
+        </h1>
+        <p class="mt-3 max-w-[62ch] text-pretty text-[0.875rem] leading-relaxed text-muted">
+          Sve su ovo medijani iz {listings.length.toLocaleString('bs-BA')} oglasa, sa veličinom uzorka
+          uz svaki red. Cijena je početna cijena ročišta - ono za što se predmet nudi, ne ono za što
+          je prodat. Postignute cijene se ne objavljuju, pa ih ni mi nemamo.
+        </p>
+      </div>
+      <dl class="grid grid-cols-2 gap-x-7 gap-y-4 sm:grid-cols-4 lg:grid-cols-2">
+        {
+          stats.map((s) => (
+            <div>
+              <dd class:list={['font-mono text-[1.375rem] tracking-num font-bold leading-none', s.accent && 'text-pine']}>
+                {s.value}
+              </dd>
+              <dt class="mt-[5px] max-w-[16ch] font-mono text-[0.625rem] leading-tight text-dim">{s.label}</dt>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+
+  <div class="grid lg:grid-cols-[1fr_340px]">
+    {/*
+      `min-w-0`: a grid item defaults to `min-width: auto`, so the year table's
+      own minimum width pushed this column - and with it the whole page - wider
+      than a phone, and the bar rows ran off the right edge.
+    */}
+    <div class="gut min-w-0 border-rule pb-[30px] pt-6 lg:border-r">
+      <!--
+        In every bar row below, the figure and its sample size stack rather than
+        sharing a line: side by side, "1.150 KM/m² · n=100" needs more width
+        than the column can spare and wraps into two ragged lines instead.
+      -->
+      <h2 class={SECTION}>
+        <Icon name="map-pin" size={13} class="text-faint" />
+        Cijena po m², po općini
+      </h2>
+      {
+        perM2.length === 0 ? (
+          <p class="mt-3 text-[0.8125rem] text-muted">
+            Nijedna općina još nema dovoljno oglasa u kojima se površina može pročitati.
+          </p>
+        ) : (
+          <div class="mt-3.5 flex flex-col gap-2.5">
+            {perM2.map((r) => (
+              <div class="grid grid-cols-[92px_1fr_96px] items-center gap-3 text-[0.78125rem] leading-none sm:grid-cols-[120px_1fr_112px]">
+                <a
+                  href={`/pretraga/?q=${encodeURIComponent(r.label)}`}
+                  class="truncate press hover:text-pine"
+                  title={r.label}
+                >
+                  {r.label}
+                </a>
+                <span class="h-2.5 bg-track">
+                  <span class="block h-2.5 bg-pine" style={`width:${Math.round((r.median / maxPerM2) * 100)}%`} />
+                </span>
+                <span class="text-right">
+                  <span class="block whitespace-nowrap font-mono text-[0.71875rem] font-bold">
+                    {formatNumber(r.median)} KM/m²
+                  </span>
+                  <span class="mt-1 block whitespace-nowrap font-mono text-[0.625rem] text-dim">
+                    n={r.n}
+                  </span>
+                </span>
+              </div>
+            ))}
+          </div>
+        )
+      }
+      <p class="mt-3.5 max-w-[74ch] text-[0.75rem] leading-relaxed text-muted">
+        Površina se čita samo tamo gdje je oglas navodi jednom i nedvosmisleno - {measurable} od{' '}
+        {listings.length.toLocaleString('bs-BA')} oglasa. Prag za red je pet mjerenja u istoj
+        općini, pa se većina općina ovdje ne pojavljuje: gornja tabela stoji na {inTable} od tih
+        {' '}{measurable} mjerenja. Ovo su sudske prodaje, ne tržište: cijene su niže od oglasa na
+        portalima za nekretnine i ne treba ih čitati kao tržišnu vrijednost.
+      </p>
+
+      <h2 class:list={[SECTION, 'mt-8']}>
+        <Icon name="tag" size={13} class="text-faint" />
+        Medijan početne cijene, po predmetu
+      </h2>
+      <div class="mt-3.5 flex flex-col gap-2.5">
+        {
+          byTag.map((r) => (
+            <div class="grid grid-cols-[92px_1fr_88px] items-center gap-3 text-[0.78125rem] leading-none sm:grid-cols-[140px_1fr_104px]">
+              <a
+                href={`/predmeti/${r.key}/`}
+                class="truncate press hover:text-pine"
+                title={TAG_BY_ID.get(r.key)?.label ?? r.label}
+              >
+                {TAG_BY_ID.get(r.key)?.label ?? r.label}
+              </a>
+              <span class="h-2.5 bg-track">
+                <span class="block h-2.5 bg-ink" style={`width:${Math.round((r.median / maxTag) * 100)}%`} />
+              </span>
+              <span class="text-right">
+                <span class="block whitespace-nowrap font-mono text-[0.71875rem] font-bold">
+                  {formatNumber(r.median)} KM
+                </span>
+                <span class="mt-1 block whitespace-nowrap font-mono text-[0.625rem] text-dim">
+                  n={r.n}
+                </span>
+              </span>
+            </div>
+          ))
+        }
+      </div>
+      <p class="mt-3.5 max-w-[74ch] text-[0.75rem] leading-relaxed text-muted">
+        Jedan oglas nosi više oznaka kad se prodaje više stvari odjednom, pa se isti predmet broji u
+        svakoj kategoriji koju sadrži. Prikazano je najskupljih {byTag.length} kategorija.
+      </p>
+
+      <h2 class:list={[SECTION, 'mt-8']}>
+        <Icon name="chart-bar" size={13} class="text-faint" />
+        Kroz godine
+      </h2>
+      <div class="mt-3.5 overflow-x-auto">
+        <table class="w-full min-w-[420px] text-[0.78125rem]">
+          <thead>
+            <tr class="border-b border-rule font-mono text-[0.65625rem] leading-none text-dim">
+              <th class="pb-2 text-left font-normal">GODINA ROČIŠTA</th>
+              <th class="pb-2 text-right font-normal">ROČIŠTA</th>
+              <th class="pb-2 text-right font-normal">MEDIJAN POČETNE</th>
+              <th class="pb-2 text-right font-normal">ISPOD PROCJENE</th>
+              <th class="w-[110px] pb-2 text-left font-normal"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              years.map((y) => (
+                <tr class="border-b border-hair">
+                  <td class="py-2 font-mono">{y.year}.</td>
+                  <td class="py-2 text-right font-mono text-dim">{y.n}</td>
+                  <td class="py-2 text-right font-mono font-bold">
+                    {y.medianStarting === null ? '-' : `${formatNumber(y.medianStarting)} KM`}
+                  </td>
+                  <td class:list={['py-2 text-right font-mono', y.medianOff && y.medianOff > 0 && 'text-pine']}>
+                    {y.medianOff === null ? '-' : formatPercent(y.medianOff)}
+                  </td>
+                  <td class="py-2 pl-3">
+                    <span class="block h-2 bg-track">
+                      <span
+                        class="block h-2 bg-bar"
+                        style={`width:${Math.round(((y.medianStarting ?? 0) / maxYear) * 100)}%`}
+                      />
+                    </span>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-3 max-w-[74ch] text-[0.75rem] leading-relaxed text-muted">
+        Godine sa manje od pet ročišta su izostavljene. Skok ili pad medijana češće znači da je te
+        godine na prodaju išlo nešto drugo - jedna skupa nekretnina pomjera medijan malog uzorka -
+        nego da su cijene stvarno pale.
+      </p>
+    </div>
+
+    <aside class="gut bg-band pb-[30px] pt-6">
+      <h2 class="flex items-center gap-1.5 text-[0.6875rem] font-semibold uppercase leading-none tracking-caps text-dim">
+        <Icon name="package" size={13} class="text-faint" />
+        Po vrsti prodaje
+      </h2>
+      <dl class="mt-2.5 flex flex-col">
+        {
+          byType.map((r) => (
+            <div class="flex items-baseline justify-between gap-3 border-b border-hair py-2 last:border-0">
+              <dt class="flex items-center gap-1.5 text-[0.8125rem] leading-snug">
+                <Icon name={saleTypeIcon(r.key)} size={13} class="text-faint" />
+                {r.label}
+              </dt>
+              <dd class="shrink-0 whitespace-nowrap text-right font-mono text-[0.71875rem]">
+                <b>{formatNumber(r.median)} KM</b>
+                <span class="text-dim"> · n={r.n}</span>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <h2 class="mt-7 flex items-center gap-1.5 text-[0.6875rem] font-semibold uppercase leading-none tracking-caps text-dim">
+        <Icon name="hourglass-medium" size={13} class="text-faint" />
+        Popust po ročištu
+      </h2>
+      <dl class="mt-2.5 flex flex-col">
+        {
+          rounds.map((r) => (
+            <div class="flex items-baseline justify-between gap-3 border-b border-hair py-2 last:border-0">
+              <dt class="text-[0.8125rem] leading-snug">{r.label}</dt>
+              <dd class="shrink-0 whitespace-nowrap text-right font-mono text-[0.71875rem]">
+                <b class={r.median && r.median > 0 ? 'text-pine' : ''}>
+                  {r.median === null ? '-' : formatPercent(r.median)}
+                </b>
+                <span class="text-dim"> · n={r.count}</span>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+      <p class="mt-3 text-[0.75rem] leading-relaxed text-muted">
+        Prvo ročište već ide ispod procjene jer zakon propisuje najnižu cijenu za to ročište; drugo
+        ide niže. Stvarni pad istog predmeta između dva ročišta je{' '}
+        {chainFallMedian === null ? 'nepoznat' : formatPercent(chainFallMedian)} u medijanu
+        ({chainFallSample} slučajeva) - to je na{' '}
+        <a href="/snizenja/" class="text-pine underline">stranici sniženja</a>.
+      </p>
+
+      <div class="mt-6 border border-warn-edge bg-warn-bg px-3.5 py-3">
+        <h2 class="flex items-center gap-1.5 text-[0.75rem] font-semibold leading-none">
+          <Icon name="warning" size={14} class="text-rust" />
+          Ovo nisu postignute cijene
+        </h2>
+        <p class="mt-2 text-[0.75rem] leading-relaxed text-muted">
+          Sud objavljuje po kojoj se cijeni predmet nudi, ali ne i po kojoj je prodat, niti da li je
+          uopšte prodat. Sve ovdje je početna cijena ročišta.
+        </p>
+      </div>
+    </aside>
+  </div>
+</Base>

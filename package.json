@@ -9,13 +9,14 @@
   "homepage": "https://sudskeprodaje.omarzunic.com",
   "private": true,
   "scripts": {
-    "test": "node --test src/**/*.test.ts",
+    "test": "node --test 'src/**/*.test.ts'",
     "scrape": "node src/main.ts",
     "typecheck": "tsc --noEmit",
     "build": "astro build && pagefind --site dist && node scripts/verify-build.ts",
     "dev": "astro dev",
     "verify": "node scripts/verify.ts",
-    "discover": "node scripts/discover-courts.ts"
+    "discover": "node scripts/discover-courts.ts",
+    "geo": "node scripts/build-geo.ts"
   },
   "keywords": [
     "bosnia",
@@ -28,11 +29,14 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
+    "@phosphor-icons/core": "^2.1.1",
+    "@resvg/resvg-js": "^2.6.2",
     "astro": "^7.2.2",
     "mammoth": "^1.12.1",
     "p-limit": "^7.3.1",
     "p-retry": "^8.0.0",
     "pagefind": "^1.5.2",
+    "satori": "^0.29.0",
     "tailwindcss": "^3.4.19",
     "unpdf": "^1.8.1",
     "word-extractor": "^1.0.4",

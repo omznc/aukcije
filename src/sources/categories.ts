@@ -12,7 +12,7 @@ import type { Attachment } from './article.ts';
  *  - Category pages are server-rendered, so `__NEXT_DATA__` gives us the court's
  *    whole navigation tree without executing any JavaScript.
  *  - Paging goes through `/news-categories//news` (the empty path segment is
- *    genuine — the frontend interpolates an always-blank value there) using
+ *    genuine - the frontend interpolates an always-blank value there) using
  *    1-indexed, inclusive `rowStart`/`rowEnd`. It happily serves 100 rows at a
  *    time and returns attachments inline, so no per-article fetch is needed.
  */
@@ -71,7 +71,7 @@ interface NavModule {
 
 function extractNextData(html: string): any {
   const m = html.match(/id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
-  if (!m) throw new Error('__NEXT_DATA__ not found — portal markup changed');
+  if (!m) throw new Error('__NEXT_DATA__ not found - portal markup changed');
   return JSON.parse(m[1]);
 }
 

@@ -73,7 +73,7 @@ function propertyHeadline(l: Listing): string | null {
   const parts = [kind];
   if (area) parts.push(`${area} m²`);
   const head = parts.join(' ');
-  return place ? `${head} — ${placeCase(place)}` : head;
+  return place ? `${head} - ${placeCase(place)}` : head;
 }
 
 /** Words that only ever appear mid-sentence, marking a wrapped fragment. */
@@ -133,7 +133,7 @@ function fallback(l: Listing): string {
     }[l.saleType] ?? 'Sudska prodaja');
 
   const place = l.location?.municipality;
-  return place ? `${base} — ${place}` : base;
+  return place ? `${base} - ${place}` : base;
 }
 
 export function headline(l: Listing): string {

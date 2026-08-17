@@ -8,7 +8,7 @@ import { cleanWhitespace } from '../lib/text.ts';
 const run = promisify(execFile);
 
 /**
- * OCR for scanned (image-only) PDFs, which are a real minority of attachments —
+ * OCR for scanned (image-only) PDFs, which are a real minority of attachments -
  * mostly older Republika Srpska notices.
  *
  * We shell out to poppler + tesseract rather than using the WASM build: on a CI

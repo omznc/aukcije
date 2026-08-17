@@ -10,6 +10,6 @@ export default defineConfig({
   // string, which would otherwise be accepted as the site URL.
   site: process.env.SITE_URL || 'https://sudskeprodaje.omarzunic.com',
   // Tailwind is configured through postcss.config.mjs, which Astro reads on its
-  // own — see that file for why the integration is not used.
+  // own - see that file for why the integration is not used.
   build: { format: 'directory' },
 });

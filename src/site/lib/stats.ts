@@ -2,11 +2,19 @@ import type { Listing } from '../../schema.ts';
 import {
   listings,
   upcoming,
+  courts,
+  isUpcoming,
   METHOD_LABELS,
   ROUND_LABELS,
   SALE_TYPE_LABELS,
+  TAG_BY_ID,
   formatMoney,
 } from './data.ts';
+import { PLACES, COURT_PLACE, placeOf, type LatLon } from './geo.ts';
+
+// Dataset-free, so the saved-notices page can import them in the browser too.
+export { urgency, daysLabel } from './dates.ts';
+export type { Urgency } from './dates.ts';
 
 /**
  * The figures the pages display but the dataset does not carry: weekly hearing
@@ -38,8 +46,8 @@ const AREA = /(\d[\d.,]*)\s*m\s*[²2]\b/gi;
 /**
  * Floor area in m², when the notice states exactly one.
  *
- * Notices routinely list several surfaces at once — "stambeni objekat 115 m2,
- * pomoćni objekti 52 m2, dvorište 377 m2" — and taking the first would divide
+ * Notices routinely list several surfaces at once - "stambeni objekat 115 m2,
+ * pomoćni objekti 52 m2, dvorište 377 m2" - and taking the first would divide
  * the price for the whole lot by the area of one part. A single stated figure is
  * the only one that can be trusted to describe what is on sale.
  */
@@ -54,7 +62,7 @@ export function areaM2(l: Listing): number | null {
 }
 
 /**
- * Price per m² — the only number that makes two properties comparable, and the
+ * Price per m² - the only number that makes two properties comparable, and the
  * reason the archive is worth keeping at all.
  */
 export function pricePerM2(l: Listing): number | null {
@@ -88,23 +96,6 @@ export const ROUND_SHORT: Record<string, string | null> = {
   trece: '3. ročište',
   nepoznato: null,
 };
-
-export type Urgency = 'due' | 'soon' | 'later' | 'past';
-
-/** Hearings inside three days read as red, inside a week as amber. */
-export function urgency(days: number): Urgency {
-  if (days < 0) return 'past';
-  if (days <= 3) return 'due';
-  if (days <= 7) return 'soon';
-  return 'later';
-}
-
-export function daysLabel(days: number): string {
-  if (days < 0) return 'prošlo';
-  if (days === 0) return 'danas';
-  if (days === 1) return 'sutra';
-  return days % 10 === 1 && days % 100 !== 11 ? `${days} dan` : `${days} dana`;
-}
 
 /**
  * The supporting line under a headline in the listing tables: what kind of sale
@@ -241,7 +232,7 @@ export function entitySlices(items: Listing[] = listings): Slice[] {
 }
 
 /**
- * Notices published per calendar year, including the years with none — the gap
+ * Notices published per calendar year, including the years with none - the gap
  * between 2013 and 2021 is the single most important caveat about this archive,
  * so the chart has to show it rather than close it up.
  */
@@ -271,7 +262,7 @@ export const medianDiscount = median(
   listings.map(discount).filter((d): d is number => d !== null),
 );
 
-/** Days from publication to hearing — how much notice a bidder actually gets. */
+/** Days from publication to hearing - how much notice a bidder actually gets. */
 export function medianLeadDays(items: Listing[] = listings): number | null {
   return median(
     items
@@ -295,7 +286,7 @@ for (const l of listings) {
 /**
  * Every hearing held for the same case number, oldest first. An unsold lot comes
  * back cheaper, and that chain is the most useful thing the archive knows about
- * a listing — empty when this case only ever went to auction once.
+ * a listing - empty when this case only ever went to auction once.
  */
 export function chainFor(l: Listing): Listing[] {
   const chain = l.caseNumber ? (byCase.get(l.caseNumber) ?? []) : [];
@@ -303,6 +294,101 @@ export function chainFor(l: Listing): Listing[] {
 }
 
 export const repeatCaseCount = [...byCase.values()].filter((c) => c.length > 1).length;
+
+// ── Price drops ─────────────────────────────────────────────────────────────
+
+/**
+ * A lot on its way down.
+ *
+ * Two different measurements live here and they are not interchangeable.
+ * `offAppraisal` is what the notice itself says - the starting price against the
+ * court's own valuation - and exists for most listings. `fromPrevious` is the
+ * fall from the *last hearing of the same case*, which only exists where that
+ * hearing is also in the archive with a stated price. The second is the stronger
+ * claim and the rarer one, so both are carried rather than folded together.
+ */
+export interface PriceDrop {
+  listing: Listing;
+  /** The hearing immediately before this one, when the archive holds it. */
+  previous: Listing | null;
+  /** Fall from the previous hearing's starting price, 0..1. */
+  fromPrevious: number | null;
+  /** Fall from the court's appraisal, 0..1. */
+  offAppraisal: number | null;
+  /** How far the lot has fallen on the best evidence available. */
+  best: number;
+  position: number;
+  total: number;
+}
+
+/**
+ * Comparing a starting price to a previous *appraisal* would invent a drop out
+ * of the gap between the two kinds of number, which is exactly what this page
+ * would be accused of. Both sides have to be starting prices or there is no
+ * comparison to make.
+ */
+function fallBetween(previous: Listing, current: Listing): number | null {
+  const before = previous.startingPrice?.amount;
+  const after = current.startingPrice?.amount;
+  if (!before || after == null || before <= 0) return null;
+  const fall = 1 - after / before;
+  // A rise is not a drop, and a 99% fall is a mis-parse rather than a bargain.
+  return fall > 0.01 && fall < 0.95 ? fall : null;
+}
+
+function dropFor(l: Listing): PriceDrop | null {
+  const chain = chainFor(l);
+  const position = chain.length ? chain.findIndex((c) => c.id === l.id) + 1 : 1;
+  const previous = position > 1 ? chain[position - 2] : null;
+  const fromPrevious = previous ? fallBetween(previous, l) : null;
+  const offAppraisal = discount(l);
+  const best = fromPrevious ?? offAppraisal;
+  if (best === null || best <= 0) return null;
+
+  return {
+    listing: l,
+    previous,
+    fromPrevious,
+    offAppraisal,
+    best,
+    position,
+    total: chain.length || 1,
+  };
+}
+
+/**
+ * Open hearings whose price has come down, steepest first.
+ *
+ * This is the archive's most actionable derivation and the site's reason to be
+ * returned to: an unsold lot comes back cheaper, and nothing upstream announces
+ * that it has.
+ */
+export const priceDrops: PriceDrop[] = upcoming
+  .map(dropFor)
+  .filter((d): d is PriceDrop => d !== null)
+  .sort((a, b) => b.best - a.best || a.listing.saleDate.localeCompare(b.listing.saleDate));
+
+/** Those where a previous hearing's own price is on record - the firm cases. */
+export const repeatDrops = priceDrops.filter((d) => d.fromPrevious !== null);
+
+/**
+ * Every fall between consecutive hearings anywhere in the archive. This is the
+ * sample behind "a second hearing typically opens a third lower", and it is
+ * worth stating how large it is: most chains have a price for only one of their
+ * hearings, so it is far smaller than the number of repeat cases.
+ */
+const historicalFalls: number[] = [...byCase.values()]
+  .filter((chain) => chain.length > 1)
+  .flatMap((chain) => {
+    const sorted = [...chain].sort((a, b) => a.saleDate.localeCompare(b.saleDate));
+    return sorted
+      .slice(1)
+      .map((l, i) => fallBetween(sorted[i], l))
+      .filter((f): f is number => f !== null);
+  });
+
+export const chainFallMedian = median(historicalFalls);
+export const chainFallSample = historicalFalls.length;
 
 /**
  * Other sales of the same kind of thing, nearest first: same court beats same
@@ -359,4 +445,222 @@ export function pricePerM2Histogram(items: Listing[], bins = 7): Histogram | nul
     counts[i]++;
   }
   return { bins: counts, min, max, sampled: values.length, total: items.length };
+}
+
+// ── Price reference ─────────────────────────────────────────────────────────
+
+/**
+ * A median with the sample it was taken from.
+ *
+ * The sample size is not decoration. Price per m² can only be measured where a
+ * notice states exactly one surface, which is a minority of them, so a table of
+ * bare medians would imply a confidence this data does not have. Every row
+ * carries its `n` and the page prints it.
+ */
+export interface PriceRow {
+  key: string;
+  label: string;
+  n: number;
+  median: number;
+}
+
+function rows<T>(
+  items: Listing[],
+  group: (l: Listing) => { key: string; label: string } | null,
+  value: (l: Listing) => number | null,
+  min: number,
+): PriceRow[] {
+  const buckets = new Map<string, { label: string; values: number[] }>();
+  for (const l of items) {
+    const g = group(l);
+    const v = value(l);
+    if (!g || v === null) continue;
+    const bucket = buckets.get(g.key) ?? { label: g.label, values: [] };
+    bucket.values.push(v);
+    buckets.set(g.key, bucket);
+  }
+  return [...buckets]
+    .map(([key, b]) => ({ key, label: b.label, n: b.values.length, median: median(b.values)! }))
+    .filter((r) => r.n >= min)
+    .sort((a, b) => b.median - a.median);
+}
+
+/**
+ * What a square metre goes for, by municipality.
+ *
+ * Thin on purpose: five measurable sales is already a low bar, and only a
+ * handful of municipalities clear it. Publishing a median off two observations
+ * would be the kind of number people quote back at each other.
+ */
+export function pricePerM2ByMunicipality(min = 5): PriceRow[] {
+  return rows(
+    listings,
+    (l) => (l.location?.municipality ? { key: l.location.municipality, label: l.location.municipality } : null),
+    pricePerM2,
+    min,
+  );
+}
+
+/** Median starting price by item category - the broadest coverage on the page. */
+export function priceByTag(min = 8): PriceRow[] {
+  const buckets = new Map<string, number[]>();
+  for (const l of listings) {
+    const price = l.startingPrice?.amount ?? null;
+    if (price === null) continue;
+    for (const tag of l.itemTags) {
+      const values = buckets.get(tag) ?? [];
+      values.push(price);
+      buckets.set(tag, values);
+    }
+  }
+  return [...buckets]
+    .map(([key, values]) => ({
+      key,
+      label: TAG_BY_ID.get(key)?.label ?? key,
+      n: values.length,
+      median: median(values)!,
+    }))
+    .filter((r) => r.n >= min)
+    .sort((a, b) => b.median - a.median);
+}
+
+export function priceBySaleType(min = 8): PriceRow[] {
+  return rows(
+    listings,
+    (l) => ({ key: l.saleType, label: SALE_TYPE_LABELS[l.saleType] ?? l.saleType }),
+    (l) => l.startingPrice?.amount ?? null,
+    min,
+  );
+}
+
+/**
+ * How the archive moves year to year. Hearing year rather than publication year:
+ * a price belongs to the hearing it was offered at.
+ */
+export function priceByYear(min = 5): Array<{
+  year: number;
+  n: number;
+  medianStarting: number | null;
+  medianOff: number | null;
+}> {
+  const years = new Map<number, Listing[]>();
+  for (const l of listings) {
+    const year = Number(l.saleDate.slice(0, 4));
+    years.set(year, [...(years.get(year) ?? []), l]);
+  }
+  return [...years]
+    .map(([year, items]) => ({
+      year,
+      n: items.length,
+      medianStarting: median(
+        items.map((l) => l.startingPrice?.amount).filter((n): n is number => n != null),
+      ),
+      medianOff: median(items.map(discount).filter((d): d is number => d !== null)),
+    }))
+    .filter((y) => y.n >= min)
+    .sort((a, b) => a.year - b.year);
+}
+
+/** Median discount off the appraisal, by which hearing it is. */
+export function discountByRound(): Array<Slice & { median: number | null }> {
+  return Object.keys(ROUND_LABELS)
+    .map((key) => {
+      const items = listings.filter((l) => l.auctionRound === key);
+      return {
+        key,
+        label: ROUND_SHORT[key] ?? 'nepoznato',
+        count: items.length,
+        median: median(items.map(discount).filter((d): d is number => d !== null)),
+      };
+    })
+    .filter((r) => r.count > 0);
+}
+
+// ── Map ─────────────────────────────────────────────────────────────────────
+
+export interface MapPlace {
+  name: string;
+  at: LatLon;
+  upcoming: number;
+  total: number;
+  /** Placed at the court's seat because the notice named no municipality. */
+  approximate: boolean;
+}
+
+export interface MapData {
+  places: MapPlace[];
+  /** Listings shown at their own municipality. */
+  exact: number;
+  /** Listings shown at their court's seat instead. */
+  bySeat: number;
+  /** Listings with no coordinate at all, so absent from the map entirely. */
+  unplaced: number;
+}
+
+/**
+ * Where the archive is, as points.
+ *
+ * A notice names a municipality only when the extractor could read one, which is
+ * most of the time but not always. Rather than dropping the rest, they fall back
+ * to the seat of the court that published them - a court's catchment is local,
+ * so the seat is the right answer to within a district. The page prints how many
+ * landed each way, because a dot placed by fallback is a weaker claim than a dot
+ * placed by the document.
+ */
+export function mapData(items: Listing[] = listings): MapData {
+  const buckets = new Map<string, { at: LatLon; upcoming: number; total: number; exact: boolean }>();
+  let exact = 0;
+  let bySeat = 0;
+  let unplaced = 0;
+
+  for (const l of items) {
+    const own = l.location?.municipality ?? null;
+    const seat = COURT_PLACE[l.courtId] ?? null;
+    const name = placeOf(own) ? own! : placeOf(seat) ? seat! : null;
+    if (!name) {
+      unplaced++;
+      continue;
+    }
+    const isExact = placeOf(own) !== null;
+    isExact ? exact++ : bySeat++;
+
+    const bucket = buckets.get(name) ?? { at: PLACES[name], upcoming: 0, total: 0, exact: false };
+    bucket.total++;
+    if (isUpcoming(l)) bucket.upcoming++;
+    bucket.exact ||= isExact;
+    buckets.set(name, bucket);
+  }
+
+  return {
+    places: [...buckets]
+      .map(([name, b]) => ({ name, at: b.at, upcoming: b.upcoming, total: b.total, approximate: !b.exact }))
+      // Biggest first, so the small dots are painted over the large ones rather
+      // than swallowed by them.
+      .sort((a, b) => b.total - a.total),
+    exact,
+    bySeat,
+    unplaced,
+  };
+}
+
+/** Courts that have a coordinate, with their open-hearing counts. */
+export function courtPoints(): Array<{
+  id: number;
+  name: string;
+  place: string;
+  at: LatLon;
+  upcoming: number;
+  total: number;
+}> {
+  return courts
+    .filter((c) => COURT_PLACE[c.id] && PLACES[COURT_PLACE[c.id]])
+    .map((c) => ({
+      id: c.id,
+      name: c.name,
+      place: COURT_PLACE[c.id],
+      at: PLACES[COURT_PLACE[c.id]],
+      upcoming: upcoming.filter((l) => l.courtId === c.id).length,
+      total: c.count,
+    }))
+    .sort((a, b) => b.upcoming - a.upcoming || a.name.localeCompare(b.name, 'bs'));
 }

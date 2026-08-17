@@ -10,7 +10,7 @@ export interface ExtractedDoc {
   kind: DocKind;
   text: string;
   sha256: string;
-  /** True when the file parsed but yielded no text — i.e. a scanned image PDF. */
+  /** True when the file parsed but yielded no text - i.e. a scanned image PDF. */
   needsOcr: boolean;
 }
 

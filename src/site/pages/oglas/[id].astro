@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
 import SaveToggle from '../../components/SaveToggle.astro';
 import type { Listing } from '../../../schema.ts';
 import {
@@ -13,6 +14,7 @@ import {
   daysUntil,
 } from '../../lib/data.ts';
 import { headline } from '../../lib/headline.ts';
+import { saleTypeIcon } from '../../lib/icons.ts';
 import {
   chainFor,
   comparables,
@@ -24,6 +26,21 @@ import {
   urgency,
   ROUND_SHORT,
 } from '../../lib/stats.ts';
+import {
+  taxSeedFor,
+  depositFor,
+  floorFor,
+  feesFor,
+  formatKm,
+  PROVENANCE_LABEL,
+  PAYMENT_DEADLINE_DAYS,
+  VAT_RATE,
+  UNPRICED,
+  NOT_PAYABLE,
+  type Lot,
+  type Entity,
+} from '../../lib/costs.ts';
+import { listingJsonLd } from '../../lib/jsonld.ts';
 
 export function getStaticPaths() {
   return listings.map((l) => ({ params: { id: l.id }, props: { listing: l } }));
@@ -51,18 +68,18 @@ const cadastral = [
 /** Absent values are stated rather than hidden: a bidder needs to know the notice was silent. */
 const NOT_STATED = 'nije navedeno u oglasu';
 
-const facts: Array<[string, string | null, boolean]> = [
-  ['Datum i vrijeme', `${formatDate(l.saleDate)}${l.saleTime ? ` u ${l.saleTime}` : ''}`, false],
-  ['Mjesto', l.auctionLocation, true],
-  ['Način prodaje', l.saleMethod === 'nepoznato' ? null : METHOD_LABELS[l.saleMethod], true],
-  ['Ročište po redu', ROUND_LABELS[l.auctionRound], false],
-  ['Kapara / osiguranje', formatMoney(l.deposit), true],
-  ['Broj predmeta', l.caseNumber, true],
-  ['Objavljeno', formatDate(l.publishedDate), false],
-  ['Pregled predmeta', l.viewingInfo, true],
-  ['Katastar', cadastral || null, false],
-  ['Općina', l.location?.municipality ?? null, false],
-  ['Jezik oglasa', l.language, false],
+const facts: Array<[string, string | null, boolean, string]> = [
+  ['Datum i vrijeme', `${formatDate(l.saleDate)}${l.saleTime ? ` u ${l.saleTime}` : ''}`, false, 'calendar-dots'],
+  ['Mjesto', l.auctionLocation, true, 'map-pin'],
+  ['Način prodaje', l.saleMethod === 'nepoznato' ? null : METHOD_LABELS[l.saleMethod], true, 'gavel'],
+  ['Ročište po redu', ROUND_LABELS[l.auctionRound], false, 'hourglass-medium'],
+  ['Kapara / osiguranje', formatMoney(l.deposit), true, 'hand-coins'],
+  ['Broj predmeta', l.caseNumber, true, 'hash'],
+  ['Objavljeno', formatDate(l.publishedDate), false, 'calendar-plus'],
+  ['Pregled predmeta', l.viewingInfo, true, 'eye'],
+  ['Katastar', cadastral || null, false, 'map-trifold'],
+  ['Općina', l.location?.municipality ?? null, false, 'buildings'],
+  ['Jezik oglasa', l.language, false, 'translate'],
 ];
 
 const scraped = new Intl.DateTimeFormat('bs-BA', {
@@ -71,28 +88,68 @@ const scraped = new Intl.DateTimeFormat('bs-BA', {
   timeZone: 'Europe/Sarajevo',
 }).format(new Date(l.scrapedAt));
 
-const CHIP_OUTLINE = 'border border-edge px-2 py-[5px] font-mono text-[10.5px] font-semibold leading-none';
+const CHIP_OUTLINE = 'border border-edge px-2 py-[5px] font-mono text-[0.65625rem] font-semibold leading-none';
+
+/**
+ * Seed values for the cost calculator. Every rate here is editable in the page,
+ * because the transfer tax is cantonal in FBiH, its taxpayer differs by canton,
+ * and the fees are a shape rather than a quoted tariff - see lib/costs.ts.
+ */
+const lot: Lot = {
+  entity: l.entity as Entity,
+  courtId: l.courtId,
+  saleType: l.saleType,
+  auctionRound: l.auctionRound,
+  appraised: l.appraisedValue?.amount ?? null,
+  starting: l.startingPrice?.amount ?? null,
+  deposit: l.deposit?.amount ?? null,
+};
+
+const tax = taxSeedFor(lot);
+const dep = depositFor(lot);
+/*
+  The bid opens at the lowest price this hearing may accept, never at the
+  appraisal: the appraisal is the ceiling the floor is derived FROM, and seeding
+  it anchored 1.174 notices at two to three times what the hearing starts at.
+*/
+const floor = floorFor(lot);
+const seed = {
+  bid: floor?.amount ?? 0,
+  fees: feesFor(floor?.amount ?? 0, l.saleType),
+};
+/* The tax base the cantonal law actually names, where we can offer it as a choice. */
+const altBase = tax.basis === 'trzisna' && lot.appraised && floor && lot.appraised > floor.amount
+  ? lot.appraised
+  : null;
+const unpriced = UNPRICED.filter((u) => u.types.includes(l.saleType));
+
+const jsonLd = JSON.stringify(
+  listingJsonLd(l, Astro.site?.href.replace(/\/$/, '') ?? ''),
+).replace(/</g, '\\u003c');
 ---
 
 <Base
-  title={`${title.slice(0, 70)} — ${l.court}`}
+  title={`${title.slice(0, 70)} - ${l.court}`}
   description={`Sudska prodaja: ${title.slice(0, 150)}`}
+  image={`/og/${l.id}.png`}
 >
+  <script type="application/ld+json" is:inline set:html={jsonLd} />
   <article data-pagefind-body>
     <div class="gut border-b border-rule pb-[22px] pt-[26px]">
-      <nav class="mb-3.5 font-mono text-[11px] leading-none text-dim" data-pagefind-ignore>
+      <nav class="mb-3.5 font-mono text-[0.6875rem] leading-none text-dim" data-pagefind-ignore>
         <a href="/" class="hover:text-ink">AKTUELNE</a> / OGLAS {l.id}
       </nav>
 
       <div class="mb-3.5 flex flex-wrap gap-[7px]" data-pagefind-ignore>
-        <span class="bg-ink px-2 py-[5px] font-mono text-[10.5px] font-semibold leading-none text-white">
+        <span class="flex items-center gap-1.5 bg-ink px-2 py-[5px] font-mono text-[0.65625rem] font-semibold leading-none text-white">
+          <Icon name={saleTypeIcon(l.saleType)} size={13} />
           {SALE_TYPE_LABELS[l.saleType].toUpperCase()}
         </span>
         <span class={CHIP_OUTLINE}>{l.entity}</span>
         {ROUND_SHORT[l.auctionRound] && <span class={CHIP_OUTLINE}>{ROUND_SHORT[l.auctionRound]!.toUpperCase()}</span>}
         <span
           class:list={[
-            'px-2 py-[5px] font-mono text-[10.5px] font-semibold leading-none',
+            'px-2 py-[5px] font-mono text-[0.65625rem] font-semibold leading-none',
             state === 'past'
               ? 'bg-band text-dim'
               : state === 'later'
@@ -105,13 +162,13 @@ const CHIP_OUTLINE = 'border border-edge px-2 py-[5px] font-mono text-[10.5px] f
       </div>
 
       <h1
-        class="max-w-[26ch] font-serif text-[30px] leading-[1.1] tracking-tight sm:text-[38px]"
+        class="max-w-[26ch] font-serif text-[1.875rem] leading-title tracking-title sm:text-[2.375rem] sm:leading-display sm:tracking-display"
         data-pagefind-meta="title"
       >
         {title}
       </h1>
       <!-- Reference line, not content: indexing it opened every search excerpt on it. -->
-      <p class="mt-3 max-w-[80ch] font-mono text-[12.5px] leading-relaxed text-dim" data-pagefind-ignore>
+      <p class="mt-3 max-w-[80ch] font-mono text-[0.78125rem] leading-relaxed text-dim" data-pagefind-ignore>
         Naslov iz sudskog dokumenta: „{l.title}”
       </p>
 
@@ -137,10 +194,10 @@ const CHIP_OUTLINE = 'border border-edge px-2 py-[5px] font-mono text-[10.5px] f
       <div class="hidden" data-pagefind-meta={`status:${state === 'past' ? 'Arhiva' : 'Otvoreno'}`}></div>
       <div class="hidden" data-pagefind-meta={`datum:${formatDate(l.saleDate)}`}></div>
       <div class="hidden" data-pagefind-meta={`sud:${l.court}`}></div>
-      <div class="hidden" data-pagefind-meta={`rociste:${ROUND_SHORT[l.auctionRound] ?? '—'}`}></div>
+      <div class="hidden" data-pagefind-meta={`rociste:${ROUND_SHORT[l.auctionRound] ?? '-'}`}></div>
       <div
         class="hidden"
-        data-pagefind-meta={`cijena:${formatMoney(l.startingPrice ?? l.appraisedValue) ?? '—'}`}
+        data-pagefind-meta={`cijena:${formatMoney(l.startingPrice ?? l.appraisedValue) ?? '-'}`}
       >
       </div>
     </div>
@@ -154,36 +211,44 @@ const CHIP_OUTLINE = 'border border-edge px-2 py-[5px] font-mono text-[10.5px] f
         -->
         <dl class="grid grid-cols-1 gap-px border border-rule bg-rule sm:grid-cols-3" data-pagefind-ignore>
           <div class="bg-white px-4 py-3.5">
-            <dt class="font-mono text-[10px] leading-none text-dim">PROCIJENJENA VRIJEDNOST</dt>
-            <dd class="mt-2.5 font-mono text-[20px] leading-none text-dim line-through">
-              {formatMoney(l.appraisedValue) ?? '—'}
+            <dt class="flex items-center gap-1.5 font-mono text-[0.625rem] leading-none text-dim">
+              <Icon name="receipt" size={13} class="text-ghost" />
+              PROCIJENJENA VRIJEDNOST
+            </dt>
+            <dd class="mt-2.5 font-mono text-[1.25rem] tracking-num leading-none text-dim line-through">
+              {formatMoney(l.appraisedValue) ?? '-'}
             </dd>
           </div>
           <div class="bg-white px-4 py-3.5">
-            <dt class="font-mono text-[10px] leading-none text-dim">POČETNA CIJENA</dt>
-            <dd class="mt-2.5 font-mono text-[20px] font-bold leading-none">
+            <dt class="flex items-center gap-1.5 font-mono text-[0.625rem] leading-none text-dim">
+              <Icon name="money" size={13} class="text-ghost" />
+              POČETNA CIJENA
+            </dt>
+            <dd class="mt-2.5 font-mono text-[1.25rem] tracking-num font-bold leading-none">
               {formatMoney(l.startingPrice) ?? <span class="font-normal text-ghost">nije navedena</span>}
             </dd>
           </div>
           <div class="bg-white px-4 py-3.5">
-            <dt class="font-mono text-[10px] leading-none text-dim">
+            <dt class="flex items-center gap-1.5 font-mono text-[0.625rem] leading-none text-dim">
+              <Icon name="trend-down" size={13} class="text-ghost" />
               POPUST{perM2 && ` · ${formatNumber(perM2)} KM/m²`}
             </dt>
             <dd
-              class:list={['mt-2.5 font-mono text-[20px] font-bold leading-none', off && off > 0 && 'text-pine']}
+              class:list={['mt-2.5 font-mono text-[1.25rem] tracking-num font-bold leading-none', off && off > 0 && 'text-pine']}
             >
-              {off === null ? <span class="font-normal text-ghost">—</span> : formatPercent(off)}
+              {off === null ? <span class="font-normal text-ghost">-</span> : formatPercent(off)}
             </dd>
           </div>
         </dl>
 
         <section class="mt-6">
-          <h2 class="border-b border-rule pb-[9px] text-[12px] font-semibold uppercase leading-none tracking-[0.06em] text-dim"
+          <h2 class="border-b border-rule pb-[9px] text-[0.75rem] font-semibold uppercase leading-none tracking-label text-dim"
             data-pagefind-ignore
           >
+            <Icon name="package" size={13} class="mr-1.5 text-faint" />
             Predmet prodaje
           </h2>
-          <p class="mt-3 max-w-[70ch] text-pretty text-[14px] leading-relaxed text-ink-soft">
+          <p class="mt-3 max-w-[70ch] text-pretty text-[0.875rem] leading-relaxed text-ink-soft">
             {l.itemDescription ?? 'Opis predmeta nije bilo moguće pročitati iz dokumenta.'}
           </p>
           {
@@ -192,7 +257,7 @@ const CHIP_OUTLINE = 'border border-edge px-2 py-[5px] font-mono text-[10.5px] f
                 {l.itemTags.map((t) => (
                   <a
                     href={`/predmeti/${t}/`}
-                    class="border border-edge px-2.5 py-[7px] text-[11.5px] font-medium leading-none hover:border-ink"
+                    class="press press-give border border-edge px-2.5 py-[7px] text-[0.71875rem] font-medium leading-none hover:border-ink"
                   >
                     {TAG_BY_ID.get(t)?.label ?? t}
                   </a>
@@ -203,26 +268,28 @@ const CHIP_OUTLINE = 'border border-edge px-2 py-[5px] font-mono text-[10.5px] f
         </section>
 
         <section class="mt-7">
-          <h2 class="border-b border-rule pb-[9px] text-[12px] font-semibold uppercase leading-none tracking-[0.06em] text-dim"
+          <h2 class="border-b border-rule pb-[9px] text-[0.75rem] font-semibold uppercase leading-none tracking-label text-dim"
             data-pagefind-ignore
           >
+            <Icon name="clipboard-text" size={13} class="mr-1.5 text-faint" />
             Ročište i podaci
           </h2>
           <dl class="mt-1 grid grid-cols-1 sm:grid-cols-[190px_1fr]">
             {
               facts
                 .filter(([, value, showWhenMissing]) => value || showWhenMissing)
-                .map(([key, value]) => (
+                .map(([key, value, , icon]) => (
                   <>
                     <dt
-                      class="pt-2.5 text-[12.5px] leading-none text-dim sm:border-b sm:border-hair sm:pb-2.5"
+                      class="flex items-center gap-2 pt-2.5 text-[0.78125rem] leading-none text-dim sm:border-b sm:border-hair sm:pb-2.5"
                       data-pagefind-ignore
                     >
+                      <Icon name={icon} size={14} class="text-ghost" />
                       {key}
                     </dt>
                     <dd
                       class:list={[
-                        'border-b border-hair pb-2.5 pt-1 text-[13px] leading-snug sm:pt-2.5',
+                        'border-b border-hair pb-2.5 pt-1 text-[0.8125rem] leading-snug sm:pt-2.5',
                         value ? 'font-medium' : 'text-faint',
                       ]}
                     >
@@ -232,42 +299,268 @@ const CHIP_OUTLINE = 'border border-edge px-2 py-[5px] font-mono text-[10.5px] f
                 ))
             }
             <dt
-              class="pt-2.5 text-[12.5px] leading-none text-dim sm:border-b sm:border-hair sm:pb-2.5"
+              class="flex items-center gap-2 pt-2.5 text-[0.78125rem] leading-none text-dim sm:border-b sm:border-hair sm:pb-2.5"
               data-pagefind-ignore
             >
+              <Icon name="bank" size={14} class="text-ghost" />
               Sud
             </dt>
-            <dd class="border-b border-hair pb-2.5 pt-1 text-[13px] font-medium leading-snug sm:pt-2.5">
+            <dd class="border-b border-hair pb-2.5 pt-1 text-[0.8125rem] font-medium leading-snug sm:pt-2.5">
               <a href={`/sudovi/${l.courtId}/`} class="text-pine hover:text-ink">{l.court}</a> · {l.entity}
             </dd>
           </dl>
         </section>
 
+        {/*
+          The notice states one number and every bidder then discovers the rest
+          separately. Every rate is an input rather than a constant, and every
+          figure carries where it came from, because the three entities are three
+          regimes and FBiH is ten more inside one: the rate is cantonal, and so
+          is the answer to who owes it. A calculator that hid that behind a
+          single 5% was billing the buyer for the debtor's liability on 451 of
+          the archive's 1.168 real-estate notices.
+        */}
         <section class="mt-7 border border-rule bg-white" data-pagefind-ignore>
-          <h2 class="border-b border-rule bg-band px-[18px] py-3.5 text-[13px] font-semibold leading-none">
-            Službeni izvor — jedini mjerodavan zapis
+          <h2 class="flex items-center gap-2 border-b border-rule bg-band px-[18px] py-3.5 text-[0.8125rem] font-semibold leading-none">
+            <Icon name="calculator" size={16} class="text-dim" />
+            Šta vas ovo stvarno košta
+          </h2>
+          <div
+            id="cost"
+            data-deposit={dep?.amount ?? ''}
+            data-floor={floor?.amount ?? ''}
+            data-rate={tax.rate}
+            data-vat={VAT_RATE}
+            data-base={altBase ?? ''}
+            class="px-[18px] py-4"
+          >
+            <div class="flex flex-wrap gap-x-5 gap-y-3">
+              <label class="flex flex-col gap-1.5">
+                <span class="font-mono text-[0.625rem] uppercase leading-none tracking-caps text-dim">
+                  Vaša ponuda (KM)
+                </span>
+                <input
+                  id="cost-bid"
+                  type="number"
+                  min="0"
+                  step="100"
+                  value={seed.bid ? Math.round(seed.bid) : ''}
+                  class="w-[150px] border border-edge bg-sheet px-2.5 py-2 font-mono text-[0.8125rem] tabular-nums outline-none focus:border-ink"
+                />
+              </label>
+              <label class="flex flex-col gap-1.5">
+                <span
+                  id="cost-tax-label"
+                  class="font-mono text-[0.625rem] uppercase leading-none tracking-caps text-dim"
+                >
+                  Porez na promet (%)
+                </span>
+                <input
+                  id="cost-tax"
+                  type="number"
+                  min="0"
+                  max="30"
+                  step="0.5"
+                  value={(tax.rate * 100).toFixed(1).replace(/\.0$/, '')}
+                  class="w-[110px] border border-edge bg-sheet px-2.5 py-2 font-mono text-[0.8125rem] tabular-nums outline-none focus:border-ink"
+                />
+              </label>
+              <label class="flex flex-col gap-1.5">
+                <span class="font-mono text-[0.625rem] uppercase leading-none tracking-caps text-dim">
+                  Takse i upis (KM)
+                </span>
+                <input
+                  id="cost-fees"
+                  type="number"
+                  min="0"
+                  step="50"
+                  value={Math.round(seed.fees)}
+                  class="w-[110px] border border-edge bg-sheet px-2.5 py-2 font-mono text-[0.8125rem] tabular-nums outline-none focus:border-ink"
+                />
+              </label>
+              <label class="flex flex-col gap-1.5">
+                <span class="font-mono text-[0.625rem] uppercase leading-none tracking-caps text-dim">
+                  Ostalo (KM)
+                </span>
+                <input
+                  id="cost-other"
+                  type="number"
+                  min="0"
+                  step="100"
+                  value="0"
+                  class="w-[110px] border border-edge bg-sheet px-2.5 py-2 font-mono text-[0.8125rem] tabular-nums outline-none focus:border-ink"
+                />
+              </label>
+            </div>
+
+            {/*
+              A bid under the floor is not a cheap bid, it is a bid the court
+              cannot accept - so the calculator says so instead of totalling it.
+            */}
+            {
+              floor && (
+                <p
+                  id="cost-floor"
+                  hidden
+                  class="mt-2.5 flex items-start gap-1.5 border border-warn-edge bg-warn-bg px-3 py-2 text-[0.75rem] leading-relaxed text-muted"
+                >
+                  <Icon name="warning" size={14} class="mt-px shrink-0 text-rust" />
+                  <span>
+                    Ispod {formatKm(floor.amount)} se na ovom ročištu ne može prodati
+                    {floor.from === 'oglas'
+                      ? ' - to je početna cijena iz oglasa.'
+                      : ` - oglas ne navodi početnu cijenu, pa je ovo ${l.auctionRound === 'prvo' ? 'polovina' : 'trećina'} procijenjene vrijednosti, koliko se na ovakvom ročištu redovno traži.`}
+                  </span>
+                </p>
+              )
+            }
+
+            {/*
+              PDV is a state tax and cuts across all three entities, so the box
+              is offered everywhere - including RS, where the transfer tax is
+              gone but VAT is not.
+            */}
+            <div class="mt-3 flex flex-col gap-1.5">
+              <label class="flex items-start gap-2 text-[0.75rem] leading-snug text-muted">
+                <input id="cost-vat" type="checkbox" class="mt-px accent-pine" />
+                <span>
+                  Izvršenik je u sistemu PDV-a i predmet je poslovna imovina ili prvi prenos -
+                  obračunaj PDV od {(VAT_RATE * 100).toFixed(0)}%{tax.rate > 0 && ' umjesto poreza na promet'}
+                </span>
+              </label>
+              {
+                altBase && (
+                  <label class="flex items-start gap-2 text-[0.75rem] leading-snug text-muted">
+                    <input id="cost-base" type="checkbox" class="mt-px accent-pine" />
+                    <span>
+                      Obračunaj porez na procijenjenu vrijednost ({formatKm(altBase)}), a ne na
+                      ponudu - kantonalni zakon oporezuje tržišnu vrijednost koju utvrđuje komisija
+                    </span>
+                  </label>
+                )
+              }
+            </div>
+
+            {/*
+              The old single "Ukupno" hid the thing that actually catches people
+              out: one part must be on the court's account before you may bid at
+              all, and the rest falls due inside a deadline that forfeits the
+              first part if you miss it.
+            */}
+            <dl class="mt-4 flex flex-col">
+              <div class="flex items-baseline justify-between gap-3 border-b border-rule py-2">
+                <dt class="text-[0.8125rem] font-semibold leading-snug">
+                  Prije ročišta - kapara
+                  <span class="ml-1 font-normal text-[0.71875rem] text-dim">
+                    {dep ? `(${PROVENANCE_LABEL[dep.from]})` : '(nije navedena, ni izračunljiva)'}
+                  </span>
+                </dt>
+                <dd id="cost-deposit" class="shrink-0 font-mono text-[0.8125rem] font-bold tabular-nums"></dd>
+              </div>
+              <div class="flex items-baseline justify-between gap-3 border-b border-hair py-2">
+                <dt class="text-[0.8125rem] leading-snug">
+                  Doplata cijene
+                  <span class="ml-1 text-[0.71875rem] text-dim">
+                    (u roku do {PAYMENT_DEADLINE_DAYS} dana)
+                  </span>
+                </dt>
+                <dd id="cost-balance" class="shrink-0 font-mono text-[0.8125rem] tabular-nums"></dd>
+              </div>
+              <div class="flex items-baseline justify-between gap-3 border-b border-hair py-2">
+                <dt id="cost-tax-row" class="text-[0.8125rem] leading-snug">Porez na promet</dt>
+                <dd id="cost-tax-out" class="shrink-0 font-mono text-[0.8125rem] tabular-nums"></dd>
+              </div>
+              <div class="flex items-baseline justify-between gap-3 border-b border-hair py-2">
+                <dt class="text-[0.8125rem] leading-snug">
+                  Takse, upis i papirologija
+                  <span class="ml-1 text-[0.71875rem] text-dim">(procjena)</span>
+                </dt>
+                <dd id="cost-fees-out" class="shrink-0 font-mono text-[0.8125rem] tabular-nums"></dd>
+              </div>
+              <div
+                id="cost-other-row"
+                hidden
+                class="flex items-baseline justify-between gap-3 border-b border-hair py-2"
+              >
+                <dt class="text-[0.8125rem] leading-snug">
+                  Ostalo
+                  <span class="ml-1 text-[0.71875rem] text-dim">(vaša procjena)</span>
+                </dt>
+                <dd id="cost-other-out" class="shrink-0 font-mono text-[0.8125rem] tabular-nums"></dd>
+              </div>
+              <div class="flex items-baseline justify-between gap-3 border-t border-rule pt-2.5">
+                <dt class="text-[0.875rem] font-semibold leading-snug">Ukupno</dt>
+                <dd id="cost-total" class="shrink-0 font-mono text-[1.0625rem] tracking-num font-bold tabular-nums"></dd>
+              </div>
+            </dl>
+
+            <p class="mt-3 max-w-[72ch] text-[0.75rem] leading-relaxed text-muted">
+              {tax.note}
+            </p>
+            <p class="mt-2 max-w-[72ch] text-[0.75rem] leading-relaxed text-muted">
+              Kapara nije dodatni trošak - uračunava se u cijenu, a vraća vam se ako ne budete
+              najpovoljniji ponuđač.{' '}
+              {dep?.from === 'zakon' &&
+                'Oglas je ne navodi, pa je ovdje izračunata po zakonu: desetina procijenjene vrijednosti, najviše 10.000 KM. '}
+              Ako pobijedite pa ne uplatite u roku, prodaja se proglašava nevaljanom i kapara se ne
+              vraća. Takse su naša procjena, ne tarifa - sudske takse su kantonalne i skaliraju s
+              vrijednošću. Ne plaćate {NOT_PAYABLE.join('; ni ')}.
+            </p>
+          </div>
+        </section>
+
+        {/*
+          The figures above are the ones that can be computed. These are the ones
+          that decide whether the purchase was a good idea, and no notice states
+          any of them - so they are named rather than guessed at, and the "Ostalo"
+          field above is where a bidder puts their own number.
+        */}
+        {
+          unpriced.length > 0 && (
+            <section class="mt-7 border border-rule bg-white" data-pagefind-ignore>
+              <h2 class="flex items-center gap-2 border-b border-rule bg-band px-[18px] py-3.5 text-[0.8125rem] font-semibold leading-none">
+                <Icon name="warning" size={16} class="text-rust" />
+                Šta ovaj račun ne pokriva
+              </h2>
+              <dl class="flex flex-col px-[18px] py-1">
+                {unpriced.map((u) => (
+                  <div class="border-b border-hair py-2.5 last:border-0">
+                    <dt class="text-[0.8125rem] font-semibold leading-snug">{u.title}</dt>
+                    <dd class="mt-1 max-w-[72ch] text-[0.75rem] leading-relaxed text-muted">{u.body}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          )
+        }
+
+        <section class="mt-7 border border-rule bg-white" data-pagefind-ignore>
+          <h2 class="flex items-center gap-2 border-b border-rule bg-band px-[18px] py-3.5 text-[0.8125rem] font-semibold leading-none">
+            <Icon name="seal-check" size={16} class="text-pine" />
+            Službeni izvor - jedini mjerodavan zapis
           </h2>
           <div class="flex flex-col gap-3 px-[18px] py-4">
             <div class="flex flex-wrap items-center justify-between gap-3">
-              <span class="text-[13px] font-medium leading-snug">
+              <span class="text-[0.8125rem] font-medium leading-snug">
                 Oglas na pravosudje.ba
-                <span class="font-mono text-[11.5px] font-normal text-dim">/{l.articleId}</span>
+                <span class="font-mono text-[0.71875rem] font-normal text-dim">/{l.articleId}</span>
               </span>
               <a
                 href={l.sourceUrl}
                 rel="nofollow noopener"
                 target="_blank"
-                class="shrink-0 bg-ink px-3 py-2 text-[12px] font-semibold leading-none text-white"
+                class="flex shrink-0 items-center gap-1.5 bg-ink px-3 py-2 text-[0.75rem] font-semibold leading-none text-white"
               >
-                Otvori →
+                <Icon name="arrow-square-out" size={14} />
+                Otvori
               </a>
             </div>
             {
               l.documents.map((d) => (
                 <div class="flex flex-wrap items-center justify-between gap-3 border-t border-hair pt-3">
-                  <span class="text-[13px] font-medium leading-snug">
+                  <span class="text-[0.8125rem] font-medium leading-snug">
                     {d.name.trim() || 'Dokument suda'}{' '}
-                    <span class="font-mono text-[11px] font-normal text-dim">
+                    <span class="font-mono text-[0.6875rem] font-normal text-dim">
                       {d.type}
                       {d.sha256 && ` · SHA256 ${d.sha256.slice(0, 4)}…${d.sha256.slice(-4)}`}
                     </span>
@@ -276,8 +569,9 @@ const CHIP_OUTLINE = 'border border-edge px-2 py-[5px] font-mono text-[10.5px] f
                     href={d.url}
                     rel="nofollow noopener"
                     target="_blank"
-                    class="shrink-0 border border-rule px-3 py-2 text-[12px] font-semibold leading-none hover:border-ink"
+                    class="flex shrink-0 items-center gap-1.5 press press-give border border-rule px-3 py-2 text-[0.75rem] font-semibold leading-none hover:border-ink"
                   >
+                    <Icon name="file-arrow-down" size={14} class="text-dim" />
                     Preuzmi
                   </a>
                 </div>
@@ -287,35 +581,37 @@ const CHIP_OUTLINE = 'border border-edge px-2 py-[5px] font-mono text-[10.5px] f
         </section>
 
         <div class="mt-4 border border-warn-edge bg-warn-bg px-4 py-3.5" data-pagefind-ignore>
-          <h2 class="text-[12px] font-semibold leading-none">
+          <h2 class="flex items-center gap-2 text-[0.75rem] font-semibold leading-none">
+            <Icon name="warning" size={15} class="text-rust" />
             Podaci na ovoj stranici izvučeni su automatski i mogu biti netačni
           </h2>
-          <p class="mt-2 max-w-[74ch] text-[12.5px] leading-relaxed text-muted">
+          <p class="mt-2 max-w-[74ch] text-[0.78125rem] leading-relaxed text-muted">
             Cijene, površine i datumi čitani su iz sudskog dokumenta programski. Prije nadmetanja
             obavezno provjerite original. Ovaj sajt nije sud, nije posrednik i ne prodaje ništa.
           </p>
         </div>
 
-        <p class="mt-3 font-mono text-[11px] leading-relaxed text-faint" data-pagefind-ignore>
+        <p class="mt-3 font-mono text-[0.6875rem] leading-relaxed text-faint" data-pagefind-ignore>
           IZVOR PODATAKA: {l.extraction.source.toUpperCase()} · POUZDANOST {l.extraction.confidence.toFixed(2)} ·
           MODELSKA DOPUNA: {l.extraction.llm ? 'DA' : 'NE'} · PREUZETO {scraped.toUpperCase()}
         </p>
       </div>
 
       <aside class="gut bg-band pb-[30px] pt-6" data-pagefind-ignore>
-        <h2 class="text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim">
+        <h2 class="flex items-center gap-1.5 text-[0.6875rem] font-semibold uppercase leading-none tracking-caps text-dim">
+          <Icon name="hourglass-medium" size={13} class="text-faint" />
           Odbrojavanje
         </h2>
         <div class="mt-2.5 border border-rule bg-sheet p-4">
           <div
             class:list={[
-              'font-mono text-[34px] font-bold leading-none',
+              'font-mono text-[2.125rem] tracking-num font-bold leading-none',
               state === 'past' ? 'text-dim' : state === 'later' ? 'text-ink' : 'text-brick',
             ]}
           >
             {state === 'past' ? 'prošlo' : daysLabel(days)}
           </div>
-          <p class="mt-2.5 text-[12px] leading-relaxed text-muted">
+          <p class="mt-2.5 text-[0.75rem] leading-relaxed text-muted">
             {
               state === 'past'
                 ? `Ročište je održano ${formatDate(l.saleDate)}. Zapis ostaje u arhivi kao referenca cijene.`
@@ -327,7 +623,8 @@ const CHIP_OUTLINE = 'border border-edge px-2 py-[5px] font-mono text-[10.5px] f
         {
           chain.length > 1 && (
             <>
-              <h2 class="mt-7 text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim">
+              <h2 class="mt-7 flex items-center gap-1.5 text-[0.6875rem] font-semibold uppercase leading-none tracking-caps text-dim">
+                <Icon name="arrows-clockwise" size={13} class="text-faint" />
                 Ovo je {chainPosition}. ročište za isti predmet
               </h2>
               <ol class="mt-3">
@@ -345,21 +642,21 @@ const CHIP_OUTLINE = 'border border-edge px-2 py-[5px] font-mono text-[10.5px] f
                     <div class:list={[i < chain.length - 1 && 'pb-4']}>
                       <div
                         class:list={[
-                          'font-mono text-[12.5px] font-medium leading-none',
+                          'font-mono text-[0.78125rem] font-medium leading-none',
                           c.id === l.id ? 'text-pine' : 'text-dim',
                         ]}
                       >
                         {formatDate(c.saleDate)} · {ROUND_SHORT[c.auctionRound] ?? `${i + 1}. ročište`}
                       </div>
-                      <div class="mt-1.5 text-[13.5px] font-medium leading-snug">
+                      <div class="mt-1.5 text-[0.84375rem] font-medium leading-snug">
                         {formatMoney(c.startingPrice ?? c.appraisedValue) ?? 'cijena nije navedena'}
-                        {c.id === l.id && state !== 'past' && ' — otvoreno'}
+                        {c.id === l.id && state !== 'past' && ' - otvoreno'}
                       </div>
                     </div>
                   </li>
                 ))}
               </ol>
-              <p class="mt-3 text-[11.5px] leading-relaxed text-dim">
+              <p class="mt-3 text-[0.71875rem] leading-relaxed text-dim">
                 Lanac je povezan po broju predmeta iz sudskog dokumenta. Ishod ranijih ročišta se ne
                 objavljuje, pa ga ni mi ne znamo.
               </p>
@@ -370,8 +667,9 @@ const CHIP_OUTLINE = 'border border-edge px-2 py-[5px] font-mono text-[10.5px] f
         {
           similar.length > 0 && (
             <>
-              <h2 class="mt-7 text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim">
-                Uporedive prodaje — {TAG_BY_ID.get(l.itemTags[0])?.label.toLowerCase() ?? 'slični predmeti'}
+              <h2 class="mt-7 flex items-center gap-1.5 text-[0.6875rem] font-semibold uppercase leading-none tracking-caps text-dim">
+                <Icon name="scales" size={13} class="text-faint" />
+                Uporedive prodaje - {TAG_BY_ID.get(l.itemTags[0])?.label.toLowerCase() ?? 'slični predmeti'}
               </h2>
               <div class="mt-2 flex flex-col">
                 {similar.map((c) => {
@@ -379,13 +677,13 @@ const CHIP_OUTLINE = 'border border-edge px-2 py-[5px] font-mono text-[10.5px] f
                   return (
                     <a
                       href={`/oglas/${c.id}/`}
-                      class="flex justify-between gap-2.5 border-b border-rule py-2.5 text-[12.5px] leading-snug last:border-0 hover:text-pine"
+                      class="flex justify-between gap-2.5 border-b border-rule py-2.5 text-[0.78125rem] leading-snug press last:border-0 hover:text-pine"
                     >
                       <span>{headline(c)}</span>
                       <span class="shrink-0 font-mono">
                         {cPerM2
                           ? `${formatNumber(cPerM2)} KM/m²`
-                          : (formatMoney(c.startingPrice ?? c.appraisedValue) ?? '—')}
+                          : (formatMoney(c.startingPrice ?? c.appraisedValue) ?? '-')}
                       </span>
                     </a>
                   );
@@ -395,14 +693,50 @@ const CHIP_OUTLINE = 'border border-edge px-2 py-[5px] font-mono text-[10.5px] f
           )
         }
 
-        <div class="mt-6 flex gap-2">
+        <!--
+          Nothing here can e-mail a reminder, so the calendar file is the only
+          way a static site puts this date in front of someone on the day it
+          matters. It carries two alarms, the earlier one a week out, because
+          the deadline that actually binds is the deposit rather than the
+          hearing.
+        -->
+        <div class="mt-6 border border-edge bg-sheet p-[13px]">
+          <h2 class="flex items-center gap-1.5 text-[0.6875rem] font-semibold uppercase leading-none tracking-label">
+            <Icon name="calendar-plus" size={13} class="text-pine" />
+            Dodaj u kalendar
+          </h2>
+          <p class="mb-2.5 mt-2 text-[0.75rem] leading-relaxed text-muted">
+            Podsjetnik 7 dana i 1 dan ranije - kapara se uplaćuje prije ročišta.
+          </p>
+          <a
+            href={`/oglas/${l.id}.ics`}
+            download={`rociste-${l.id}.ics`}
+            class="press press-give flex items-center justify-center gap-1.5 border border-ink bg-ink px-3 py-2.5 text-[0.75rem] font-semibold leading-none text-white"
+          >
+            <Icon name="calendar-plus" size={14} />
+            Preuzmi .ics
+          </a>
+          {
+            !l.saleTime && (
+              <p class="mt-2 text-[0.71875rem] leading-relaxed text-dim">
+                Oglas ne navodi vrijeme, pa je upisano 09:00 kao pretpostavka.
+              </p>
+            )
+          }
+        </div>
+
+        <div class="mt-4 flex flex-wrap gap-2">
           <SaveToggle storeKey={`sacuvano:oglas:${l.id}`} label="Sačuvaj oglas" activeLabel="Sačuvano ✓" />
           <button
             type="button"
             id="share"
-            class="border border-rule px-3 py-2.5 text-[12px] font-semibold leading-none hover:border-ink"
+            class="flex items-center gap-1.5 press press-give border border-rule px-3 py-2.5 text-[0.75rem] font-semibold leading-none hover:border-ink"
           >
-            Podijeli
+            <Icon name="share-network" size={14} class="text-dim" />
+            <span class="swap">
+              <span data-idle>Podijeli</span>
+              <span data-done aria-hidden="true">Link kopiran</span>
+            </span>
           </button>
         </div>
       </aside>
@@ -411,9 +745,107 @@ const CHIP_OUTLINE = 'border border-edge px-2 py-[5px] font-mono text-[10.5px] f
 </Base>
 
 <script>
+  // The arithmetic lives in lib/costs.ts so the rules are written down once;
+  // this only reads the inputs and prints the result. The deposit is the one
+  // figure that is not editable - it comes from the notice - so it rides in on
+  // a data attribute rather than through a global.
+  import { costs, formatKm } from '../../lib/costs.ts';
+
+  const form = document.getElementById('cost') as HTMLElement | null;
+  const bid = document.getElementById('cost-bid') as HTMLInputElement | null;
+
+  if (form && bid) {
+    const taxInput = document.getElementById('cost-tax') as HTMLInputElement;
+    const feesInput = document.getElementById('cost-fees') as HTMLInputElement;
+    const otherInput = document.getElementById('cost-other') as HTMLInputElement;
+    const vat = document.getElementById('cost-vat') as HTMLInputElement | null;
+    const useAltBase = document.getElementById('cost-base') as HTMLInputElement | null;
+
+    const attr = (k: string) => (form.dataset[k] ? Number(form.dataset[k]) : null);
+    const deposit = attr('deposit');
+    const floor = attr('floor');
+    const altBase = attr('base');
+    /** The rate the page opened with, to restore when the VAT box is cleared. */
+    const seedRate = Number(form.dataset.rate ?? 0) * 100;
+    const vatRate = Number(form.dataset.vat ?? 0) * 100;
+
+    const out = {
+      deposit: document.getElementById('cost-deposit')!,
+      balance: document.getElementById('cost-balance')!,
+      tax: document.getElementById('cost-tax-out')!,
+      taxRow: document.getElementById('cost-tax-row')!,
+      taxLabel: document.getElementById('cost-tax-label')!,
+      fees: document.getElementById('cost-fees-out')!,
+      other: document.getElementById('cost-other-out')!,
+      otherRow: document.getElementById('cost-other-row') as HTMLElement,
+      total: document.getElementById('cost-total')!,
+      floor: document.getElementById('cost-floor') as HTMLElement | null,
+    };
+
+    /** An empty or nonsense field reads as zero rather than as NaN on the page. */
+    const num = (el: HTMLInputElement) => {
+      const n = Number(el.value);
+      return Number.isFinite(n) && n > 0 ? n : 0;
+    };
+
+    // Ticking VAT swaps the rate rather than adding to it: the two are
+    // alternatives in law, never both at once.
+    vat?.addEventListener('change', () => {
+      taxInput.value = String(vat.checked ? vatRate : seedRate).replace(/\.0$/, '');
+      const name = vat.checked ? 'PDV' : 'Porez na promet';
+      out.taxLabel.textContent = `${name} (%)`;
+      out.taxRow.textContent = name;
+      render();
+    });
+
+    function render() {
+      const amount = num(bid!);
+      const base = useAltBase?.checked && altBase !== null ? altBase : amount;
+      const b = costs({
+        bid: amount,
+        deposit,
+        taxRate: num(taxInput) / 100,
+        taxBase: base,
+        fees: num(feesInput),
+        other: num(otherInput),
+      });
+      out.deposit.textContent = b.deposit ? formatKm(b.deposit) : '-';
+      out.balance.textContent = formatKm(b.balance);
+      out.tax.textContent = formatKm(b.tax);
+      out.fees.textContent = formatKm(b.fees);
+      out.other.textContent = formatKm(b.other);
+      out.otherRow.hidden = b.other === 0;
+      out.total.textContent = formatKm(b.total);
+      // Rounding hides a bid one mark under the floor, so compare before it.
+      if (out.floor && floor !== null) out.floor.hidden = amount === 0 || amount >= floor;
+    }
+
+    for (const el of [bid, taxInput, feesInput, otherInput]) el.addEventListener('input', render);
+    useAltBase?.addEventListener('change', render);
+    render();
+  }
+</script>
+
+<script>
   const share = document.getElementById('share') as HTMLButtonElement | null;
 
   if (share) {
+    const idle = share.querySelector('[data-idle]')!;
+    const done = share.querySelector('[data-done]')!;
+    let restore: ReturnType<typeof setTimeout>;
+
+    /*
+      Both labels are already in the button, so confirming a copy is a flag on
+      the button rather than new text: the stylesheet cross-fades them and the
+      icon beside them is left alone. Only one is exposed at a time, so a screen
+      reader hears the button say one thing.
+    */
+    const swapped = (on: boolean) => {
+      share.toggleAttribute('data-swapped', on);
+      idle.toggleAttribute('aria-hidden', on);
+      done.toggleAttribute('aria-hidden', !on);
+    };
+
     share.addEventListener('click', async () => {
       const url = location.href;
       const title = document.title;
@@ -421,9 +853,10 @@ const CHIP_OUTLINE = 'border border-edge px-2 py-[5px] font-mono text-[10.5px] f
         if (navigator.share) await navigator.share({ title, url });
         else {
           await navigator.clipboard.writeText(url);
-          const original = share.textContent;
-          share.textContent = 'Link kopiran';
-          setTimeout(() => (share.textContent = original), 2000);
+          swapped(true);
+          // A second copy before the first has reset restarts the two seconds.
+          clearTimeout(restore);
+          restore = setTimeout(() => swapped(false), 2000);
         }
       } catch {
         // A dismissed share sheet or a denied clipboard is not an error worth reporting.

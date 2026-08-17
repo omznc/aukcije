@@ -1,0 +1,345 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { itemCategories } from '../lib/data.ts';
+import { SALE_TYPE_ICONS, iconBody } from '../lib/icons.ts';
+
+/**
+ * Everything on this page is chosen in the visitor's own browser, so the build
+ * cannot know what belongs here. The notices are fetched from /sacuvano.json and
+ * rendered client-side; the categories are all printed here and hidden, because
+ * there are only a few dozen of them and revealing a row beats shipping a second
+ * copy of the labels as JSON.
+ */
+---
+
+<Base
+  title="Sačuvani oglasi"
+  description="Oglasi i kategorije koje ste sačuvali. Sve ostaje u vašem pregledniku - bez računa i bez slanja igdje."
+>
+  <div class="gut border-b border-rule pb-[26px] pt-[34px]">
+    <nav class="mb-3 font-mono text-[0.6875rem] leading-none text-dim">
+      <a href="/" class="hover:text-ink">AKTUELNE</a> / SAČUVANO
+    </nav>
+    <h1 class="font-serif text-[2rem] leading-title tracking-title sm:text-[2.5rem] sm:leading-display sm:tracking-display">Sačuvano</h1>
+    <p class="mt-3 max-w-[62ch] text-[0.875rem] leading-relaxed text-muted">
+      Sve što ovdje vidite pamti isključivo vaš preglednik. Nema računa, ništa se ne šalje nama i
+      lista se ne prenosi na drugi uređaj - obrišete li podatke preglednika, obrisana je i ona.
+    </p>
+  </div>
+
+  <!--
+    The rows are built in the browser, where the build-time <Icon> is out of
+    reach, so the five sale-type glyphs ship once as a sprite and each row points
+    at one with <use>. Hidden, but still referencable.
+  -->
+  <svg hidden aria-hidden="true">
+    {
+      Object.entries(SALE_TYPE_ICONS).map(([type, icon]) => (
+        <symbol id={`st-${type}`} viewBox="0 0 256 256" set:html={iconBody(icon)} />
+      ))
+    }
+    <symbol id="ico-trash" viewBox="0 0 256 256" set:html={iconBody('trash')} />
+  </svg>
+
+  <section>
+    <div class="gut flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-rule py-3">
+      <h2 class="flex items-center gap-1.5 text-[0.6875rem] font-semibold uppercase leading-none tracking-caps text-dim">
+        <Icon name="bookmark-simple" size={13} class="text-faint" />
+        Sačuvani oglasi
+      </h2>
+      <p id="ads-status" class="font-mono text-[0.71875rem] leading-none text-dim" role="status" aria-live="polite">
+        UČITAVANJE…
+      </p>
+    </div>
+
+    <div id="ads-rows" class="bg-white"></div>
+
+    <template id="ads-empty">
+      <p class="gut bg-white py-10 text-[0.84375rem] leading-relaxed text-muted">
+        <Icon name="bookmark-simple" size={16} class="mr-1.5 text-ghost" />
+        Još niste sačuvali nijedan oglas. Otvorite bilo koji oglas i pritisnite{' '}
+        <b class="font-semibold text-ink">Sačuvaj oglas</b> - vratit će se ovdje. Počnite od{' '}
+        <a class="text-pine underline" href="/">aktuelnih prodaja</a>.
+      </p>
+    </template>
+  </section>
+
+  <section id="cats" hidden>
+    <div class="gut border-b border-rule py-3">
+      <h2 class="flex items-center gap-1.5 text-[0.6875rem] font-semibold uppercase leading-none tracking-caps text-dim">
+        <Icon name="tag" size={13} class="text-faint" />
+        Kategorije koje pratite
+      </h2>
+    </div>
+    <!-- Rows hide by class, not by the `hidden` attribute: `display:flex` beats it. -->
+    <div class="gut bg-white pb-5 pt-1">
+      {
+        itemCategories.map((t) => (
+          <div
+            data-cat={t.id}
+            class="hidden items-baseline justify-between gap-3 border-b border-hair py-2.5 last:border-0"
+          >
+            <a href={`/predmeti/${t.id}/`} class="text-[0.84375rem] font-medium press leading-snug hover:text-pine">
+              {t.label}
+              <span class="ml-2 font-mono text-[0.71875rem] font-normal text-dim">
+                {t.upcoming > 0 ? <b class="text-pine">{t.upcoming}</b> : '0'} otvoreno / {t.count}
+              </span>
+            </a>
+            <button
+              type="button"
+              data-forget={`prati:predmet:${t.id}`}
+              class="flex shrink-0 items-center gap-1 press font-mono text-[0.6875rem] leading-none text-dim hover:text-brick"
+            >
+              <Icon name="trash" size={13} />
+              UKLONI
+            </button>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!--
+    The saved list is the one thing here the build cannot see, so its calendar
+    has to be assembled in the browser from the same generator the server-side
+    feeds use - lib/ics.ts carries no dataset import for exactly this reason.
+  -->
+  <div class="gut flex flex-wrap items-center gap-3 border-t border-rule bg-band py-4">
+    <button
+      type="button"
+      id="export-ics"
+      hidden
+      class="items-center gap-1.5 press press-give border border-ink bg-ink px-3 py-2.5 text-[0.75rem] font-semibold leading-none text-white [&:not([hidden])]:flex"
+    >
+      <Icon name="calendar-plus" size={14} />
+      <span id="export-label">Sve u kalendar (.ics)</span>
+    </button>
+    <button
+      type="button"
+      id="forget-all"
+      hidden
+      class="items-center gap-1.5 press press-give border border-edge px-2.5 py-2 text-[0.71875rem] font-medium leading-none hover:border-brick hover:text-brick [&:not([hidden])]:flex"
+    >
+      <Icon name="trash" size={14} />
+      Obriši sve sačuvano
+    </button>
+    <noscript>
+      <p class="text-[0.8125rem] leading-relaxed text-muted">
+        Sačuvani oglasi žive u pregledniku, pa ova stranica traži JavaScript. Bez njega koristite{' '}
+        <a class="text-pine underline" href="/sudovi/">pregled po sudovima</a> ili{' '}
+        <a class="text-pine underline" href="/predmeti/">pregled po predmetima</a>.
+      </p>
+    </noscript>
+  </div>
+</Base>
+
+<script>
+  import { daysUntil, urgency, daysLabel } from '../lib/dates.ts';
+  import { AD_PREFIX, TAG_PREFIX, savedKeys } from '../lib/saved.ts';
+  import { wrapEvents, eventBlocks } from '../lib/ics.ts';
+  import type { Card } from './sacuvano.json.ts';
+
+  const rowsEl = document.getElementById('ads-rows')!;
+  const statusEl = document.getElementById('ads-status')!;
+  const emptyEl = document.getElementById('ads-empty') as HTMLTemplateElement;
+  const catsEl = document.getElementById('cats')!;
+  const forgetAll = document.getElementById('forget-all') as HTMLButtonElement;
+  const exportIcs = document.getElementById('export-ics') as HTMLButtonElement;
+  const exportLabel = document.getElementById('export-label')!;
+
+  const URGENCY_COLOR = {
+    due: 'text-brick',
+    soon: 'text-rust',
+    later: 'text-ink-mid',
+    past: 'text-dim',
+  };
+
+  const escape = (s: string | null) =>
+    String(s ?? '').replace(
+      /[&<>"]/g,
+      (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!,
+    );
+
+  /** 1 oglas, everything else oglasa - but 11 and 21 take the singular too. */
+  const plural = (n: number) =>
+    n % 10 === 1 && n % 100 !== 11 ? 'OGLAS' : 'OGLASA';
+
+  function row(id: string, c: Card): string {
+    const days = daysUntil(c.d);
+    const state = urgency(days);
+    const date = `${c.d.slice(8, 10)}.${c.d.slice(5, 7)}.${c.d.slice(0, 4)}.`;
+    // formatPercent writes a real minus sign for a price below the appraisal, so
+    // its presence is what separates a genuine discount from a flat 0%. Only the
+    // former earns the green, exactly as in the listing tables.
+    const off = c.o ? `${c.o.startsWith('−') ? 'text-pine' : 'text-dim'}` : '';
+    return `
+      <div data-saved-row class="gut flex items-start gap-4 press border-b border-hair py-3.5 hover:bg-[#faf8f4] active:bg-[#f0ece3]">
+        <a href="/oglas/${escape(id)}/" class="min-w-0 flex-1">
+          <div class="flex flex-wrap items-baseline justify-between gap-x-5 gap-y-1">
+            <span class="text-[0.90625rem] font-semibold leading-snug">${escape(c.h)}</span>
+            <span class="whitespace-nowrap font-mono text-[0.84375rem] font-bold leading-none">${escape(c.p ?? '-')}${
+              c.o ? ` <span class="font-normal ${off}">${escape(c.o)}</span>` : ''
+            }</span>
+          </div>
+          <div class="mt-[3px] text-[0.75rem] leading-snug text-dim">
+            <svg viewBox="0 0 256 256" width="13" height="13" fill="currentColor" aria-hidden="true"
+              class="mr-1 inline-block shrink-0 align-[-0.15em] text-faint"><use href="#st-${escape(c.t)}"/></svg>
+            ${escape(c.m)}
+          </div>
+          <div class="mt-[7px] font-mono text-[0.6875rem] leading-none text-dim">
+            <span class="font-bold ${URGENCY_COLOR[state]}">${escape(daysLabel(days)).toUpperCase()}</span>
+            · ${escape(date)} · ${escape(c.c)} · ${escape(c.e)}
+          </div>
+        </a>
+        <button
+          type="button"
+          data-forget="${AD_PREFIX}${escape(id)}"
+          class="flex shrink-0 items-center gap-1 press font-mono text-[0.6875rem] leading-none text-dim hover:text-brick"
+        ><svg viewBox="0 0 256 256" width="13" height="13" fill="currentColor" aria-hidden="true"
+            class="inline-block shrink-0"><use href="#ico-trash"/></svg>UKLONI</button>
+      </div>`;
+  }
+
+  /** Soonest hearing first, with everything already held pushed below it. */
+  function order(a: [string, Card], b: [string, Card]): number {
+    const past = (c: Card) => (daysUntil(c.d) < 0 ? 1 : 0);
+    return past(a[1]) - past(b[1]) || (past(a[1]) ? b[1].d.localeCompare(a[1].d) : a[1].d.localeCompare(b[1].d));
+  }
+
+  function renderCategories(): number {
+    const followed = savedKeys(TAG_PREFIX);
+    for (const el of catsEl.querySelectorAll<HTMLElement>('[data-cat]')) {
+      const on = followed.includes(el.dataset.cat!);
+      el.classList.toggle('hidden', !on);
+      el.classList.toggle('flex', on);
+      // Unlike the ad rows these elements are reused rather than rebuilt, so a
+      // row that faded out on removal has to be reset before it can come back.
+      if (on) delete el.dataset.leaving;
+    }
+    catsEl.hidden = followed.length === 0;
+    return followed.length;
+  }
+
+  async function renderAds(): Promise<number> {
+    const ids = savedKeys(AD_PREFIX);
+    if (!ids.length) {
+      rowsEl.replaceChildren(emptyEl.content.cloneNode(true));
+      statusEl.textContent = '';
+      return 0;
+    }
+
+    let cards: Record<string, Card>;
+    try {
+      const response = await fetch('/sacuvano.json');
+      if (!response.ok) throw new Error(String(response.status));
+      cards = (await response.json()).cards;
+    } catch {
+      statusEl.textContent = 'INDEKS NIJE DOSTUPAN';
+      return ids.length;
+    }
+
+    // A notice can only vanish from the index if it was dropped from the dataset;
+    // saying so beats silently showing a shorter list than the visitor saved.
+    const found = ids.filter((id) => cards[id]).map((id): [string, Card] => [id, cards[id]]);
+    const missing = ids.length - found.length;
+
+    rowsEl.innerHTML = found.sort(order).map(([id, c]) => row(id, c)).join('');
+    statusEl.textContent = `${found.length} ${plural(found.length)}${
+      missing ? ` · ${missing} VIŠE NIJE U BAZI` : ''
+    }`;
+    return ids.length;
+  }
+
+  async function render() {
+    const [ads, cats] = [await renderAds(), renderCategories()];
+    forgetAll.hidden = ads + cats === 0;
+    exportIcs.hidden = ads === 0;
+  }
+
+  /**
+   * The saved notices as one calendar file.
+   *
+   * Assembled from each listing's own .ics rather than from the card index: the
+   * cards carry what a row needs, and an event needs the venue, the case number
+   * and the deposit as well. Fetching the files the site already publishes keeps
+   * one description of an event instead of two that can drift.
+   */
+  exportIcs.addEventListener('click', async () => {
+    const ids = savedKeys(AD_PREFIX);
+    if (!ids.length) return;
+
+    exportIcs.disabled = true;
+    exportLabel.textContent = 'Pripremam…';
+
+    const files = await Promise.all(
+      ids.map((id) =>
+        fetch(`/oglas/${encodeURIComponent(id)}.ics`)
+          .then((r) => (r.ok ? r.text() : ''))
+          // A notice dropped from the dataset simply contributes no event.
+          .catch(() => ''),
+      ),
+    );
+    const blocks = files.flatMap(eventBlocks);
+
+    if (!blocks.length) {
+      exportLabel.textContent = 'Ništa za izvoz';
+      exportIcs.disabled = false;
+      return;
+    }
+
+    const ics = wrapEvents(blocks, { name: 'Sačuvane sudske prodaje' });
+    const url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar;charset=utf-8' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'sacuvane-sudske-prodaje.ics';
+    link.click();
+    URL.revokeObjectURL(url);
+
+    exportLabel.textContent = `Preuzeto ${blocks.length}`;
+    exportIcs.disabled = false;
+    setTimeout(() => (exportLabel.textContent = 'Sve u kalendar (.ics)'), 2500);
+  });
+
+  document.addEventListener('click', (event) => {
+    const button = (event.target as HTMLElement).closest<HTMLElement>('[data-forget]');
+    if (!button) return;
+    localStorage.removeItem(button.dataset.forget!);
+
+    // The row is gone from storage either way; letting it leave the screen first
+    // only decides whether the list closing over it reads as a jump. If the
+    // transition never reports back - another render replaced the row, or the
+    // motion is switched off - the timer rebuilds the list regardless.
+    const row = button.closest<HTMLElement>('[data-saved-row], [data-cat]');
+    if (!row) return void render();
+
+    let rebuilt = false;
+    const rebuild = () => {
+      if (rebuilt) return;
+      rebuilt = true;
+      render();
+    };
+
+    row.dataset.leaving = '';
+    row.addEventListener('transitionend', rebuild, { once: true });
+    setTimeout(rebuild, 400);
+  });
+
+  forgetAll.addEventListener('click', () => {
+    if (!confirm('Obrisati sve sačuvane oglase i praćene kategorije?')) return;
+    for (const key of [...savedKeys(AD_PREFIX)].map((id) => AD_PREFIX + id))
+      localStorage.removeItem(key);
+    for (const key of [...savedKeys(TAG_PREFIX)].map((id) => TAG_PREFIX + id))
+      localStorage.removeItem(key);
+    render();
+  });
+
+  try {
+    localStorage.getItem(AD_PREFIX);
+    render();
+  } catch {
+    statusEl.textContent = '';
+    rowsEl.innerHTML =
+      '<p class="gut bg-white py-10 text-[0.84375rem] leading-relaxed text-muted">Vaš preglednik ne dozvoljava lokalnu pohranu, pa spremanje oglasa ovdje ne radi.</p>';
+  }
+</script>

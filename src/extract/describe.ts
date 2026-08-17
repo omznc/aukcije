@@ -4,8 +4,8 @@ import { fold } from '../lib/text.ts';
  * Pull the "what is actually being sold" text out of a notice.
  *
  * Court notices name the goods in one of a few shapes:
- *   1. In the title, parenthesised — "… izvršenika (Kosačica za travu …)".
- *   2. One plain line per item after a colon — the most common shape.
+ *   1. In the title, parenthesised - "… izvršenika (Kosačica za travu …)".
+ *   2. One plain line per item after a colon - the most common shape.
  *   3. A bulleted or numbered list.
  *   4. An inventory table with a "Opis | Kom. | Vrijednost" header row.
  *
@@ -85,7 +85,7 @@ export function tidy(s: string): string {
   return s
     .replace(/-\n(?=\p{Ll})/gu, '')
     .replace(/\s*\n\s*/g, ' ')
-    .replace(/\.{3,}/g, ' — ')
+    .replace(/\.{3,}/g, ' - ')
     .replace(/\s{2,}/g, ' ')
     .replace(/;\s*;/g, ';')
     .replace(/^[\s\-–—•;,:]+|[\s;,]+$/g, '')

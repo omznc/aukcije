@@ -18,8 +18,8 @@ import { toLatin } from './lib/text.ts';
  *    buyer needs to know roughly where the property is.
  *  - National identifiers (JMBG) and contact details are removed outright.
  *
- * Company parties are left intact where they are clearly legal persons — a
- * d.o.o./a.d./j.p. is not personal data — since that information is useful and
+ * Company parties are left intact where they are clearly legal persons - a
+ * d.o.o./a.d./j.p. is not personal data - since that information is useful and
  * carries no privacy cost.
  */
 
@@ -64,7 +64,7 @@ function redactParties(input: string): string {
 
   return input.replace(re, (match, role: string, party: string, offset: number) => {
     const after = input.slice(offset + match.length, offset + match.length + 12);
-    // "Komunalac a.d." — the run we just consumed is a company name.
+    // "Komunalac a.d." - the run we just consumed is a company name.
     if (new RegExp(String.raw`^\s*${LEGAL_FORM}\b`, 'i').test(after)) return match;
     // Nothing but whitespace or an already-redacted marker.
     if (!party.trim() || party.includes(REDACTED)) return match;
@@ -123,7 +123,7 @@ export function redactVenue(venue: string | null): string | null {
 
   // A street address is only publishable here because it is the courthouse. If
   // nothing in the text identifies it as a court or a courtroom, its provenance
-  // is unclear — drop it rather than publish an unattributed address.
+  // is unclear - drop it rather than publish an unattributed address.
   const hasStreet = /\b(?:ul\.|ulica|ulici)\s+\S/i.test(cleaned);
   const identifiesCourt = /\b(?:sud|sudnic|kancelarij|soba|ured|prostorij|zgrad)/i.test(
     toLatin(cleaned),

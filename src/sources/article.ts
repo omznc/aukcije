@@ -28,7 +28,7 @@ export interface Article {
 }
 
 /**
- * Full article record. The `lang` query param is mandatory — omitting it makes
+ * Full article record. The `lang` query param is mandatory - omitting it makes
  * the Oracle backend raise `ORA-20010: Ne postoji jezik sa šifrom`. Requesting
  * `B` still returns Cyrillic-authored notices in their original script, with
  * `jezik.jezik.sifra` telling us what that script actually is.

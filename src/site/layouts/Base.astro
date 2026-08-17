@@ -1,138 +1,430 @@
 ---
-import '../styles/global.css';
+import "../styles/global.css";
+import Icon from "../components/Icon.astro";
+import { AD_PREFIX, TAG_PREFIX } from "../lib/saved.ts";
+
+export const REPO = "https://github.com/omznc/aukcije";
 
 interface Props {
-  title: string;
-  description?: string;
+    title: string;
+    description?: string;
+    /**
+     * Absolute-from-root path to this page's share image. Listing pages point at
+     * their own; everything else falls back to the one static card.
+     */
+    image?: string;
 }
 const {
-  title,
-  description = 'Pretraživi indeks sudskih prodaja (licitacija) u Bosni i Hercegovini — nekretnine, vozila, tehnika i oprema.',
+    title,
+    description = "Pretraživi indeks sudskih prodaja (licitacija) u Bosni i Hercegovini - nekretnine, vozila, tehnika i oprema.",
+    image = "/og/default.png",
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const shareImage = new URL(image, Astro.site).href;
 const path = Astro.url.pathname;
 
-const nav = [
-  { href: '/', label: 'Aktuelne' },
-  { href: '/predmeti/', label: 'Šta se prodaje' },
-  { href: '/sudovi/', label: 'Sudovi' },
-  { href: '/arhiva/', label: 'Arhiva' },
-  { href: '/pretraga/', label: 'Pretraga' },
-  { href: '/kako-se-nadmetati/', label: 'Kako se nadmetati' },
+/**
+ * One icon per destination, so the same page is marked the same way in the
+ * header and in the footer. The endpoints at the end are not pages and keep
+ * their own icons rather than borrowing one.
+ */
+const nav = {
+    now: { href: "/", label: "Aktuelne", icon: "clock-countdown" },
+    drops: { href: "/snizenja/", label: "Sniženo", icon: "trend-down" },
+    items: { href: "/predmeti/", label: "Šta se prodaje", icon: "tag" },
+    courts: { href: "/sudovi/", label: "Sudovi", icon: "bank" },
+    map: { href: "/mapa/", label: "Mapa", icon: "map-trifold" },
+    archive: { href: "/arhiva/", label: "Arhiva", icon: "archive" },
+    prices: { href: "/cijene/", label: "Cijene", icon: "chart-bar" },
+    search: { href: "/pretraga/", label: "Pretraga", icon: "magnifying-glass" },
+    guide: {
+        href: "/kako-se-nadmetati/",
+        label: "Kako se nadmetati",
+        icon: "book-open-text",
+    },
+    // Only this entry has anything behind it that the build cannot see, so it is
+    // the only one that carries a count filled in by the browser.
+    saved: {
+        href: "/sacuvano/",
+        label: "Sačuvano",
+        icon: "bookmark-simple",
+        counted: true,
+    },
+};
+
+const tabs = Object.values(nav);
+
+const footerColumns = [
+    [nav.now, nav.drops, nav.items, nav.courts],
+    [nav.map, nav.archive, nav.prices, nav.search, nav.saved],
+    [
+        nav.guide,
+        { href: "/privatnost/", label: "Privatnost", icon: "shield-check" },
+        { href: "/rss.xml", label: "RSS", icon: "rss-simple", accent: true },
+        {
+            href: "/kalendar.ics",
+            label: "Kalendar (.ics)",
+            icon: "calendar-plus",
+        },
+        { href: "/podaci.json", label: "JSON dataset", icon: "database" },
+        { href: REPO, label: "Izvorni kod", icon: "github-logo" },
+    ],
 ];
 
 /** The listing and category pages live under their section's nav entry. */
-const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+const isActive = (href: string) =>
+    href === "/" ? path === "/" : path.startsWith(href);
 ---
 
 <!doctype html>
 <html lang="bs" class="h-full">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
-    <link rel="alternate" type="application/rss+xml" title="Nove sudske prodaje" href="/rss.xml" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif&family=JetBrains+Mono:wght@400;500;700&display=swap"
-    />
-  </head>
-  <body class="min-h-full bg-paper font-sans text-ink antialiased">
-    <div class="mx-auto min-h-screen max-w-[1180px] border-rule bg-sheet sm:border-x">
-      <header
-        class="gut flex flex-wrap items-center justify-between gap-3 border-b border-rule py-3.5"
-      >
-        <div class="flex items-baseline gap-3.5">
-          <a href="/" class="font-mono text-[15px] font-bold leading-none tracking-tight text-ink">
-            SUDSKE&#8202;PRODAJE<span class="text-pine">.ba</span>
-          </a>
-          <span class="hidden font-mono text-[10px] leading-none text-dim sm:inline">
-            NEZAVISNI INDEKS · NIJE SLUŽBENI IZVOR
-          </span>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:site_name" content="Sudske prodaje BiH" />
+        <meta property="og:locale" content="bs_BA" />
+        <!--
+          These notices circulate by being pasted into a chat, so the card is
+          the first thing most people see of a listing. Every page has one.
+        -->
+        <meta property="og:image" content={shareImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={shareImage} />
+        <link
+            rel="alternate"
+            type="application/rss+xml"
+            title="Nove sudske prodaje"
+            href="/rss.xml"
+        />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        />
+    </head>
+    <body class="min-h-full bg-paper font-sans text-ink antialiased">
+        <div
+            class="mx-auto min-h-screen max-w-[1180px] border-rule bg-sheet sm:border-x"
+        >
+            <header>
+                <!-- Same band as the tab strip below it, so the header reads as one block. -->
+                <div
+                    class="gut flex flex-wrap items-center justify-between gap-x-3.5 gap-y-1.5 bg-band pb-3 pt-3.5"
+                >
+                    <div class="flex items-baseline gap-3.5">
+                        <a
+                            href="/"
+                            class="font-mono text-[0.9375rem] font-bold leading-none tracking-tight text-ink"
+                        >
+                            SUDSKE PRODAJE
+                        </a>
+                        <span
+                            class="hidden font-mono text-[0.625rem] leading-none text-dim sm:inline"
+                        >
+                            NEZAVISNI INDEKS · NIJE SLUŽBENI IZVOR
+                        </span>
+                    </div>
+                    <a
+                        href="/rss.xml"
+                        class="press press-give flex items-center gap-1.5 font-mono text-[0.6875rem] font-medium leading-none text-rust"
+                    >
+                        <Icon name="rss-simple" size={14} />
+                        RSS
+                    </a>
+                </div>
+
+                <!--
+                  Tabs, drawn like a browser's: the strip sits on the tinted band
+                  and the active tab is a notch of the sheet below, so the two
+                  read as one surface. The rule under the strip is an inset shadow
+                  rather than a border, which lets the active tab's own background
+                  paint over it without a negative margin fighting the scroll box.
+                -->
+                <nav
+                    id="tabs"
+                    class="gut flex gap-1 overflow-x-auto bg-band pt-2 shadow-[inset_0_-1px_0_#dcd8cf] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                >
+                    {
+                        tabs.map((item) => (
+                            <a
+                                href={item.href}
+                                aria-current={
+                                    isActive(item.href) ? "page" : undefined
+                                }
+                                class:list={[
+                                    "press flex shrink-0 items-center gap-1.5 whitespace-nowrap border border-b-0 px-3 pb-[9px] pt-2 text-[0.78125rem] leading-none",
+                                    isActive(item.href)
+                                        ? "border-rule bg-sheet font-semibold text-ink"
+                                        : "border-transparent text-ink-mid hover:bg-[#eae7df] hover:text-ink active:bg-[#e0dcd2] active:text-ink",
+                                ]}
+                            >
+                                <Icon
+                                    name={item.icon}
+                                    size={15}
+                                    class={
+                                        isActive(item.href)
+                                            ? "text-pine"
+                                            : "text-dim"
+                                    }
+                                />
+                                {item.label}
+                                {item.counted && (
+                                    <span
+                                        data-saved-count
+                                        hidden
+                                        class="ml-0.5 border border-pine px-1 py-px font-mono text-[0.59375rem] font-bold leading-none text-pine"
+                                    />
+                                )}
+                            </a>
+                        ))
+                    }
+                </nav>
+
+                <!--
+                  The badge is the one thing in the header only this browser
+                  knows, so it ships empty and hidden. Filling it from the module
+                  below would pop it into the strip a frame after the header has
+                  already been painted - on every page, since each one is its own
+                  document. This runs while the header is still being parsed
+                  instead, so the tab is drawn its final width the first time.
+                  Inline and un-bundled on purpose: a module would be deferred,
+                  which is exactly the delay being avoided.
+                -->
+                <script
+                    is:inline
+                    define:vars={{ adPrefix: AD_PREFIX, tagPrefix: TAG_PREFIX }}
+                >
+                    try {
+                        var total = 0;
+                        for (var i = 0; i < localStorage.length; i++) {
+                            var key = localStorage.key(i);
+                            if (
+                                key &&
+                                (key.indexOf(adPrefix) === 0 ||
+                                    key.indexOf(tagPrefix) === 0)
+                            )
+                                total++;
+                        }
+                        if (total > 0) {
+                            var badges = document.querySelectorAll(
+                                "[data-saved-count]",
+                            );
+                            for (var b = 0; b < badges.length; b++) {
+                                badges[b].textContent = String(total);
+                                badges[b].hidden = false;
+                                // Tells refreshSavedCount the badge is already
+                                // filled, so it stays silent rather than
+                                // treating this as an arrival worth animating.
+                                badges[b].dataset.filled = "";
+                            }
+                        }
+                    } catch (e) {
+                        // Storage can be blocked outright; the badge then simply
+                        // stays hidden, exactly as it ships.
+                    }
+                </script>
+            </header>
+
+            <main><slot /></main>
+
+            <footer
+                class="gut flex flex-wrap justify-between gap-8 border-t border-rule pb-[30px] pt-[26px]"
+            >
+                <div class="max-w-[56ch]">
+                    <div class="font-mono text-[0.75rem] font-bold leading-none">
+                        SUDSKE PRODAJE
+                    </div>
+                    <p class="mt-2.5 text-[0.75rem] leading-relaxed text-muted">
+                        Nezavisni indeks oglasa o sudskim prodajama u BiH.
+                        Podaci se preuzimaju sa pravosudje.ba dva puta dnevno i
+                        obrađuju automatski. Mjerodavan je isključivo zaključak
+                        suda. Nema računa, kolačića ni praćenja.
+                    </p>
+                    <!--
+                      The scraper, the extraction rules and the redaction pass
+                      are all in the open. For a site that republishes court
+                      documents with names taken out, "how" is a fair question
+                      to ask, and the answer should not need asking for.
+                    -->
+                    <p class="mt-3 flex flex-wrap gap-x-4 gap-y-2 font-mono text-[0.6875rem] leading-none text-dim">
+                        <a
+                            href="https://omarzunic.com"
+                            rel="author"
+                            class="inline-flex items-center gap-1.5 text-pine"
+                        >
+                            <Icon name="globe-hemisphere-west" size={14} />
+                            OMARZUNIC.COM
+                        </a>
+                        <a
+                            href={REPO}
+                            rel="noopener"
+                            target="_blank"
+                            class="inline-flex items-center gap-1.5 hover:text-ink"
+                        >
+                            <Icon name="github-logo" size={14} />
+                            IZVORNI KOD NA GITHUBU
+                        </a>
+                    </p>
+                </div>
+                <div
+                    class="flex gap-10 text-[0.78125rem] leading-[1.9] text-ink-mid"
+                >
+                    {
+                        footerColumns.map((column) => (
+                            <div class="flex flex-col">
+                                {column.map((item) => (
+                                    <a
+                                        href={item.href}
+                                        rel={
+                                            item.href.startsWith("http")
+                                                ? "noopener"
+                                                : undefined
+                                        }
+                                        target={
+                                            item.href.startsWith("http")
+                                                ? "_blank"
+                                                : undefined
+                                        }
+                                        class:list={[
+                                            "press flex items-center gap-2",
+                                            item.accent && "text-rust",
+                                        ]}
+                                    >
+                                        <Icon
+                                            name={item.icon}
+                                            size={14}
+                                            class={
+                                                item.accent ? "" : "text-faint"
+                                            }
+                                        />
+                                        {item.label}
+                                    </a>
+                                ))}
+                            </div>
+                        ))
+                    }
+                </div>
+            </footer>
         </div>
 
-        <nav class="flex flex-wrap items-center gap-x-5 gap-y-2 text-[12.5px] font-medium text-ink-mid">
-          {
-            nav.map((item) => (
-              <a
-                href={item.href}
-                aria-current={isActive(item.href) ? 'page' : undefined}
-                class:list={[
-                  'border-b-2 pb-[3px] leading-none hover:text-ink',
-                  isActive(item.href) ? 'border-pine text-ink' : 'border-transparent',
-                ]}
-              >
-                {item.label}
-              </a>
-            ))
-          }
-          <a href="/rss.xml" class="font-mono text-[11px] font-medium leading-none text-rust">RSS</a>
-        </nav>
-      </header>
+        <script>
+            import { refreshSavedCount } from "../lib/saved-count.ts";
 
-      <main><slot /></main>
+            refreshSavedCount();
+            // Saving in one tab should show up in the others; `storage` only fires on
+            // the tabs that did not make the change, which is exactly the gap here.
+            addEventListener("storage", refreshSavedCount);
 
-      <footer class="gut flex flex-wrap justify-between gap-8 border-t border-rule pb-[30px] pt-[26px]">
-        <div class="max-w-[56ch]">
-          <div class="font-mono text-[12px] font-bold leading-none">SUDSKE&#8202;PRODAJE.ba</div>
-          <p class="mt-2.5 text-[12px] leading-relaxed text-muted">
-            Nezavisni indeks oglasa o sudskim prodajama u BiH. Podaci se preuzimaju sa pravosudje.ba
-            dva puta dnevno i obrađuju automatski. Mjerodavan je isključivo zaključak suda. Nema
-            računa, kolačića ni praćenja.
-          </p>
-        </div>
-        <div class="flex gap-10 text-[12.5px] leading-[1.9] text-ink-mid">
-          <div class="flex flex-col">
-            <a href="/">Aktuelne</a>
-            <a href="/predmeti/">Šta se prodaje</a>
-            <a href="/sudovi/">Sudovi</a>
-          </div>
-          <div class="flex flex-col">
-            <a href="/arhiva/">Arhiva</a>
-            <a href="/pretraga/">Pretraga</a>
-            <a href="/kako-se-nadmetati/">Kako se nadmetati</a>
-          </div>
-          <div class="flex flex-col">
-            <a href="/privatnost/">Privatnost</a>
-            <a href="/rss.xml" class="text-rust">RSS</a>
-            <a href="/podaci.json">JSON dataset</a>
-          </div>
-        </div>
-      </footer>
-    </div>
+            // Which side of the tab strip still has tabs behind it. The stylesheet
+            // turns this into an edge fade; see #tabs below.
+            const tabs = document.getElementById("tabs");
+            if (tabs) {
+                const update = () => {
+                    const before = tabs.scrollLeft > 4;
+                    const after =
+                        tabs.scrollLeft + tabs.clientWidth <
+                        tabs.scrollWidth - 4;
+                    tabs.dataset.overflow =
+                        before && after
+                            ? "both"
+                            : before
+                              ? "left"
+                              : after
+                                ? "right"
+                                : "none";
+                };
+                tabs.addEventListener("scroll", update, { passive: true });
+                addEventListener("resize", update);
+                update();
+                // The active tab is often off-screen on a phone; bring it into view.
+                tabs.querySelector('[aria-current="page"]')?.scrollIntoView({
+                    inline: "center",
+                    block: "nearest",
+                });
+            }
+        </script>
 
-    <style is:global>
-      /*
+        <style is:global>
+            /*
         The sheet's horizontal gutter. It repeats on every band, header and table
         row, so it lives here once rather than as a pair of classes on each.
       */
-      .gut {
-        padding-left: 20px;
-        padding-right: 20px;
-      }
-      @media (min-width: 768px) {
-        .gut {
-          padding-left: 30px;
-          padding-right: 30px;
-        }
-      }
-      a {
-        color: inherit;
-        text-decoration: none;
-      }
-      footer a:hover,
-      nav a:hover {
-        color: #16181a;
-      }
-    </style>
-  </body>
+            .gut {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+            @media (min-width: 768px) {
+                .gut {
+                    padding-left: 30px;
+                    padding-right: 30px;
+                }
+            }
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+
+            /*
+        On a narrow screen the tab strip scrolls, and a strip cut off flush with
+        the edge reads as the end of the list. Fading whichever side still has
+        tabs behind it says there is more, without spending room on arrows. The
+        attribute is set by the script above; with no JS the strip simply never
+        fades.
+      */
+            #tabs[data-overflow="right"] {
+                -webkit-mask-image: linear-gradient(
+                    to right,
+                    #000 calc(100% - 36px),
+                    transparent
+                );
+                mask-image: linear-gradient(
+                    to right,
+                    #000 calc(100% - 36px),
+                    transparent
+                );
+            }
+            #tabs[data-overflow="left"] {
+                -webkit-mask-image: linear-gradient(
+                    to right,
+                    transparent,
+                    #000 36px
+                );
+                mask-image: linear-gradient(to right, transparent, #000 36px);
+            }
+            #tabs[data-overflow="both"] {
+                -webkit-mask-image: linear-gradient(
+                    to right,
+                    transparent,
+                    #000 36px,
+                    #000 calc(100% - 36px),
+                    transparent
+                );
+                mask-image: linear-gradient(
+                    to right,
+                    transparent,
+                    #000 36px,
+                    #000 calc(100% - 36px),
+                    transparent
+                );
+            }
+            footer a:hover,
+            nav a:hover {
+                color: #16181a;
+            }
+        </style>
+    </body>
 </html>

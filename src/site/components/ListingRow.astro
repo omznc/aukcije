@@ -1,7 +1,9 @@
 ---
 import type { Listing } from '../../schema.ts';
+import Icon from './Icon.astro';
 import { formatMoney, daysUntil } from '../lib/data.ts';
 import { headline } from '../lib/headline.ts';
+import { saleTypeIcon } from '../lib/icons.ts';
 import { metaLine, discount, formatPercent, urgency, daysLabel } from '../lib/stats.ts';
 
 interface Props {
@@ -29,7 +31,9 @@ const URGENCY_COLOR = {
   href={`/oglas/${l.id}/`}
   {...attrs}
   class:list={[
-    'grid grid-cols-[70px_1fr] items-start gap-x-4 gap-y-2 border-b border-hair py-3.5 hover:bg-[#faf8f4] md:items-center md:gap-y-0',
+    // A row is too wide to scale under the finger without looking like a
+    // glitch, so it acknowledges the press with colour alone.
+    'press grid grid-cols-[70px_1fr] items-start gap-x-4 gap-y-2 border-b border-hair py-3.5 hover:bg-[#faf8f4] active:bg-[#f0ece3] md:items-center md:gap-y-0',
     'gut',
     showCourt
       ? 'md:grid-cols-[88px_1fr_160px_120px_120px_132px]'
@@ -37,24 +41,28 @@ const URGENCY_COLOR = {
   ]}
 >
   <div>
-    <div class:list={['font-mono text-[12.5px] font-bold leading-none', URGENCY_COLOR[urgency(days)]]}>
+    <div class:list={['font-mono text-[0.78125rem] font-bold leading-none', URGENCY_COLOR[urgency(days)]]}>
       {daysLabel(days)}
     </div>
-    <div class="mt-1 font-mono text-[10.5px] leading-none text-faint">
+    <div class="mt-1 font-mono text-[0.65625rem] leading-none text-faint">
       {l.saleDate.slice(8, 10)}.{l.saleDate.slice(5, 7)}.
     </div>
   </div>
 
   <div class="md:pr-5">
-    <div class="text-[14px] font-semibold leading-snug">{headline(l)}</div>
-    <div class="mt-[3px] text-[11.5px] leading-snug text-dim">{metaLine(l)}</div>
+    <div class="text-[0.875rem] font-semibold leading-snug">{headline(l)}</div>
+    <!-- The meta line opens with the sale type, so the icon reads as its marker. -->
+    <div class="mt-[3px] text-[0.71875rem] leading-snug text-dim">
+      <Icon name={saleTypeIcon(l.saleType)} size={13} class="mr-1 text-faint" />
+      {metaLine(l)}
+    </div>
   </div>
 
   {
     showCourt && (
-      <div class="col-start-2 text-[11.5px] leading-snug text-ink-mid md:col-start-auto md:pr-3">
+      <div class="col-start-2 text-[0.71875rem] leading-snug text-ink-mid md:col-start-auto md:pr-3">
         {l.court}{' '}
-        <span class="whitespace-nowrap border border-edge px-1 py-0.5 font-mono text-[9.5px] font-medium leading-none">
+        <span class="whitespace-nowrap border border-edge px-1 py-0.5 font-mono text-[0.59375rem] font-medium leading-none">
           {l.entity}
         </span>
       </div>
@@ -64,16 +72,16 @@ const URGENCY_COLOR = {
   <div
     class="col-start-2 flex flex-wrap items-baseline gap-x-4 md:col-start-auto md:contents"
   >
-    <span class="font-mono text-[13px] leading-none text-dim md:text-right">
-      {formatMoney(l.appraisedValue) ?? '—'}
+    <span class="font-mono text-[0.8125rem] leading-none text-dim md:text-right">
+      {formatMoney(l.appraisedValue) ?? '-'}
     </span>
-    <span class="font-mono text-[14px] font-bold leading-none md:text-right">
-      {formatMoney(l.startingPrice) ?? <span class="font-normal text-ghost">—</span>}
+    <span class="font-mono text-[0.875rem] font-bold leading-none md:text-right">
+      {formatMoney(l.startingPrice) ?? <span class="font-normal text-ghost">-</span>}
     </span>
     <span class="md:text-right">
       <span
         class:list={[
-          'font-mono text-[13px] font-bold leading-none',
+          'font-mono text-[0.8125rem] font-bold leading-none',
           off === null ? 'text-ghost' : off > 0 ? 'text-pine' : 'text-dim',
         ]}
       >

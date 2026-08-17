@@ -13,7 +13,7 @@ import { DEFAULT_MODEL, env } from '../config.ts';
  * Why this rather than more patterns. These notices are written by dozens of
  * courts with no shared template, so rule-based extraction is an open-ended
  * chase: each new phrasing needs another pattern, and a missed one fails
- * *silently* — it yields plausible-looking wrong output. A model reads the
+ * *silently* - it yields plausible-looking wrong output. A model reads the
  * document the way a person would and handles phrasings nobody enumerated.
  *
  * What stays deterministic, on purpose:
@@ -28,7 +28,7 @@ import { DEFAULT_MODEL, env } from '../config.ts';
  * output and re-runs cost nothing. Bump PROMPT_VERSION to force re-analysis.
  */
 // `env()` rather than `??` throughout: a blank value must fall back, not be
-// used. See the note on env() in ../config.ts — `Number('')` is 0, so a blank
+// used. See the note on env() in ../config.ts - `Number('')` is 0, so a blank
 // LLM_CONCURRENCY would hand pLimit a concurrency of zero.
 const MODEL = env('LLM_MODEL', DEFAULT_MODEL);
 const CONCURRENCY = Number(env('LLM_CONCURRENCY', '4'));
@@ -129,7 +129,7 @@ OPIS:
 - itemDescription: nabroj stavke; NE prepisuj procesni tekst o ročištu, rokovima, žalbama ili zakonskim članovima.
 - itemTags: biraj samo iz ponuđene liste, koliko god ih odgovara.
 
-PRIVATNOST — obavezno:
+PRIVATNOST - obavezno:
 - NIKADA ne navodi ime, prezime ni adresu izvršenika, tražioca izvršenja ili bilo koje fizičke osobe, ni u jednom polju.
 - Naziv firme (d.o.o., a.d., d.d.) i naziv radnje pod navodnicima smiješ zadržati.
 - auctionLocation je isključivo sud (zgrada, soba). Nikad kućna adresa.
@@ -248,7 +248,7 @@ export async function analyzeAll(
 
   // Refuse to return a half-empty result when the model call is systemically
   // broken. Every id missing here falls back to rule-based extraction, which
-  // succeeds quietly at lower quality — so a bad key, a model that rejects the
+  // succeeds quietly at lower quality - so a bad key, a model that rejects the
   // schema, or an OpenRouter outage would otherwise produce a complete-looking
   // dataset that then gets committed and published. That is not hypothetical:
   // an empty LLM_MODEL sent 295 notices down the fallback path and the run
@@ -260,7 +260,7 @@ export async function analyzeAll(
     throw new Error(
       `${failed} of ${budget.length} model calls failed (${Math.round(
         (failed / budget.length) * 100,
-      )}%) — refusing to publish a dataset that quietly fell back to rules. ` +
+      )}%) - refusing to publish a dataset that quietly fell back to rules. ` +
         `Check OPENROUTER_API_KEY and that "${MODEL}" exists and supports json_schema response format.`,
     );
   }

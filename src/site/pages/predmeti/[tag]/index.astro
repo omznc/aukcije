@@ -1,10 +1,11 @@
 ---
-import Base from '../../layouts/Base.astro';
-import ListingRow from '../../components/ListingRow.astro';
-import SaveToggle from '../../components/SaveToggle.astro';
-import type { Listing } from '../../../schema.ts';
-import { itemCategories, listingsForTag, isUpcoming, formatMoney, formatDate } from '../../lib/data.ts';
-import { headline } from '../../lib/headline.ts';
+import Base from '../../../layouts/Base.astro';
+import Icon from '../../../components/Icon.astro';
+import ListingRow from '../../../components/ListingRow.astro';
+import SaveToggle from '../../../components/SaveToggle.astro';
+import type { Listing } from '../../../../schema.ts';
+import { itemCategories, listingsForTag, isUpcoming, formatMoney, formatDate } from '../../../lib/data.ts';
+import { headline } from '../../../lib/headline.ts';
 import {
   median,
   discount,
@@ -15,11 +16,11 @@ import {
   roundSlices,
   type Histogram,
   type Slice,
-} from '../../lib/stats.ts';
+} from '../../../lib/stats.ts';
 
 export function getStaticPaths() {
   // Astro hoists getStaticPaths above the rest of the frontmatter, so anything
-  // it needs has to be declared inside it — a module-level `const` here is
+  // it needs has to be declared inside it - a module-level `const` here is
   // still in its temporal dead zone when this runs.
   /** The archive is a price reference, not a catalogue: a long tail adds weight, not insight. */
   const ARCHIVE_LIMIT = 150;
@@ -82,12 +83,12 @@ const stats = [
   { value: String(live.length), label: 'AKTUELNO', accent: false },
   { value: String(archiveTotal), label: 'ARHIVA', accent: false },
   {
-    value: medianAppraisal === null ? '—' : `${formatNumber(medianAppraisal)} KM`,
+    value: medianAppraisal === null ? '-' : `${formatNumber(medianAppraisal)} KM`,
     label: 'MEDIJAN PROCJENE',
     accent: false,
   },
   {
-    value: medianOff === null ? '—' : formatPercent(medianOff),
+    value: medianOff === null ? '-' : formatPercent(medianOff),
     label: 'MEDIJAN POPUSTA',
     accent: true,
   },
@@ -102,27 +103,41 @@ const peakBin = histogram ? histogram.bins.indexOf(maxBin) : -1;
   description={`Aktuelne i prošle sudske prodaje: ${label.toLowerCase()} u Bosni i Hercegovini.`}
 >
   <div class="gut border-b border-rule pb-6 pt-[30px]">
-    <nav class="mb-3 font-mono text-[11px] leading-none text-dim">
+    <nav class="mb-3 font-mono text-[0.6875rem] leading-none text-dim">
       <a href="/" class="hover:text-ink">AKTUELNE</a>{' / '}
       <a href="/predmeti/" class="hover:text-ink">ŠTA SE PRODAJE</a> / {label.toUpperCase()}
     </nav>
     <div class="flex flex-wrap items-end justify-between gap-7">
       <div>
-        <h1 class="font-serif text-[32px] leading-[1.06] tracking-tight sm:text-[40px]">{label}</h1>
-        <p class="mt-2.5 max-w-[56ch] text-[14px] leading-relaxed text-muted">
+        <h1 class="font-serif text-[2rem] leading-title tracking-title sm:text-[2.5rem] sm:leading-display sm:tracking-display">{label}</h1>
+        <p class="mt-2.5 max-w-[56ch] text-[0.875rem] leading-relaxed text-muted">
           {live.length > 0 ? `${live.length} otvorenih ročišta` : 'Nema otvorenih ročišta'}, {archiveTotal}
           {' '}prodaja u arhivi{firstYear ? ` od ${firstYear}.` : '.'} Arhiva je referenca cijena, ne
           ponuda. <span class="text-dim">Porodica: {group}.</span>
         </p>
+        <!--
+          The feed the portal cannot offer at all: its own categories stop at
+          five, so "sve nove mašine i alati, iz svih sudova" exists only here.
+        -->
+        <div class="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 font-mono text-[0.6875rem] leading-none text-dim">
+          <a href={`/predmeti/${tagId}/rss.xml`} class="press flex items-center gap-1.5 text-rust">
+            <Icon name="rss-simple" size={13} />
+            RSS ZA OVU KATEGORIJU
+          </a>
+          <a href={`/predmeti/${tagId}/kalendar.ics`} class="press flex items-center gap-1.5 hover:text-ink">
+            <Icon name="calendar-plus" size={13} class="text-faint" />
+            KALENDAR ({live.length})
+          </a>
+        </div>
       </div>
       <dl class="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">
         {
           stats.map((s) => (
             <div>
-              <dd class:list={['font-mono text-[20px] font-bold leading-none', s.accent && 'text-pine']}>
+              <dd class:list={['font-mono text-[1.25rem] tracking-num font-bold leading-none', s.accent && 'text-pine']}>
                 {s.value}
               </dd>
-              <dt class="mt-[5px] font-mono text-[10px] leading-tight text-dim">{s.label}</dt>
+              <dt class="mt-[5px] font-mono text-[0.625rem] leading-tight text-dim">{s.label}</dt>
             </div>
           ))
         }
@@ -133,7 +148,8 @@ const peakBin = histogram ? histogram.bins.indexOf(maxBin) : -1;
   {
     live.length > 0 && (
       <>
-        <h2 class="gut pb-2 pt-5 text-[12px] font-semibold uppercase leading-none tracking-[0.06em] text-dim">
+        <h2 class="gut flex items-center gap-1.5 pb-2 pt-5 text-[0.75rem] font-semibold uppercase leading-none tracking-label text-dim">
+          <Icon name="clock-countdown" size={13} class="text-faint" />
           Otvorena ročišta
         </h2>
         <div class="border-y border-rule bg-white">
@@ -147,13 +163,14 @@ const peakBin = histogram ? histogram.bins.indexOf(maxBin) : -1;
 
   <div class="grid lg:grid-cols-[1fr_300px]">
     <section class="gut border-rule pb-[30px] pt-6 lg:border-r">
-      <h2 class="border-b border-rule pb-[9px] text-[12px] font-semibold uppercase leading-none tracking-[0.06em] text-dim">
-        Ranije prodaje — istraživanje cijena
+      <h2 class="flex items-center gap-1.5 border-b border-rule pb-[9px] text-[0.75rem] font-semibold uppercase leading-none tracking-label text-dim">
+        <Icon name="archive" size={13} class="text-faint" />
+        Ranije prodaje - istraživanje cijena
       </h2>
 
       {
         archive.length === 0 ? (
-          <p class="mt-3 text-[13px] text-muted">Još nema završenih prodaja u ovoj kategoriji.</p>
+          <p class="mt-3 text-[0.8125rem] text-muted">Još nema završenih prodaja u ovoj kategoriji.</p>
         ) : (
           <div class="mt-1 flex flex-col">
             {archive.map((l) => {
@@ -161,19 +178,19 @@ const peakBin = histogram ? histogram.bins.indexOf(maxBin) : -1;
               return (
                 <a
                   href={`/oglas/${l.id}/`}
-                  class="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 border-b border-hair py-[11px] hover:bg-band md:grid-cols-[96px_1fr_130px_110px]"
+                  class="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 press border-b border-hair py-[11px] hover:bg-band active:bg-[#eae6dd] md:grid-cols-[96px_1fr_130px_110px]"
                 >
-                  <span class="order-1 font-mono text-[11.5px] text-dim md:order-none">
+                  <span class="order-1 font-mono text-[0.71875rem] text-dim md:order-none">
                     {formatDate(l.saleDate)}
                   </span>
-                  <span class="order-3 col-span-2 text-[13px] font-medium leading-snug md:order-none md:col-span-1">
+                  <span class="order-3 col-span-2 text-[0.8125rem] font-medium leading-snug md:order-none md:col-span-1">
                     {headline(l)}
                   </span>
-                  <span class="order-4 font-mono text-[11.5px] text-dim md:order-none md:text-right">
+                  <span class="order-4 font-mono text-[0.71875rem] text-dim md:order-none md:text-right">
                     {perM2 ? `${formatNumber(perM2)} KM/m²` : ''}
                   </span>
-                  <span class="order-2 whitespace-nowrap text-right font-mono text-[13px] font-bold md:order-none">
-                    {formatMoney(l.startingPrice ?? l.appraisedValue) ?? '—'}
+                  <span class="order-2 whitespace-nowrap text-right font-mono text-[0.8125rem] font-bold md:order-none">
+                    {formatMoney(l.startingPrice ?? l.appraisedValue) ?? '-'}
                   </span>
                 </a>
               );
@@ -184,7 +201,7 @@ const peakBin = histogram ? histogram.bins.indexOf(maxBin) : -1;
 
       {
         archiveTotal > archive.length && (
-          <p class="mt-4 text-[12.5px] leading-none text-dim">
+          <p class="mt-4 text-[0.78125rem] leading-none text-dim">
             Prikazano {archive.length} od {archiveTotal} prodaja u arhivi. Za ostatak koristite{' '}
             <a href="/pretraga/" class="text-pine underline">
               pretragu
@@ -199,7 +216,8 @@ const peakBin = histogram ? histogram.bins.indexOf(maxBin) : -1;
       {
         histogram && (
           <>
-            <h2 class="text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim">
+            <h2 class="flex items-center gap-1.5 text-[0.6875rem] font-semibold uppercase leading-none tracking-caps text-dim">
+              <Icon name="chart-bar" size={13} class="text-faint" />
               Cijena po m², arhiva
             </h2>
             <div class="mt-3.5 flex h-[70px] items-end gap-1">
@@ -211,12 +229,12 @@ const peakBin = histogram ? histogram.bins.indexOf(maxBin) : -1;
                 />
               ))}
             </div>
-            <div class="mt-[7px] flex justify-between font-mono text-[10px] leading-none text-faint">
+            <div class="mt-[7px] flex justify-between font-mono text-[0.625rem] leading-none text-faint">
               <span>{formatNumber(histogram.min)}</span>
               <span>{formatNumber((histogram.min + histogram.max) / 2)}</span>
               <span>{formatNumber(histogram.max)}+</span>
             </div>
-            <p class="mt-3 text-[12px] leading-relaxed text-muted">
+            <p class="mt-3 text-[0.75rem] leading-relaxed text-muted">
               Raspon je izveden iz opisa gdje se površina može pročitati ({histogram.sampled} od{' '}
               {histogram.total} zapisa).
             </p>
@@ -226,13 +244,14 @@ const peakBin = histogram ? histogram.bins.indexOf(maxBin) : -1;
 
       <h2
         class:list={[
-          'text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim',
+          'text-[0.6875rem] font-semibold uppercase leading-none tracking-caps text-dim',
           histogram && 'mt-6',
         ]}
       >
+        <Icon name="hourglass-medium" size={13} class="mr-1.5 text-faint" />
         Ročišta po redu
       </h2>
-      <dl class="mt-2 font-mono text-[12.5px] leading-[1.9]">
+      <dl class="mt-2 font-mono text-[0.78125rem] leading-[1.9]">
         {
           rounds.map((r) => (
             <div class="flex justify-between gap-3">
@@ -244,16 +263,17 @@ const peakBin = histogram ? histogram.bins.indexOf(maxBin) : -1;
       </dl>
 
       <div class="mt-6 border border-edge bg-sheet p-[13px]">
-        <h2 class="text-[11px] font-semibold uppercase leading-none tracking-[0.06em]">
+        <h2 class="flex items-center gap-1.5 text-[0.6875rem] font-semibold uppercase leading-none tracking-label">
+          <Icon name="bookmark-simple" size={13} class="text-pine" />
           Pratite kategoriju
         </h2>
-        <p class="mb-2.5 mt-2 text-[12px] leading-relaxed text-muted">
+        <p class="mb-2.5 mt-2 text-[0.75rem] leading-relaxed text-muted">
           Pamtimo je u vašem pregledniku, bez računa.
         </p>
         <SaveToggle
           storeKey={`prati:predmet:${tagId}`}
           label="Prati ovu kategoriju"
-          activeLabel="Pratite — ukloni"
+          activeLabel="Pratite - ukloni"
         />
       </div>
     </aside>

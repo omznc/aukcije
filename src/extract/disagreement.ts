@@ -5,7 +5,7 @@ import type { ExtractedFields } from './fields.ts';
  * Cross-check the model against the rules and record where they disagree.
  *
  * `extraction.confidence` measures how many fields got *filled*, not whether
- * they are *right* — a wrong-but-plausible number scores the same as a correct
+ * they are *right* - a wrong-but-plausible number scores the same as a correct
  * one. Since both extraction paths already run on every notice, comparing them
  * is free, and the places where two independent readings differ are exactly the
  * ones worth a human look.
@@ -78,7 +78,7 @@ export interface QualityReport {
   comparable: number;
   disagreements: number;
   byField: Record<string, number>;
-  /** Worst offenders first — the most useful place to start reviewing. */
+  /** Worst offenders first - the most useful place to start reviewing. */
   worst: Disagreement[];
 }
 

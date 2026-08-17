@@ -7,6 +7,24 @@ export default {
         serif: ["'Instrument Serif'", 'Georgia', 'serif'],
         mono: ["'JetBrains Mono'", 'ui-monospace', 'monospace'],
       },
+      // Tracking is a function of size, not one value for the site: letters set
+      // large read too far apart at the spacing that suits body copy, and small
+      // uppercase reads too tight at it. Each step is named for where it goes,
+      // so the same headline is spaced the same way on every page.
+      letterSpacing: {
+        display: '-0.032em', // the largest serif headline, 38px and up
+        title: '-0.022em', // page headlines, 28-34px
+        head: '-0.012em', // section headings, 19-24px
+        num: '-0.008em', // large mono figures, which set wide by nature
+        label: '0.06em', // uppercase meta lines
+        caps: '0.08em', // the smallest uppercase headings, which need the most
+      },
+      // Leading tightens as type grows, for the same reason.
+      lineHeight: {
+        display: '1.04',
+        title: '1.06',
+        head: '1.2',
+      },
       colors: {
         // Paper stack: outer surround, the sheet the site sits on, and the
         // tinted bands that separate sections within it.

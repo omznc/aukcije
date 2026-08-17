@@ -116,7 +116,7 @@ interface ClassifiedAmount {
   fractionOfValue: number | null;
   /** For item prices: whether the wording called it a starting price. */
   startingPriceWording: boolean;
-  /** The amount ends its own short line — the shape of a price-list row. */
+  /** The amount ends its own short line - the shape of a price-list row. */
   looksLikeListRow: boolean;
 }
 
@@ -124,7 +124,7 @@ interface ClassifiedAmount {
 function classify(ctx: string): { role: AmountRole; fractionOfValue: number | null } {
   const c = ctx.toLowerCase();
 
-  // The claim being enforced — never a sale price.
+  // The claim being enforced - never a sale price.
   if (/v\.\s?sp\.|radi\s+naplate|nov[cč]anog\s+potra[zž]ivanja|duguje|glavnog\s+duga/.test(c)) {
     return { role: 'debt', fractionOfValue: null };
   }
@@ -379,7 +379,7 @@ function collect(t: string, re: RegExp): string[] {
   return [...out].slice(0, 25);
 }
 
-/** Municipality from the court's own header line — a locality, not a street. */
+/** Municipality from the court's own header line - a locality, not a street. */
 function parseMunicipality(t: string): string | null {
   const m = t.match(
     /\b(?:Opcinski|Općinski|Osnovni|Kantonalni|Okruzni|Okružni)\s+(?:privredni\s+)?sud\s+u?\s*([A-ZČĆŽŠĐ][\wČĆŽŠĐčćžšđ]+(?:\s+[A-ZČĆŽŠĐ][\wČĆŽŠĐčćžšđ]+)?)/i,
@@ -452,7 +452,7 @@ export function parseDate(raw: string | null | undefined): string | null {
  * A hearing is scheduled weeks to months after publication, never years. The
  * backward slack exists because a handful of archived notices were published
  * shortly after the hearing they announce; the forward bound is what rejects a
- * mistyped year. Both are deliberately loose — this is a typo filter, not a
+ * mistyped year. Both are deliberately loose - this is a typo filter, not a
  * business rule, and a rejected date only falls back to the publication date.
  */
 const SALE_DATE_BOUNDS = { backDays: 400, forwardDays: 3 * 365 };

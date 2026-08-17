@@ -3,8 +3,8 @@
  * "Osnovni sud u Bijeljini"), but users search and filter on the nominative
  * ("Sarajevo", "Bijeljina").
  *
- * BiH place-name declension is irregular enough — Banjoj Luci → Banja Luka,
- * Sokocu → Sokolac, Širokom Brijegu → Široki Brijeg — that a lookup table is
+ * BiH place-name declension is irregular enough - Banjoj Luci → Banja Luka,
+ * Sokocu → Sokolac, Širokom Brijegu → Široki Brijeg - that a lookup table is
  * more honest than a suffix rule. Anything unrecognised falls back to a
  * conservative suffix heuristic and is returned as-is when that fails.
  */
@@ -71,6 +71,16 @@ const LOCATIVE_TO_NOMINATIVE = new Map<string, string>(
     ljubuskom: 'Ljubuški',
     posusju: 'Posušje',
     tomislavgradu: 'Tomislavgrad',
+    // Seats of courts that publish here but whose locative the suffix rule
+    // cannot undo: a feminine -i, or a two-word name where only the adjective
+    // declines.
+    'kozarskoj dubici': 'Kozarska Dubica',
+    teslicu: 'Teslić',
+    visegradu: 'Višegrad',
+    gracanici: 'Gračanica',
+    kalesiji: 'Kalesija',
+    srebreniku: 'Srebrenik',
+    loparama: 'Lopare',
   }),
 );
 

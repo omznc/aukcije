@@ -5,8 +5,8 @@ import { listings, upcoming, courts, itemCategories, generatedAt } from '../lib/
  * llms.txt (llmstxt.org): a single-page brief for a model that lands here.
  *
  * Written in English on purpose even though the site is in Bosnian. The point
- * is to translate the domain — "sudska prodaja" is a court-ordered auction, the
- * "zaključak" is the binding document — so an assistant answering a question
+ * is to translate the domain - "sudska prodaja" is a court-ordered auction, the
+ * "zaključak" is the binding document - so an assistant answering a question
  * about this data does not have to infer any of it from a stray listing page.
  *
  * It also states the two things most likely to be got wrong when summarising
@@ -18,7 +18,7 @@ export const GET: APIRoute = ({ site }) => {
   const years = [...new Set(listings.map((l) => l.saleDate.slice(0, 4)))].sort();
   const span = `${years[0]}–${years[years.length - 1]}`;
 
-  const body = `# Sudske prodaje BiH — court auction notices in Bosnia and Herzegovina
+  const body = `# Sudske prodaje BiH - court auction notices in Bosnia and Herzegovina
 
 > An open, structured index of court-ordered sale notices ("sudske prodaje",
 > also called licitacije) published by the courts of Bosnia and Herzegovina on
@@ -42,6 +42,9 @@ Important caveats to repeat to anyone relying on this:
   only authoritative record, and every listing links back to it.
 - Fields are extracted automatically and can be wrong. Verify against the
   linked original before acting on a price or a deadline.
+- Every price here is a *starting* price for a hearing. Courts do not publish
+  what a lot sold for, or whether it sold at all, so no achieved price exists
+  in this dataset and none should be attributed to it.
 - Names of debtors and other individuals, home addresses, national identifiers
   (JMBG) and contact details are deliberately removed. Their absence is a
   privacy decision, not a gap in the source.
@@ -49,15 +52,32 @@ Important caveats to repeat to anyone relying on this:
 ## Data
 
 - [Full dataset as JSON](${base}/podaci.json): every listing the site renders, with a \`generatedAt\` stamp. CORS is open.
-- [RSS feed](${base}/rss.xml): the 100 most recently published notices.
 - [Sitemap](${base}/sitemap.xml): every page, with last-modified dates.
+
+## Feeds and calendars
+
+Every court and every item category has its own RSS feed and its own iCalendar
+file, so a subscription can be as narrow as "vehicles sold by the court in
+Tuzla". Calendars carry only upcoming hearings and each event has two alarms,
+seven days and one day out - the earlier one because the deposit has to reach
+the court's account before the hearing, not on the day of it.
+
+- [RSS, everything](${base}/rss.xml): the 100 most recently published notices.
+- [RSS, price drops](${base}/snizenja/rss.xml): lots that came back cheaper, steepest first.
+- [Calendar, everything upcoming](${base}/kalendar.ics)
+- Per court: \`${base}/sudovi/{courtId}/rss.xml\` and \`${base}/sudovi/{courtId}/kalendar.ics\`
+- Per category: \`${base}/predmeti/{tag}/rss.xml\` and \`${base}/predmeti/{tag}/kalendar.ics\`
+- Per notice: \`${base}/oglas/{id}.ics\`
 
 ## Browse
 
 - [Current auctions](${base}/): notices whose hearing date has not passed.
+- [Price drops](${base}/snizenja/): open hearings whose price has fallen. Where the archive holds an earlier hearing for the same case number, the fall is measured against that hearing's own starting price; otherwise against the court's appraisal. The first is evidence the lot did not sell, and is the one thing here that is in no single source notice.
 - [By item](${base}/predmeti/): ${itemCategories.length} categories of what is actually being sold, finer than the portal's five.
 - [By court](${base}/sudovi/): all ${courts.length} courts that have published a notice.
+- [Map](${base}/mapa/): where the sales are, by municipality and by court.
 - [Archive](${base}/arhiva/): past auctions, useful as a price reference.
+- [Prices](${base}/cijene/): median price per m² by municipality, median starting price by category, and how both move by year. Every figure carries its sample size; the samples are small.
 - [Search](${base}/pretraga/): full-text, runs in the browser.
 
 ## Background

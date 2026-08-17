@@ -16,7 +16,7 @@ export const GET: APIRoute = ({ site }) => {
   const body = `User-agent: *
 Allow: /
 
-# Pagefind's index shards — machine-readable search fragments, not pages.
+# Pagefind's index shards - machine-readable search fragments, not pages.
 Disallow: /pagefind/
 
 Sitemap: ${base}/sitemap.xml

@@ -16,11 +16,11 @@
  *
  * A listing whose `extraction.pipelineVersion` differs from PIPELINE_VERSION is
  * rebuilt on the next run. The LLM cache is keyed separately by document hash,
- * so rebuilding is usually free — it costs an API call only when PROMPT_VERSION
+ * so rebuilding is usually free - it costs an API call only when PROMPT_VERSION
  * itself changed.
  */
 export const PROMPT_VERSION = 3;
 export const REDACTION_VERSION = 3;
-export const RULES_VERSION = 6;
+export const RULES_VERSION = 7;
 
 export const PIPELINE_VERSION = `${PROMPT_VERSION}.${REDACTION_VERSION}.${RULES_VERSION}`;

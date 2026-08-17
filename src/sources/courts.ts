@@ -5,7 +5,7 @@ import { slugify, toLatin } from '../lib/text.ts';
 
 /**
  * BiH's judiciary is split across two entities plus Brčko District, and each
- * uses different court nomenclature — which conveniently makes the entity
+ * uses different court nomenclature - which conveniently makes the entity
  * derivable from the court's name.
  *
  *   FBiH: Općinski / Kantonalni / Vrhovni sud FBiH

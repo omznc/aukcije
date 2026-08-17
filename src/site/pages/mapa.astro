@@ -1,0 +1,303 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { upcoming, listings } from '../lib/data.ts';
+import { mapData, courtPoints, formatNumber } from '../lib/stats.ts';
+import { OUTLINE, VIEW, project } from '../lib/geo.ts';
+
+/**
+ * Where the sales are.
+ *
+ * Real estate is a geographic question and until now the site had no
+ * geographic way in - a municipality was extracted for most notices and then
+ * only ever printed as a word. Drawn as one inline SVG: no tile server, no map
+ * library, no third-party request, which keeps the promise in the footer that
+ * nothing here phones anywhere.
+ */
+
+const { places, exact, bySeat, unplaced } = mapData();
+const courts = courtPoints();
+const active = places.filter((p) => p.upcoming > 0);
+
+/** Area, not radius, tracks the count - a radius scale exaggerates the big ones. */
+const maxTotal = Math.max(1, ...places.map((p) => p.total));
+const radius = (n: number) => 5 + Math.sqrt(n / maxTotal) * 30;
+
+const dots = places
+  .map((p) => ({ ...p, ...project(p.at), r: radius(p.total) }))
+  .sort((a, b) => b.r - a.r);
+
+/** The browser needs coordinates and counts only - not the dataset. */
+const nearby = courts.map((c) => ({
+  id: c.id,
+  name: c.name,
+  place: c.place,
+  at: c.at,
+  upcoming: c.upcoming,
+  total: c.total,
+}));
+
+const stats = [
+  { value: String(active.length), label: 'MJESTA SA OTVORENIM ROČIŠTEM', accent: true },
+  { value: String(places.length), label: 'MJESTA U ARHIVI', accent: false },
+  { value: String(courts.length), label: 'SUDOVA NA MAPI', accent: false },
+  {
+    value: `${Math.round((exact / (exact + bySeat + unplaced)) * 100)}%`,
+    label: 'SA VLASTITOM OPĆINOM',
+    accent: false,
+  },
+];
+---
+
+<Base
+  title="Mapa sudskih prodaja u BiH"
+  description="Gdje se u Bosni i Hercegovini vode sudske prodaje - po općinama i sudovima, sa brojem otvorenih ročišta."
+>
+  <div class="gut border-b border-rule pb-6 pt-[30px]">
+    <nav class="mb-3 font-mono text-[0.6875rem] leading-none text-dim">
+      <a href="/" class="hover:text-ink">AKTUELNE</a> / MAPA
+    </nav>
+    <div class="grid items-end gap-8 lg:grid-cols-[1fr_auto]">
+      <div>
+        <h1 class="max-w-[22ch] font-serif text-[2rem] leading-title tracking-title sm:text-[2.5rem] sm:leading-display sm:tracking-display">
+          Gdje se prodaje.
+        </h1>
+        <p class="mt-3 max-w-[60ch] text-pretty text-[0.875rem] leading-relaxed text-muted">
+          Svaki krug je jedno mjesto, veličina je broj prodaja u arhivi, a zeleno znači da tamo ima
+          otvorenog ročišta. Mapa je nacrtana ovdje - nema vanjskih servisa, karata ni zahtjeva
+          prema trećim stranama.
+        </p>
+      </div>
+      <dl class="grid grid-cols-2 gap-x-7 gap-y-4 sm:grid-cols-4 lg:grid-cols-2">
+        {
+          stats.map((s) => (
+            <div>
+              <dd class:list={['font-mono text-[1.375rem] tracking-num font-bold leading-none', s.accent && 'text-pine']}>
+                {s.value}
+              </dd>
+              <dt class="mt-[5px] max-w-[16ch] font-mono text-[0.625rem] leading-tight text-dim">{s.label}</dt>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+
+  <div class="grid lg:grid-cols-[1fr_320px]">
+    <div class="gut border-rule pb-7 pt-6 lg:border-r">
+      <svg
+        viewBox={`0 0 ${VIEW.width} ${VIEW.height}`}
+        class="mx-auto block h-auto w-full max-w-[620px]"
+        role="img"
+        aria-label={`Mapa Bosne i Hercegovine sa ${places.length} mjesta u kojima su vođene sudske prodaje`}
+      >
+        <path d={OUTLINE} fill="#f0ece3" stroke="#c9c3b6" stroke-width="2" stroke-linejoin="round" />
+        {
+          dots.map((d) => (
+            <a href={`/pretraga/?q=${encodeURIComponent(d.name)}`} class="map-dot">
+              <title>
+                {d.name}: {d.total} {d.total === 1 ? 'prodaja' : 'prodaja'} u arhivi
+                {d.upcoming > 0 ? `, ${d.upcoming} otvoreno` : ''}
+                {d.approximate ? ' (smješteno prema sjedištu suda)' : ''}
+              </title>
+              <circle
+                cx={d.x}
+                cy={d.y}
+                r={d.r}
+                fill={d.upcoming > 0 ? '#3f5f52' : '#a9a294'}
+                fill-opacity={d.upcoming > 0 ? 0.42 : 0.24}
+                stroke={d.upcoming > 0 ? '#3f5f52' : '#8d8677'}
+                stroke-width="1.5"
+              />
+            </a>
+          ))
+        }
+        {/* Court seats sit on top as a small mark: 41 fixed points, unlike the dots. */}
+        {
+          courts.map((c) => {
+            const { x, y } = project(c.at);
+            return (
+              <a href={`/sudovi/${c.id}/`} class="map-dot">
+                <title>{c.name} - {c.upcoming} otvorenih, {c.total} ukupno</title>
+                <rect x={x - 3} y={y - 3} width="6" height="6" fill="#2c2a26" />
+              </a>
+            );
+          })
+        }
+      </svg>
+
+      <div class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[0.65625rem] leading-none text-dim">
+        <span class="flex items-center gap-1.5">
+          <span class="h-3 w-3 rounded-full border border-pine bg-pine/40"></span>
+          OTVORENO ROČIŠTE
+        </span>
+        <span class="flex items-center gap-1.5">
+          <span class="h-3 w-3 rounded-full border border-[#8d8677] bg-[#a9a294]/30"></span>
+          SAMO ARHIVA
+        </span>
+        <span class="flex items-center gap-1.5">
+          <span class="h-2 w-2 bg-ink"></span>
+          SUD
+        </span>
+      </div>
+
+      <p class="mt-4 max-w-[74ch] text-[0.75rem] leading-relaxed text-muted">
+        {formatNumber(exact)} oglasa je smješteno po općini navedenoj u dokumentu, {formatNumber(bySeat)}
+        {' '}po sjedištu suda koji ih je objavio jer općina nije pročitana, a {formatNumber(unplaced)}
+        {' '}nije na mapi uopšte. Granica je pojednostavljena; tačke su centri naselja, ne lokacije
+        predmeta - nekretnina je negdje u toj općini, ne na tački.
+      </p>
+    </div>
+
+    <aside class="gut bg-band pb-[30px] pt-6">
+      <h2 class="flex items-center gap-1.5 text-[0.6875rem] font-semibold uppercase leading-none tracking-caps text-dim">
+        <Icon name="crosshair" size={13} class="text-faint" />
+        Sudovi blizu vas
+      </h2>
+      <p class="mt-2 text-[0.75rem] leading-relaxed text-muted">
+        Lokacija se traži od preglednika, obrađuje se ovdje i ne šalje se nikuda.
+      </p>
+      <button
+        type="button"
+        id="locate"
+        class="press press-give mt-2.5 flex w-full items-center justify-center gap-1.5 border border-ink bg-ink px-3 py-2.5 text-[0.75rem] font-semibold leading-none text-white"
+      >
+        <Icon name="crosshair" size={14} />
+        <span id="locate-label">Nađi najbliže sudove</span>
+      </button>
+      <p id="locate-status" class="mt-2 font-mono text-[0.65625rem] leading-relaxed text-dim" role="status" aria-live="polite"></p>
+      <div id="nearby" class="mt-1"></div>
+
+      <h2 class="mt-7 flex items-center gap-1.5 border-b border-rule pb-2 text-[0.6875rem] font-semibold uppercase leading-none tracking-caps text-dim">
+        <Icon name="map-pin" size={13} class="text-faint" />
+        Mjesta sa otvorenim ročištem
+      </h2>
+      {
+        active.length === 0 ? (
+          <p class="mt-3 text-[0.78125rem] text-muted">Trenutno nema otvorenih ročišta.</p>
+        ) : (
+          <div class="mt-1 flex flex-col">
+            {active.map((p) => (
+              <a
+                href={`/pretraga/?q=${encodeURIComponent(p.name)}`}
+                class="flex items-baseline justify-between gap-3 border-b border-hair py-2 text-[0.8125rem] press leading-snug last:border-0 hover:text-pine"
+              >
+                <span>{p.name}</span>
+                <span class="shrink-0 font-mono text-[0.71875rem]">
+                  <b class="text-pine">{p.upcoming}</b>
+                  <span class="text-dim"> / {p.total}</span>
+                </span>
+              </a>
+            ))}
+          </div>
+        )
+      }
+
+      <p class="mt-5 font-mono text-[0.625rem] leading-relaxed text-faint">
+        GRANICA I KOORDINATE: OPENSTREETMAP (ODbL) · {upcoming.length} OTVORENIH OD{' '}
+        {listings.length.toLocaleString('bs-BA')}
+      </p>
+    </aside>
+  </div>
+</Base>
+
+<style>
+  /* Anchors round the dots, so the hit target is the circle itself. */
+  .map-dot {
+    cursor: pointer;
+  }
+  .map-dot circle,
+  .map-dot rect {
+    transition: fill-opacity 0.15s ease;
+  }
+  .map-dot:hover circle {
+    fill-opacity: 0.75;
+  }
+  .map-dot:hover rect {
+    fill: #7a2f21;
+  }
+</style>
+
+<!--
+  The court list, not the dataset: 41 rows of name and coordinate, which is all
+  "nearest to me" needs. `<` is escaped so a name could never close this tag.
+-->
+<script
+  id="courts-data"
+  type="application/json"
+  is:inline
+  set:html={JSON.stringify(nearby).replace(/</g, '\\u003c')}
+/>
+
+<script>
+  import { distanceKm, type LatLon } from '../lib/geo.ts';
+
+  interface Court {
+    id: number;
+    name: string;
+    place: string;
+    at: LatLon;
+    upcoming: number;
+    total: number;
+  }
+
+  const courts: Court[] = JSON.parse(document.getElementById('courts-data')!.textContent!);
+  const button = document.getElementById('locate') as HTMLButtonElement;
+  const label = document.getElementById('locate-label')!;
+  const status = document.getElementById('locate-status')!;
+  const list = document.getElementById('nearby')!;
+
+  const NEAREST = 5;
+
+  const escape = (s: string) =>
+    s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+
+  if (!('geolocation' in navigator)) {
+    button.hidden = true;
+    status.textContent = 'PREGLEDNIK NE NUDI LOKACIJU.';
+  }
+
+  button.addEventListener('click', () => {
+    status.textContent = 'TRAŽIM LOKACIJU…';
+    button.disabled = true;
+
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        const here: LatLon = [coords.latitude, coords.longitude];
+        const ranked = courts
+          .map((c) => ({ ...c, km: distanceKm(here, c.at) }))
+          .sort((a, b) => a.km - b.km)
+          .slice(0, NEAREST);
+
+        // Everything below is derived in this tab and thrown away when it closes.
+        list.innerHTML = ranked
+          .map(
+            (c) => `
+            <a href="/sudovi/${c.id}/"
+               class="flex items-baseline justify-between gap-3 border-b border-hair py-2 text-[0.8125rem] press leading-snug last:border-0 hover:text-pine">
+              <span>${escape(c.name)}
+                <span class="font-mono text-[0.65625rem] text-dim">${Math.round(c.km)} km</span>
+              </span>
+              <span class="shrink-0 font-mono text-[0.71875rem]">
+                <b class="${c.upcoming ? 'text-pine' : 'text-dim'}">${c.upcoming}</b><span class="text-dim"> / ${c.total}</span>
+              </span>
+            </a>`,
+          )
+          .join('');
+
+        status.textContent = `${NEAREST} NAJBLIŽA SUDA · OTVORENO / UKUPNO`;
+        label.textContent = 'Osvježi lokaciju';
+        button.disabled = false;
+      },
+      (error) => {
+        // A refusal is a choice, not a failure, and should not read like one.
+        status.textContent =
+          error.code === error.PERMISSION_DENIED
+            ? 'LOKACIJA NIJE ODOBRENA. LISTA SUDOVA JE NA /SUDOVI/.'
+            : 'LOKACIJU NIJE BILO MOGUĆE ODREDITI.';
+        button.disabled = false;
+      },
+      { maximumAge: 600_000, timeout: 10_000 },
+    );
+  });
+</script>

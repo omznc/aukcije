@@ -3,7 +3,7 @@ import { listings, generatedAt } from '../lib/data.ts';
 
 /**
  * The whole dataset, exactly as the site renders it. The README promises a
- * plain JSON download and the footer links here, so this is that file — served
+ * plain JSON download and the footer links here, so this is that file - served
  * from the site rather than pointing people at a path inside the repository.
  */
 export const GET: APIRoute = ({ site }) => {

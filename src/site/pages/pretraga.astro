@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
 import { listings } from '../lib/data.ts';
 
 /**
@@ -7,9 +8,9 @@ import { listings } from '../lib/data.ts';
  * have far too many values to list; those are browsable from their own pages.
  */
 const FACETS = [
-  { key: 'vrsta', label: 'Vrsta' },
-  { key: 'entitet', label: 'Entitet' },
-  { key: 'status', label: 'Status' },
+  { key: 'vrsta', label: 'Vrsta', icon: 'tag' },
+  { key: 'entitet', label: 'Entitet', icon: 'map-trifold' },
+  { key: 'status', label: 'Status', icon: 'clock-countdown' },
 ];
 
 const SORTS = [
@@ -19,12 +20,12 @@ const SORTS = [
 ];
 ---
 
-<Base title="Pretraga sudskih prodaja — BiH">
+<Base title="Pretraga sudskih prodaja - BiH">
   <div class="gut border-b border-rule pb-[26px] pt-[34px]">
-    <h1 class="font-serif text-[32px] leading-[1.06] tracking-tight sm:text-[40px]">
+    <h1 class="font-serif text-[2rem] leading-title tracking-title sm:text-[2.5rem] sm:leading-display sm:tracking-display">
       Pretraga svih {listings.length.toLocaleString('bs-BA')} oglasa
     </h1>
-    <p class="mb-[18px] mt-3 max-w-[60ch] text-[14px] leading-relaxed text-muted">
+    <p class="mb-[18px] mt-3 max-w-[60ch] text-[0.875rem] leading-relaxed text-muted">
       Puni tekst oglasa, uključujući arhivu. Dijakritike se izjednačavaju: „zivinice” nalazi
       „Živinice”. Indeks se preuzima u dijelovima, pa radi brzo i na mobilnoj vezi.
     </p>
@@ -37,9 +38,15 @@ const SORTS = [
         type="search"
         autocomplete="off"
         placeholder="Traži: stan, traktor, Živinice, k.č. 1188/3…"
-        class="min-w-0 flex-1 border-0 px-3.5 py-3 text-[14px] text-ink outline-none placeholder:text-faint"
+        class="min-w-0 flex-1 border-0 px-3.5 py-3 text-[0.875rem] text-ink outline-none placeholder:text-faint"
       />
-      <button type="submit" class="bg-ink px-5 text-[13px] font-semibold text-white">Traži</button>
+      <button
+        type="submit"
+        class="flex items-center gap-1.5 bg-ink px-5 text-[0.8125rem] font-semibold text-white"
+      >
+        <Icon name="magnifying-glass" size={15} />
+        Traži
+      </button>
     </form>
   </div>
 
@@ -48,10 +55,11 @@ const SORTS = [
       {
         FACETS.map((f) => (
           <div class="mb-[22px]" data-facet={f.key}>
-            <h2 class="border-b border-rule pb-2 text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim">
+            <h2 class="flex items-center gap-1.5 border-b border-rule pb-2 text-[0.6875rem] font-semibold uppercase leading-none tracking-caps text-dim">
+              <Icon name={f.icon} size={13} class="text-faint" />
               {f.label}
             </h2>
-            <div class="mt-2 flex flex-col gap-1 text-[12.5px]" data-facet-values>
+            <div class="mt-2 flex flex-col gap-1 text-[0.78125rem]" data-facet-values>
               <span class="text-faint">…</span>
             </div>
           </div>
@@ -59,10 +67,11 @@ const SORTS = [
       }
 
       <div>
-        <h2 class="border-b border-rule pb-2 text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim">
+        <h2 class="flex items-center gap-1.5 border-b border-rule pb-2 text-[0.6875rem] font-semibold uppercase leading-none tracking-caps text-dim">
+          <Icon name="sort-ascending" size={13} class="text-faint" />
           Sortiraj
         </h2>
-        <div class="mt-2 flex flex-col gap-1 text-[12.5px]">
+        <div class="mt-2 flex flex-col gap-1 text-[0.78125rem]">
           {
             SORTS.map((s, i) => (
               <label class="flex cursor-pointer items-center gap-2">
@@ -83,8 +92,9 @@ const SORTS = [
       <button
         type="button"
         id="reset"
-        class="mt-5 border border-edge px-2.5 py-2 text-[11.5px] font-medium leading-none hover:border-ink"
+        class="mt-5 flex items-center gap-1.5 press press-give border border-edge px-2.5 py-2 text-[0.71875rem] font-medium leading-none hover:border-ink"
       >
+        <Icon name="arrow-counter-clockwise" size={13} class="text-dim" />
         Poništi filtere
       </button>
     </aside>
@@ -92,7 +102,7 @@ const SORTS = [
     <div class="gut pb-[30px] pt-5">
       <p
         id="status"
-        class="border-b border-rule pb-3 font-mono text-[11.5px] leading-none text-dim"
+        class="border-b border-rule pb-3 font-mono text-[0.71875rem] leading-none text-dim"
         role="status"
         aria-live="polite"
       >
@@ -105,15 +115,15 @@ const SORTS = [
         type="button"
         id="more"
         hidden
-        class="mt-5 self-start border border-edge px-3 py-2.5 text-[12px] font-semibold leading-none hover:border-ink"
+        class="mt-5 self-start press press-give border border-edge px-3 py-2.5 text-[0.75rem] font-semibold leading-none hover:border-ink"
       >
         Učitaj još
       </button>
 
       <noscript>
-        <p class="pt-4 text-[13px] leading-relaxed text-muted">
-          Pretraga zahtijeva JavaScript. Bez njega koristite
-          <a class="text-pine underline" href="/sudovi/">pregled po sudovima</a> ili
+        <p class="pt-4 text-[0.8125rem] leading-relaxed text-muted">
+          Pretraga zahtijeva JavaScript. Bez njega koristite{' '}
+          <a class="text-pine underline" href="/sudovi/">pregled po sudovima</a> ili{' '}
           <a class="text-pine underline" href="/predmeti/">pregled po predmetima</a>.
         </p>
       </noscript>
@@ -125,7 +135,7 @@ const SORTS = [
   Pagefind's bundle is produced by its CLI *after* `astro build`, so this stays
   `is:inline`: Vite would otherwise try to resolve the import at build time and
   fail on a file that does not exist yet. The default Pagefind widget is not used
-  — results are rendered here so they carry the same columns as the rest of the
+  - results are rendered here so they carry the same columns as the rest of the
   site (status, hearing date, court, hearing number, price).
 -->
 <script is:inline>
@@ -160,7 +170,7 @@ const SORTS = [
         (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c],
       );
 
-    /** 1 rezultat, 2–4 rezultata, 5+ rezultata — and 11–14 take the plural. */
+    /** 1 rezultat, 2–4 rezultata, 5+ rezultata - and 11–14 take the plural. */
     function plural(n) {
       const teens = n % 100 >= 11 && n % 100 <= 14;
       if (!teens && n % 10 === 1) return 'REZULTAT';
@@ -177,7 +187,7 @@ const SORTS = [
       // The sort radios live in the sidebar, outside the search form.
       const key = document.querySelector('input[name="sort"]:checked')?.value;
       if (!key) return undefined;
-      // Newest hearing first, and highest price first — the useful direction for both.
+      // Newest hearing first, and highest price first - the useful direction for both.
       return { [key]: 'desc' };
     }
 
@@ -225,11 +235,11 @@ const SORTS = [
               return `
                 <a href="${escape(d.url)}" class="block border-b border-hair py-4 hover:bg-band">
                   <div class="flex justify-between gap-5">
-                    <span class="text-[15px] font-semibold leading-snug">${escape(meta.title)}</span>
-                    <span class="whitespace-nowrap font-mono text-[13px] font-bold leading-none">${escape(meta.cijena ?? '')}</span>
+                    <span class="text-[0.9375rem] font-semibold leading-snug">${escape(meta.title)}</span>
+                    <span class="whitespace-nowrap font-mono text-[0.8125rem] font-bold leading-none">${escape(meta.cijena ?? '')}</span>
                   </div>
-                  <p class="mt-[7px] max-w-[78ch] text-[13px] leading-relaxed text-muted">${d.excerpt}</p>
-                  <div class="mt-[9px] font-mono text-[11.5px] leading-none text-dim">${escape(line)}</div>
+                  <p class="mt-[7px] max-w-[78ch] text-[0.8125rem] leading-relaxed text-muted">${d.excerpt}</p>
+                  <div class="mt-[9px] font-mono text-[0.71875rem] leading-none text-dim">${escape(line)}</div>
                 </a>`;
             })
             .join(''),
@@ -238,13 +248,30 @@ const SORTS = [
       });
     }
 
+    // Queries now overlap, so each one carries a token and a late reply from an
+    // abandoned query is dropped rather than painted over a newer one.
+    let latest = 0;
+
     async function run() {
+      const token = ++latest;
       const term = input.value.trim();
       const started = performance.now();
+
+      // The index answers in a few milliseconds, so saying "searching" on every
+      // keystroke would only flicker. The wait is only worth reporting once it
+      // is long enough to notice, which on a slow connection it can be.
+      const slow = setTimeout(() => {
+        if (token === latest) resultsEl.setAttribute('aria-busy', 'true');
+      }, 120);
+
       const search = await pagefind.search(term || null, {
         filters: currentFilters(),
         sort: currentSort(),
       });
+
+      clearTimeout(slow);
+      if (token !== latest) return;
+      resultsEl.removeAttribute('aria-busy');
 
       results = search.results;
       rendered = 0;
@@ -271,10 +298,14 @@ const SORTS = [
       run();
     });
 
+    // The index is local and answers in milliseconds, so the old quarter-second
+    // wait was latency this page was adding to itself rather than absorbing.
+    // What is left only coalesces the keystrokes of a fast typist, and is short
+    // enough that a pause between words still searches immediately.
     let debounce;
     input.addEventListener('input', () => {
       clearTimeout(debounce);
-      debounce = setTimeout(run, 250);
+      debounce = setTimeout(run, 60);
     });
 
     document.addEventListener('change', (e) => {
@@ -309,5 +340,17 @@ const SORTS = [
   #results mark {
     background: #dce9a8;
     color: inherit;
+  }
+
+  /*
+    Set only when a query has been running long enough to notice. The old
+    results stay readable underneath - they are what the visitor is still
+    looking at - but they read as stale rather than current.
+  */
+  #results {
+    transition: opacity var(--dur-quick) var(--ease-out);
+  }
+  #results[aria-busy='true'] {
+    opacity: 0.5;
   }
 </style>

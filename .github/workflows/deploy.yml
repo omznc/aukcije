@@ -42,6 +42,18 @@ jobs:
 
       - run: npm ci
 
+      # Share cards are ~130 ms each and there is one per notice, so a cold
+      # build spends six minutes redrawing an archive that has not changed.
+      # Each card is keyed by what is printed on it, so this restores every
+      # settled listing and only the handful whose countdown moved get redrawn.
+      # Losing the cache costs time and nothing else.
+      - name: Restore share-card cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/og
+          key: og-${{ github.run_id }}
+          restore-keys: og-
+
       # What is actually about to be published. A deploy that silently rebuilt
       # stale data looks identical to a good one without this.
       - name: Show what is being deployed

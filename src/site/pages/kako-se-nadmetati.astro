@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
 import {
   entitySlices,
   methodSlices,
@@ -20,28 +21,34 @@ const ENTITY_NAMES: Record<string, string> = {
 
 const steps = [
   {
+    icon: 'file-text',
     title: 'Pročitajte zaključak suda, ne naš sažetak',
     body: 'U zaključku su početna cijena, kapara, mjesto i vrijeme, te uslovi prodaje. Naši podaci su izvučeni automatski i mogu sadržavati greške.',
   },
   {
+    icon: 'hand-coins',
     title: 'Uplatite kaparu na vrijeme',
     body: 'Osiguranje je obično 10% procijenjene vrijednosti i uplaćuje se prije ročišta na račun naveden u zaključku. Bez dokaza o uplati ne možete učestvovati.',
   },
   {
+    icon: 'hourglass-medium',
     title: 'Znajte koje je ročište po redu',
-    body: `Na prvom ročištu cijena je najviša. Ako prodaja ne uspije, na drugom ročištu početna cijena je niža — u našim podacima medijalno ${
+    body: `Na prvom ročištu cijena je najviša. Ako prodaja ne uspije, na drugom ročištu početna cijena je niža - u našim podacima medijalno ${
       medianDiscount === null ? 'osjetno' : formatPercent(medianDiscount)
     } u odnosu na procijenjenu vrijednost. Treće ročište je rjeđe, ${thirdRound} slučajeva u arhivi.`,
   },
   {
+    icon: 'eye',
     title: 'Pregledajte predmet ako je moguće',
     body: `Samo ${Math.round(viewingShare * 100)}% oglasa navodi termin pregleda. Prodaja je „viđeno-kupljeno”: nema garancije, nema povrata, a stvar može biti u lošijem stanju nego u opisu.`,
   },
   {
+    icon: 'map-trifold',
     title: 'Provjerite šta kupujete kod nekretnina',
     body: 'Zemljišnoknjižni izvadak i katastarski podaci pokazuju terete, služnosti i stvarno stanje parcele. Nekretnina može biti useljena.',
   },
   {
+    icon: 'gavel',
     title: 'Nakon nadmetanja',
     body: 'Najbolji ponuđač plaća cijenu u roku iz zaključka; ako ne plati, gubi kaparu. Sud donosi rješenje o dosudi, a porezi i troškovi prijenosa idu na kupca.',
   },
@@ -53,11 +60,11 @@ const steps = [
   description="Kratak pregled postupka sudske prodaje: kapara, ročišta, pregled predmeta i šta slijedi nakon nadmetanja."
 >
   <div class="gut border-b border-rule pb-[26px] pt-[34px]">
-    <h1 class="max-w-[24ch] font-serif text-[32px] leading-[1.06] tracking-tight sm:text-[40px]">
+    <h1 class="max-w-[24ch] font-serif text-[2rem] leading-title tracking-title sm:text-[2.5rem] sm:leading-display sm:tracking-display">
       Kako se nadmetati na sudskoj prodaji
     </h1>
-    <p class="mt-3 max-w-[64ch] text-[14px] leading-relaxed text-muted">
-      Kratak pregled postupka. Nije pravni savjet — pravila su u Zakonu o izvršnom postupku i u samom
+    <p class="mt-3 max-w-[64ch] text-[0.875rem] leading-relaxed text-muted">
+      Kratak pregled postupka. Nije pravni savjet - pravila su u Zakonu o izvršnom postupku i u samom
       zaključku suda, a razlikuju se u FBiH, RS i Brčko distriktu.
     </p>
   </div>
@@ -68,12 +75,13 @@ const steps = [
         {
           steps.map((s, i) => (
             <li class="grid grid-cols-[44px_1fr] gap-4">
-              <span class="font-mono text-[22px] font-bold leading-none text-bar">
+              <span class="flex flex-col items-start gap-2 font-mono text-[1.375rem] tracking-num font-bold leading-none text-bar">
                 {String(i + 1).padStart(2, '0')}
+                <Icon name={s.icon} size={20} class="text-bar" />
               </span>
               <div>
-                <h2 class="font-serif text-[21px] leading-tight">{s.title}</h2>
-                <p class="mt-2 max-w-[68ch] text-[14px] leading-relaxed text-ink-body">{s.body}</p>
+                <h2 class="font-serif text-[1.3125rem] tracking-head leading-tight">{s.title}</h2>
+                <p class="mt-2 max-w-[68ch] text-[0.875rem] leading-relaxed text-ink-body">{s.body}</p>
               </div>
             </li>
           ))
@@ -82,10 +90,11 @@ const steps = [
     </div>
 
     <aside class="gut bg-band pb-[34px] pt-[26px]">
-      <h2 class="border-b border-rule pb-2 text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim">
+      <h2 class="flex items-center gap-1.5 border-b border-rule pb-2 text-[0.6875rem] font-semibold uppercase leading-none tracking-caps text-dim">
+        <Icon name="map-trifold" size={13} class="text-faint" />
         Razlike po entitetu
       </h2>
-      <p class="mt-3 text-[12.5px] leading-relaxed text-ink-body">
+      <p class="mt-3 text-[0.78125rem] leading-relaxed text-ink-body">
         Rokovi, visina osiguranja i način prodaje razlikuju se između {
           entities.map((e, i) => (
             <>
@@ -96,10 +105,11 @@ const steps = [
         }. Uvijek se ravnajte po zaključku suda koji vodi postupak.
       </p>
 
-      <h2 class="mt-6 border-b border-rule pb-2 text-[11px] font-semibold uppercase leading-none tracking-[0.08em] text-dim">
+      <h2 class="mt-6 flex items-center gap-1.5 border-b border-rule pb-2 text-[0.6875rem] font-semibold uppercase leading-none tracking-caps text-dim">
+        <Icon name="gavel" size={13} class="text-faint" />
         Načini prodaje u podacima
       </h2>
-      <dl class="mt-2 font-mono text-[12.5px] leading-[1.9]">
+      <dl class="mt-2 font-mono text-[0.78125rem] leading-[1.9]">
         {
           methods.map((m) => (
             <div class="flex justify-between gap-3">
@@ -111,8 +121,11 @@ const steps = [
       </dl>
 
       <div class="mt-6 border border-edge bg-sheet p-3.5">
-        <h2 class="text-[12px] font-semibold leading-none">Nemamo podatke o strankama</h2>
-        <p class="mt-2 text-[12px] leading-relaxed text-muted">
+        <h2 class="flex items-center gap-1.5 text-[0.75rem] font-semibold leading-none">
+          <Icon name="shield-check" size={14} class="text-pine" />
+          Nemamo podatke o strankama
+        </h2>
+        <p class="mt-2 text-[0.75rem] leading-relaxed text-muted">
           Imena dužnika i vjerovnika, adrese i kontakti se ne objavljuju ni ne prikupljaju. Za pitanja
           o postupku obratite se sudu iz oglasa.
         </p>

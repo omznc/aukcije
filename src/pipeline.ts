@@ -37,7 +37,7 @@ import { buildReport, findDisagreements, type Disagreement } from './extract/dis
  * This is the primary source. The central `sudske-prodaje` feed looks like the
  * canonical one but is badly incomplete: measured across the whole portal it
  * exposes 936 notices where the per-court categories expose 2,668. The gap is
- * not only courts it omits entirely (Sarajevo, Doboj, Foča and a dozen more) —
+ * not only courts it omits entirely (Sarajevo, Doboj, Foča and a dozen more) -
  * it also under-reports courts it *does* list, e.g. Općinski sud u Tuzli, which
  * appears with 3 notices in the feed and 693 in its own categories. Both routes
  * are crawled and merged by article id.
@@ -55,7 +55,7 @@ async function readCoverage(): Promise<CoverageEntry[]> {
     };
     return raw.institutions ?? [];
   } catch {
-    console.warn('  ! data/coverage.json missing — run `npm run discover`; using central feed only');
+    console.warn('  ! data/coverage.json missing - run `npm run discover`; using central feed only');
     return [];
   }
 }
@@ -187,7 +187,7 @@ function buildListing(
 
   // The central feed always carries a sale date; category-sourced notices do
   // not, so fall back to a date parsed out of the notice body. Each source is
-  // bounds-checked before it is trusted — courts do mistype the year into the
+  // bounds-checked before it is trusted - courts do mistype the year into the
   // portal, and a hearing "in 2924" would otherwise be permanently upcoming and
   // sit at the top of the front page forever.
   const resolvedSaleDate =
@@ -363,7 +363,7 @@ export async function run(opts: { full?: boolean; limit?: number } = {}) {
   let done = 0;
   let reused = 0;
 
-  // Pass 1 — fetch each notice and reduce it to text. Extraction proper waits
+  // Pass 1 - fetch each notice and reduce it to text. Extraction proper waits
   // until every text is in hand, so the model pass can run as one batch.
   const reusedListings: Listing[] = [];
   const prepared = new Map<string, { candidate: Candidate; prepared: Prepared }>();
@@ -409,17 +409,17 @@ export async function run(opts: { full?: boolean; limit?: number } = {}) {
     ),
   );
 
-  // Pass 2 — read every notice with the model, reusing cached analyses.
+  // Pass 2 - read every notice with the model, reusing cached analyses.
   let analyses = new Map<string, Analysis>();
   if (llmEnabled()) {
     console.log('\nAnalysing notices…');
     const texts = new Map([...prepared].map(([id, p]) => [id, p.prepared.text]));
     analyses = await analyzeAll(texts);
   } else {
-    console.log('\nNo OPENROUTER_API_KEY — using rule-based extraction only.');
+    console.log('\nNo OPENROUTER_API_KEY - using rule-based extraction only.');
   }
 
-  // Pass 3 — build, redact and validate.
+  // Pass 3 - build, redact and validate.
   const disagreements: Disagreement[] = [];
   const listings = [
     ...reusedListings,
@@ -432,7 +432,7 @@ export async function run(opts: { full?: boolean; limit?: number } = {}) {
 
   // Notices the portal no longer serves. The courts rotate old sales out of the
   // feeds, so a dataset built only from the current crawl silently deletes them
-  // — a routine twice-daily run would erode the archive that is half the point
+  // - a routine twice-daily run would erode the archive that is half the point
   // of this project. One such run dropped 690 records before this existed.
   //
   // Carrying them forward is also the only remaining path by which a fix to
@@ -440,8 +440,8 @@ export async function run(opts: { full?: boolean; limit?: number } = {}) {
   // because the source is gone. So redaction is re-applied on the way through
   // rather than trusting whatever was stored.
   //
-  // A row deleted from data/listings.json by hand stays deleted — this reads
-  // that file, not a separate cache — which is what makes a takedown stick for
+  // A row deleted from data/listings.json by hand stays deleted - this reads
+  // that file, not a separate cache - which is what makes a takedown stick for
   // any notice the portal has already dropped.
   const crawled = new Set(listings.map((l) => l.id));
   const retained = [...existing.values()].filter((l) => !crawled.has(l.id)).map(carryForward);
@@ -469,7 +469,7 @@ export async function run(opts: { full?: boolean; limit?: number } = {}) {
 /**
  * Bring a stored listing forward into a new run.
  *
- * Limited to what can be recomputed from the row itself — redaction and the
+ * Limited to what can be recomputed from the row itself - redaction and the
  * sale-date bound. The extracted *values* were produced by whatever pipeline
  * version the row records, and with the source document gone from the portal
  * there is no honest way to redo that; the row keeps its old version stamp to
