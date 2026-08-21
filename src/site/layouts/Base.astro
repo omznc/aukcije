@@ -1,4 +1,5 @@
 ---
+import { TAB_ORDER_KEY } from "../lib/tab-order.ts";
 import "../styles/global.css";
 import Icon from "../components/Icon.astro";
 import { AD_PREFIX, TAG_PREFIX } from "../lib/saved.ts";
@@ -279,6 +280,7 @@ const isActive = (href: string) =>
                 -->
                 <nav
                     id="tabs"
+                    data-default-order={JSON.stringify(tabs.map((t) => t.href))}
                     class="gut flex gap-1 overflow-x-auto bg-band pt-2 shadow-[inset_0_-1px_0_var(--c-rule)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                 >
                     {
@@ -288,6 +290,17 @@ const isActive = (href: string) =>
                                 aria-current={
                                     isActive(item.href) ? "page" : undefined
                                 }
+                                {/*
+                                  A link is draggable by default, and the
+                                  browser starts that drag on a few pixels of
+                                  movement - inside the slop the hold below
+                                  tolerates, and before its timer has fired. So
+                                  the native drag wins the race and the tab
+                                  never moves. Dragging a tab to the bookmarks
+                                  bar is the cost; reordering is the gesture
+                                  this strip is for.
+                                */}
+                                draggable="false"
                                 class:list={[
                                     "press flex shrink-0 items-center gap-1.5 whitespace-nowrap border border-b-0 px-3 pb-[9px] pt-2 text-[0.78125rem] leading-none",
                                     isActive(item.href)
@@ -315,7 +328,67 @@ const isActive = (href: string) =>
                             </a>
                         ))
                     }
+                    {/*
+                      Ships hidden and is revealed by the module only once this
+                      browser has an order of its own. Outside the tab list on
+                      purpose: it is a control, not a destination, and the
+                      reorder logic walks `a[href]` so it can never be dragged.
+                    */}
+                    <button
+                        type="button"
+                        data-tab-reset
+                        hidden
+                        title="Vrati podrazumijevani raspored"
+                        aria-label="Vrati podrazumijevani raspored kartica"
+                        class="press press-give my-auto ml-1 shrink-0 self-center border border-transparent p-1.5 text-dim hover:bg-band-wash hover:text-ink"
+                    >
+                        <Icon name="arrow-counter-clockwise" size={14} />
+                    </button>
                 </nav>
+
+                <!--
+                  The saved order, applied while the header is still being
+                  parsed. The module at the foot of the page owns the dragging,
+                  but it is deferred, so leaving this to it would show the
+                  shipped order for a frame and then shuffle it - on every page,
+                  since each one is its own document. Same reason as the theme
+                  script in the head and the counter below.
+                -->
+                <script is:inline define:vars={{ orderKey: TAB_ORDER_KEY }}>
+                    try {
+                        var saved = JSON.parse(
+                            localStorage.getItem(orderKey) || "null",
+                        );
+                        if (Array.isArray(saved)) {
+                            var strip = document.getElementById("tabs");
+                            var items = [].slice.call(
+                                strip.querySelectorAll("a[href]"),
+                            );
+                            var placed = [];
+                            saved.forEach(function (href) {
+                                items.forEach(function (el) {
+                                    if (
+                                        el.getAttribute("href") === href &&
+                                        placed.indexOf(el) < 0
+                                    )
+                                        placed.push(el);
+                                });
+                            });
+                            // Anything the saved list has never heard of - a tab
+                            // added since it was written - keeps its order and
+                            // goes last, rather than voiding the whole choice.
+                            items.forEach(function (el) {
+                                if (placed.indexOf(el) < 0) placed.push(el);
+                            });
+                            placed.forEach(function (el) {
+                                strip.insertBefore(
+                                    el,
+                                    strip.querySelector("[data-tab-reset]"),
+                                );
+                            });
+                        }
+                    } catch (e) {}
+                </script>
 
                 <!--
                   The badge is the one thing in the header only this browser
@@ -447,6 +520,7 @@ const isActive = (href: string) =>
         <script>
             import { refreshSavedCount } from "../lib/saved-count.ts";
             import { wireThemeToggle } from "../lib/theme.ts";
+            import { wireTabReorder, wireTabReset } from "../lib/tab-order.ts";
 
             wireThemeToggle();
             refreshSavedCount();
@@ -475,6 +549,12 @@ const isActive = (href: string) =>
                 tabs.addEventListener("scroll", update, { passive: true });
                 addEventListener("resize", update);
                 update();
+
+                // Hold a tab to pick it up; see lib/tab-order.ts. The order was
+                // already applied by the inline script under the strip.
+                wireTabReorder(tabs);
+                const reset = tabs.querySelector("[data-tab-reset]");
+                if (reset instanceof HTMLElement) wireTabReset(tabs, reset);
                 // The active tab is often off-screen on a phone; bring it into view.
                 tabs.querySelector('[aria-current="page"]')?.scrollIntoView({
                     inline: "center",
@@ -510,6 +590,56 @@ const isActive = (href: string) =>
         attribute is set by the script above; with no JS the strip simply never
         fades.
       */
+            /*
+        The springs in lib/tab-order.ts write `transform` on every frame. The
+        `.press` class transitions transform at 90ms, which would ease each of
+        those frames into the next - a spring running through a lag line, which
+        reads as syrup rather than as weight. So the tabs keep `.press` for
+        colour and give up its transform transition; their movement is the
+        spring's job and nothing else's.
+      */
+            #tabs a {
+                transition-property: background-color, border-color, color;
+            }
+
+            #tabs[data-reordering] {
+                cursor: grabbing;
+                /*
+          Belt and braces with the `preventDefault` in tab-order.ts: the strip
+          is a horizontal scroller, and it must not scroll out from under the
+          tab being held.
+        */
+                touch-action: none;
+                scroll-behavior: auto;
+            }
+
+            #tabs[data-reordering] a {
+                user-select: none;
+                -webkit-user-select: none;
+            }
+
+            /*
+        A carried tab. `--lift` is the same 0-to-1 spring that scales it, so the
+        shadow arrives with the lift instead of switching on at the start of it -
+        the tab reads as leaving the strip rather than as being restyled.
+      */
+            #tabs a[data-dragging] {
+                position: relative;
+                z-index: 2;
+                cursor: grabbing;
+                box-shadow: 0 calc(var(--lift, 0) * 6px) calc(var(--lift, 0) * 16px)
+                    rgb(0 0 0 / calc(var(--lift, 0) * 0.18));
+            }
+
+            /*
+        The strip fades its overflowing edge (below), which would also fade a
+        tab being dragged to that edge - exactly when it most needs to be seen.
+      */
+            #tabs[data-reordering] {
+                -webkit-mask-image: none !important;
+                mask-image: none !important;
+            }
+
             #tabs[data-overflow="right"] {
                 -webkit-mask-image: linear-gradient(
                     to right,

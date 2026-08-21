@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { hrefOf } from '../lib/slug.ts';
 import { listings, courts, itemCategories, generatedAt } from '../lib/data.ts';
 
 const escape = (s: string) =>
@@ -36,7 +37,7 @@ export const GET: APIRoute = ({ site }) => {
     ...itemCategories.map((t) => ({ path: `/predmeti/${t.id}/`, lastmod: built })),
     // A notice's own page is settled once published; using its publication date
     // stops a daily rebuild from claiming the whole archive just changed.
-    ...listings.map((l) => ({ path: `/oglas/${l.id}/`, lastmod: l.publishedDate })),
+    ...listings.map((l) => ({ path: hrefOf(l), lastmod: l.publishedDate })),
   ];
 
   const body = urls

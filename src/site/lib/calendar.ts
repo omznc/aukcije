@@ -1,4 +1,5 @@
 import type { Listing } from '../../schema.ts';
+import { hrefOf } from './slug.ts';
 import { SALE_TYPE_LABELS, ROUND_LABELS, METHOD_LABELS, formatMoney } from './data.ts';
 import { headline } from './headline.ts';
 import { icsCalendar, DEFAULT_HOUR, type IcsEvent, type CalendarOptions } from './ics.ts';
@@ -18,7 +19,7 @@ const clip = (s: string | null, limit: number) =>
   !s ? null : s.length <= limit ? s : `${s.slice(0, limit - 1).trimEnd()}…`;
 
 export function eventFor(l: Listing, base: string): IcsEvent {
-  const page = `${base}/oglas/${l.id}/`;
+  const page = `${base}${hrefOf(l)}`;
 
   return {
     // The article id is the portal's own and stable across runs, so a client

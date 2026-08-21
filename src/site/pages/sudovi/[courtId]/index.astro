@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import { hrefOf } from '../../../lib/slug.ts';
 import Icon from '../../../components/Icon.astro';
 import ListingRow from '../../../components/ListingRow.astro';
 import type { Listing } from '../../../../schema.ts';
@@ -185,7 +186,7 @@ const BAND = ['bg-ink', 'bg-moss', 'bg-sage', 'bg-bar', 'bg-rule'];
       ) : (
         archive.slice(0, ARCHIVE_LIMIT).map((l) => (
           <a
-            href={`/oglas/${l.id}/`}
+            href={hrefOf(l)}
             class="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 press border-b border-hair py-[11px] hover:bg-band active:bg-band-wash-deep md:grid-cols-[96px_1fr_120px_110px]"
           >
             <span class="order-1 font-mono text-[0.71875rem] text-dim md:order-none">

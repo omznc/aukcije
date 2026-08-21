@@ -95,13 +95,31 @@ const SCHEMA = {
       type: ['string', 'null'],
       description: 'Općina gdje se predmet nalazi, u nominativu (npr. "Sarajevo"). Bez ulice.',
     },
+    // The only fields here that used to carry no description, and the only
+    // ones the model answered out of the document's heading: "PRVOJ PRODAJI"
+    // was reported as a cadastral municipality 40 times. Junk is filtered
+    // downstream regardless (extract/cadastral.ts), but a described field is
+    // the cheaper place to stop it.
     cadastral: {
       type: ['object', 'null'],
       additionalProperties: false,
       properties: {
-        kc: { type: 'array', items: { type: 'string' } },
-        zkUlozak: { type: 'array', items: { type: 'string' } },
-        ko: { type: 'array', items: { type: 'string' } },
+        kc: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Brojevi katastarskih čestica, samo cifre (npr. "2933/1"). Prazno ako ih nema.',
+        },
+        zkUlozak: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Brojevi zemljišnoknjižnih uložaka, samo cifre (npr. "565"). Prazno ako ih nema.',
+        },
+        ko: {
+          type: 'array',
+          items: { type: 'string' },
+          description:
+            'Nazivi katastarskih općina iza oznake "k.o." - imena mjesta (npr. "Binježevo", "Dvorovi"). Nikada naslov ili tekst oglasa ("prvoj prodaji"), nikada kanton ili entitet. Prazno ako oznake "k.o." nema.',
+        },
       },
       required: ['kc', 'zkUlozak', 'ko'],
     },

@@ -1,0 +1,100 @@
+---
+import Icon from './Icon.astro';
+import { COURT_PLACE, OUTLINE, VIEW, placeOf, project } from '../lib/geo.ts';
+import { foldPlaceName } from '../lib/place-name.ts';
+
+/**
+ * Where one lot is, on the country.
+ *
+ * The dataset carries three locators of decreasing precision and the notice
+ * decides which exist: a cadastral municipality (a village), the municipality
+ * the court wrote in its header (a district), and - failing both - the seat of
+ * the court itself, which is where the hearing happens rather than where the
+ * property is. Falling through them silently would be a lie of omission at the
+ * exact moment a buyer is deciding whether a place is worth the drive, so the
+ * caption always names which one is on screen.
+ *
+ * Street addresses are removed upstream by src/redact.ts, so a settlement
+ * centroid is the finest point this component can ever be asked to draw. It is
+ * marked with a ring rather than a dropped pin for that reason: a pin claims a
+ * building.
+ *
+ * Same inline SVG as /mapa - no tiles, no map library, no third-party request.
+ */
+
+interface Props {
+  settlement: string | null;
+  municipality: string | null;
+  courtId: number;
+  court: string;
+}
+
+const { settlement, municipality, courtId, court } = Astro.props;
+
+const seat = COURT_PLACE[courtId] ?? null;
+
+/** First locator that resolves to a coordinate, with what it actually means. */
+const candidates: Array<{ name: string; label: string; exact: boolean }> = [
+  { name: settlement ?? '', label: 'katastarska općina iz oglasa', exact: true },
+  { name: municipality ?? '', label: 'općina iz oglasa', exact: true },
+  { name: seat ?? '', label: `sjedište suda - ${court}`, exact: false },
+];
+
+const found = candidates.find((c) => c.name && placeOf(c.name)) ?? null;
+const at = found ? placeOf(found.name) : null;
+const point = at ? project(at) : null;
+---
+
+{
+  found && point && (
+    <>
+      <h2 class="mt-7 flex items-center gap-1.5 text-[0.6875rem] font-semibold uppercase leading-none tracking-caps text-dim">
+        <Icon name="map-pin" size={13} class="text-faint" />
+        Lokacija
+      </h2>
+      <div class="mt-2.5 border border-rule bg-sheet p-4">
+        <svg
+          viewBox={`0 0 ${VIEW.width} ${VIEW.height}`}
+          class="block h-auto w-full"
+          role="img"
+          aria-label={`Mapa Bosne i Hercegovine sa označenim mjestom: ${found.name}`}
+        >
+          <path
+            d={OUTLINE}
+            class="fill-land stroke-coast"
+            stroke-width="2"
+            stroke-linejoin="round"
+          />
+          {/*
+            Two rings, not a dot: the outer one is wide enough to find at this
+            size, the inner one marks the centroid without implying an address.
+            An approximate point is drawn in the grey the archive uses, so a
+            court-seat fallback never reads as a located property.
+          */}
+          <circle
+            cx={point.x}
+            cy={point.y}
+            r="26"
+            class={found.exact ? 'fill-pine stroke-pine' : 'fill-bar stroke-dim'}
+            fill-opacity="0.22"
+            stroke-width="2"
+          />
+          <circle cx={point.x} cy={point.y} r="7" class={found.exact ? 'fill-pine' : 'fill-dim'} />
+        </svg>
+
+        {/* Pulled out to the card edge: the rule reads as a division of the card, not of the text inside it. */}
+        <div class="-mx-4 mt-3 border-t border-hair px-4 pt-3">
+          <div class="font-mono text-[0.875rem] font-medium leading-none">{found.name}</div>
+          <p class="mt-2 text-[0.71875rem] leading-relaxed text-dim">{found.label}</p>
+        </div>
+      </div>
+      <p class="mt-3 text-[0.71875rem] leading-relaxed text-dim">
+        Tačka je centar mjesta, ne adresa nekretnine - adrese se ne objavljuju.
+        {settlement &&
+          municipality &&
+          foldPlaceName(settlement) !== foldPlaceName(municipality) &&
+          ` Općina: ${municipality}.`}
+      </p>
+    </>
+  )
+}

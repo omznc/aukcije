@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import { hrefOf } from '../../lib/slug.ts';
 import Icon from '../../components/Icon.astro';
 import { formatDate, formatMoney, daysUntil } from '../../lib/data.ts';
 import { headline } from '../../lib/headline.ts';
@@ -123,7 +124,7 @@ const stats = [
           const days = daysUntil(l.saleDate);
           return (
             <a
-              href={`/oglas/${l.id}/`}
+              href={hrefOf(l)}
               data-drop
               data-firm={d.fromPrevious === null ? 'false' : 'true'}
               class="gut grid grid-cols-[1fr_auto] items-center gap-x-5 gap-y-2 press border-b border-hair py-3.5 hover:bg-wash active:bg-wash-deep md:grid-cols-[1fr_240px_92px]"

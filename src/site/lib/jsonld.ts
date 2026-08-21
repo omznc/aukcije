@@ -1,4 +1,5 @@
 import type { Listing } from '../../schema.ts';
+import { hrefOf } from './slug.ts';
 import { SALE_TYPE_LABELS, TAG_BY_ID, listings, courts, generatedAt } from './data.ts';
 import { headline } from './headline.ts';
 import { zonedInstant, DEFAULT_HOUR } from './ics.ts';
@@ -21,7 +22,7 @@ const ISO = (date: string, time: string | null) =>
   new Date(zonedInstant(date, time ?? DEFAULT_HOUR)).toISOString().replace(/\.\d{3}/, '');
 
 export function listingJsonLd(l: Listing, base: string): object {
-  const url = `${base}/oglas/${l.id}/`;
+  const url = `${base}${hrefOf(l)}`;
   const start = ISO(l.saleDate, l.saleTime);
   const price = l.startingPrice?.amount ?? null;
   const keywords = l.itemTags.map((t) => TAG_BY_ID.get(t)?.label ?? t).join(', ') || undefined;

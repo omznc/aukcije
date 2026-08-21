@@ -175,6 +175,13 @@ import { SALE_TYPE_ICONS, iconBody } from '../lib/icons.ts';
     const off = c.o ? `${c.o.startsWith('−') ? 'text-pine' : 'text-dim'}` : '';
     return `
       <div data-saved-row class="gut flex items-start gap-4 press border-b border-hair py-3.5 hover:bg-wash active:bg-wash-deep">
+        {/*
+          The bare id, deliberately. This page is rendered in the browser from
+          what localStorage holds, and that is an id and a snapshot of the card
+          - not a slug. A headline improves between runs, so a slug built here
+          could point at an address this build never generated. The id always
+          resolves; see lib/slug.ts.
+        */}
         <a href="/oglas/${escape(id)}/" class="min-w-0 flex-1">
           <div class="flex flex-wrap items-baseline justify-between gap-x-5 gap-y-1">
             <span class="text-[0.90625rem] font-semibold leading-snug">${escape(c.h)}</span>

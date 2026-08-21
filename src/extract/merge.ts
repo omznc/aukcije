@@ -3,6 +3,7 @@ import type { ExtractedFields } from './fields.ts';
 import type { Money, SaleType } from '../schema.ts';
 import { inferSaleType } from './fields.ts';
 import { isUsableDescription } from './describe.ts';
+import { sanitiseCadastral } from './cadastral.ts';
 
 /**
  * Reconcile the model's reading of a notice with the rule-based one.
@@ -126,14 +127,11 @@ export function mergeAnalysis(
       ? llm.itemDescription.slice(0, 400)
       : ruleDescription;
 
-  const cadastral =
-    llm.cadastral && (llm.cadastral.kc.length || llm.cadastral.zkUlozak.length || llm.cadastral.ko.length)
-      ? {
-          kc: llm.cadastral.kc.slice(0, 25),
-          zkUlozak: llm.cadastral.zkUlozak.slice(0, 25),
-          ko: llm.cadastral.ko.slice(0, 25),
-        }
-      : rules.cadastral;
+  // Cleaned *before* the choice, not after: the model reads a notice's heading
+  // as data often enough that an unchecked answer used to win on the strength
+  // of junk alone - 40 listings carried k.o. "PRVOJ PRODAJI", one of them a
+  // car. Junk now leaves nothing behind, so the regexes win by default.
+  const cadastral = sanitiseCadastral(llm.cadastral) ?? rules.cadastral;
 
   return {
     headline: cleanHeadline(llm.headline),

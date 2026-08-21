@@ -19,6 +19,7 @@ import {
   parseDate,
   plausibleSaleDate,
 } from './extract/fields.ts';
+import { settlementOf } from './extract/cadastral.ts';
 import { describeItem } from './extract/describe.ts';
 import { tagItems } from './extract/items.ts';
 import { redactText, redactTitle, redactVenue } from './redact.ts';
@@ -241,7 +242,9 @@ function buildListing(
     cadastral: merged.cadastral,
     location: {
       municipality: merged.municipality,
-      settlement: null,
+      // The k.o. names a village where the municipality names a district, and
+      // it is the only sub-municipal locator that survives redaction.
+      settlement: settlementOf(merged.cadastral),
     },
     appraisedValue: merged.appraisedValue,
     startingPrice: merged.startingPrice,
@@ -469,13 +472,14 @@ export async function run(opts: { full?: boolean; limit?: number } = {}) {
 /**
  * Bring a stored listing forward into a new run.
  *
- * Limited to what can be recomputed from the row itself - redaction and the
- * sale-date bound. The extracted *values* were produced by whatever pipeline
- * version the row records, and with the source document gone from the portal
- * there is no honest way to redo that; the row keeps its old version stamp to
- * say so. Privacy and an impossible date are the two things that must not be
- * left at whatever they happened to be written with, because both stay visible
- * on the site forever.
+ * Limited to what can be recomputed from the row itself - redaction, the
+ * sale-date bound, and the settlement the row's own cadastral record implies.
+ * The extracted *values* were produced by whatever pipeline version the row
+ * records, and with the source document gone from the portal there is no
+ * honest way to redo that; the row keeps its old version stamp to say so.
+ * Privacy and an impossible date are the two things that must not be left at
+ * whatever they happened to be written with, because both stay visible on the
+ * site forever.
  */
 function carryForward(l: Listing): Listing {
   return {
@@ -486,6 +490,15 @@ function carryForward(l: Listing): Listing {
     auctionLocation: redactVenue(l.auctionLocation),
     viewingInfo: redactText(l.viewingInfo),
     saleDate: plausibleSaleDate(l.saleDate, l.publishedDate) ?? l.publishedDate,
+    location: {
+      municipality: l.location?.municipality ?? null,
+      // Derived, not extracted: the k.o. is already in the row, and reading it
+      // needs no document. Without this the archive - the rows the portal has
+      // stopped serving, which is where most of the history lives - would be
+      // the only part of the site that never gets a settlement, because
+      // nothing else will ever visit these rows again.
+      settlement: l.location?.settlement ?? settlementOf(l.cadastral),
+    },
   };
 }
 

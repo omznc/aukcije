@@ -1,5 +1,6 @@
 ---
 import type { Listing } from '../../schema.ts';
+import { hrefOf } from '../lib/slug.ts';
 import Icon from './Icon.astro';
 import { formatMoney, daysUntil } from '../lib/data.ts';
 import { headline } from '../lib/headline.ts';
@@ -28,7 +29,7 @@ const URGENCY_COLOR = {
 ---
 
 <a
-  href={`/oglas/${l.id}/`}
+  href={hrefOf(l)}
   {...attrs}
   class:list={[
     // A row is too wide to scale under the finger without looking like a

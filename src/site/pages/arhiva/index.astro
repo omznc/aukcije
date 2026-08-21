@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import { hrefOf } from '../../lib/slug.ts';
 import Icon from '../../components/Icon.astro';
 import { past, formatDate, formatMoney } from '../../lib/data.ts';
 import { headline } from '../../lib/headline.ts';
@@ -126,7 +127,7 @@ const CHIP =
     {
       rows.map((r) => (
         <a
-          href={`/oglas/${r.l.id}/`}
+          href={hrefOf(r.l)}
           data-row
           data-year={String(r.year)}
           data-older={recentYears.some((y) => y.year === r.year) ? 'false' : 'true'}

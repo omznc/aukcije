@@ -21,6 +21,6 @@
  */
 export const PROMPT_VERSION = 3;
 export const REDACTION_VERSION = 3;
-export const RULES_VERSION = 7;
+export const RULES_VERSION = 8;
 
 export const PIPELINE_VERSION = `${PROMPT_VERSION}.${REDACTION_VERSION}.${RULES_VERSION}`;

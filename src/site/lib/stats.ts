@@ -10,7 +10,7 @@ import {
   TAG_BY_ID,
   formatMoney,
 } from './data.ts';
-import { PLACES, COURT_PLACE, placeOf, type LatLon } from './geo.ts';
+import { COURT_PLACE, canonicalPlace, placeOf, type LatLon } from './geo.ts';
 
 // Dataset-free, so the saved-notices page can import them in the browser too.
 export { urgency, daysLabel } from './dates.ts';
@@ -615,16 +615,26 @@ export function mapData(items: Listing[] = listings): MapData {
 
   for (const l of items) {
     const own = l.location?.municipality ?? null;
+    // The settlement is the finer locator, but this map's unit is the
+    // municipality - resolving to it first would scatter one town across a
+    // dozen hamlet dots. It earns its place one rung down instead: when the
+    // notice's municipality is missing or unknown to the gazetteer, a village
+    // still puts the sale in the right part of the country, which the court's
+    // seat only does by luck.
+    const settlement = l.location?.settlement ?? null;
     const seat = COURT_PLACE[l.courtId] ?? null;
-    const name = placeOf(own) ? own! : placeOf(seat) ? seat! : null;
+    // Resolved to the table's own spelling rather than the notice's, so that
+    // "SARAJEVO" and "Sarajevo" are one dot of the right size instead of two
+    // half-sized ones drawn on top of each other.
+    const name = canonicalPlace(own) ?? canonicalPlace(settlement) ?? canonicalPlace(seat);
     if (!name) {
       unplaced++;
       continue;
     }
-    const isExact = placeOf(own) !== null;
+    const isExact = canonicalPlace(own) !== null || canonicalPlace(settlement) !== null;
     isExact ? exact++ : bySeat++;
 
-    const bucket = buckets.get(name) ?? { at: PLACES[name], upcoming: 0, total: 0, exact: false };
+    const bucket = buckets.get(name) ?? { at: placeOf(name)!, upcoming: 0, total: 0, exact: false };
     bucket.total++;
     if (isUpcoming(l)) bucket.upcoming++;
     bucket.exact ||= isExact;
@@ -653,12 +663,12 @@ export function courtPoints(): Array<{
   total: number;
 }> {
   return courts
-    .filter((c) => COURT_PLACE[c.id] && PLACES[COURT_PLACE[c.id]])
+    .filter((c) => placeOf(COURT_PLACE[c.id]))
     .map((c) => ({
       id: c.id,
       name: c.name,
       place: COURT_PLACE[c.id],
-      at: PLACES[COURT_PLACE[c.id]],
+      at: placeOf(COURT_PLACE[c.id])!,
       upcoming: upcoming.filter((l) => l.courtId === c.id).length,
       total: c.count,
     }))

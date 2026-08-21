@@ -93,7 +93,13 @@ check(!/[\w.+-]+@[\w-]+\.[a-z]{2,}/i.test(blob), 'no e-mail addresses in the pub
 const STREET =
   /(?<!\bz\.?\s?k\.?\s?)(?<!\bzk\.?\s?)\b(?:ul\.|ulica|ulici)\s+(?!broj\b|br\.)[A-ZČĆŽŠĐa-zčćžšđ]{3,}[^,;.()]{0,40}\bbr(?:oj)?\.?\s*\d/;
 const leaked = listings.filter((l) =>
-  [l.title, l.itemDescription, l.viewingInfo, l.location?.municipality].some(
+  [
+    l.title,
+    l.itemDescription,
+    l.viewingInfo,
+    l.location?.municipality,
+    l.location?.settlement,
+  ].some(
     (v) => v && STREET.test(v),
   ),
 );

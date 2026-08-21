@@ -1,4 +1,5 @@
 import type { Listing } from '../../schema.ts';
+import { hrefOf } from './slug.ts';
 import { SALE_TYPE_LABELS, formatDate, formatMoney } from './data.ts';
 import { headline } from './headline.ts';
 
@@ -40,7 +41,7 @@ function pubDate(l: Listing, index: number): string {
 }
 
 function item(l: Listing, index: number, options: FeedOptions): string {
-  const url = `${options.base}/oglas/${l.id}/`;
+  const url = `${options.base}${hrefOf(l)}`;
   const price = formatMoney(l.startingPrice ?? l.appraisedValue);
   const description = [
     options.note?.(l),

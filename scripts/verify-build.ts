@@ -2,6 +2,7 @@ import { readFile, stat } from 'node:fs/promises';
 import { glob } from 'node:fs/promises';
 import { PATHS } from '../src/config.ts';
 import { ListingFile } from '../src/schema.ts';
+import { hrefOf, icsHrefOf } from '../src/site/lib/slug.ts';
 
 /**
  * Assert the built site is actually complete.
@@ -37,10 +38,17 @@ const courts = new Set(listings.map((l) => l.courtId)).size;
 
 console.log('Verifying built site\n');
 
-const listingPages = await count('dist/oglas/*/index.html');
+// Checked against the slug each listing computes rather than by counting the
+// directory, which since the move to readable URLs also holds one redirect stub
+// per listing. A count would be satisfied by 2,694 stubs and no pages at all.
+const missingPages = (
+  await Promise.all(
+    listings.map(async (l) => ((await exists(`dist${hrefOf(l)}index.html`)) ? null : l.id)),
+  )
+).filter(Boolean);
 check(
-  listingPages === listings.length,
-  `a page per listing (${listingPages} of ${listings.length})`,
+  missingPages.length === 0,
+  `a page per listing (${listings.length - missingPages.length} of ${listings.length})`,
 );
 
 const courtPages = await count('dist/sudovi/*/index.html');
@@ -51,8 +59,15 @@ check(itemPages > 1, `item category pages generated (${itemPages})`);
 
 // Calendars and share cards are per-listing endpoints, so a broken import takes
 // out all of them at once while the HTML still builds and the job still passes.
-const calendars = await count('dist/oglas/*.ics');
-check(calendars === listings.length, `a calendar per listing (${calendars} of ${listings.length})`);
+const missingCalendars = (
+  await Promise.all(
+    listings.map(async (l) => ((await exists(`dist${icsHrefOf(l)}`)) ? null : l.id)),
+  )
+).filter(Boolean);
+check(
+  missingCalendars.length === 0,
+  `a calendar per listing (${listings.length - missingCalendars.length} of ${listings.length})`,
+);
 
 const cards = await count('dist/og/*.png');
 check(
@@ -119,8 +134,19 @@ check(home.length > 2000, `home page has content (${home.length} bytes)`);
 check(home.includes('application/ld+json'), 'home page carries structured data');
 
 const sampleListing = listings[0];
-const listingHtml = await readFile(`dist/oglas/${sampleListing.id}/index.html`, 'utf8').catch(
+const listingHtml = await readFile(`dist${hrefOf(sampleListing)}index.html`, 'utf8').catch(
   () => '',
+);
+
+// The old address has to keep working: it is what is indexed, what is shared,
+// and what the saved-listings page rebuilds from an id in localStorage.
+const legacyHtml = await readFile(
+  `dist/oglas/${sampleListing.id}/index.html`,
+  'utf8',
+).catch(() => '');
+check(
+  legacyHtml.includes(hrefOf(sampleListing)) && legacyHtml.includes('rel="canonical"'),
+  'the bare-id url still resolves and points at its slug',
 );
 check(listingHtml.includes('"@type":"SaleEvent"'), 'listing pages carry SaleEvent structured data');
 check(
@@ -148,4 +174,6 @@ if (failures.length) {
   console.error(`${failures.length} check(s) failed - the build is incomplete, do not deploy.`);
   process.exit(1);
 }
-console.log(`Build looks complete: ${listingPages} listing pages, ${courtPages} court pages.`);
+console.log(
+  `Build looks complete: ${listings.length} listing pages (plus a redirect stub each), ${courtPages} court pages.`,
+);

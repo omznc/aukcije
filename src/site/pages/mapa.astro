@@ -43,7 +43,9 @@ const stats = [
   { value: String(courts.length), label: 'SUDOVA NA MAPI', accent: false },
   {
     value: `${Math.round((exact / (exact + bySeat + unplaced)) * 100)}%`,
-    label: 'SA VLASTITOM OPĆINOM',
+    // Counts a notice placed by its own municipality or its own k.o. - both
+    // come from the notice, unlike the court-seat fallback this measures against.
+    label: 'SA VLASTITOM LOKACIJOM',
     accent: false,
   },
 ];

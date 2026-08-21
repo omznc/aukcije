@@ -1,6 +1,8 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Icon from '../../components/Icon.astro';
+import Locator from '../../components/Locator.astro';
+import { foldPlaceName } from '../../lib/place-name.ts';
 import SaveToggle from '../../components/SaveToggle.astro';
 import type { Listing } from '../../../schema.ts';
 import {
@@ -14,6 +16,7 @@ import {
   daysUntil,
 } from '../../lib/data.ts';
 import { headline } from '../../lib/headline.ts';
+import { hrefOf, icsHrefOf, slugOf } from '../../lib/slug.ts';
 import { saleTypeIcon } from '../../lib/icons.ts';
 import {
   chainFor,
@@ -42,14 +45,37 @@ import {
 } from '../../lib/costs.ts';
 import { listingJsonLd } from '../../lib/jsonld.ts';
 
+/**
+ * Two paths per listing, and only one of them is a page.
+ *
+ * The slug is where a notice actually lives. The bare id is where it used to
+ * live - roughly 2,700 of those are indexed, shared and bookmarked, and the
+ * saved-listings page still builds links from ids held in localStorage, where
+ * no headline is guaranteed to match the current build. So the old address
+ * stays, as a stub that sends the reader on.
+ *
+ * A static host has no 301 to offer, so the stub is a meta refresh carrying the
+ * canonical of the real page. It is what a search engine follows and what a
+ * browser follows, and it is the only honest option without a server in front.
+ */
 export function getStaticPaths() {
-  return listings.map((l) => ({ params: { id: l.id }, props: { listing: l } }));
+  return listings.flatMap((l) => {
+    const slug = slugOf(l);
+    const canonical = { params: { slug: `${slug}-${l.id}` }, props: { listing: l, redirect: false } };
+    // A listing with no usable headline is already at its bare id; emitting the
+    // stub too would be a page redirecting to itself.
+    return slug
+      ? [canonical, { params: { slug: l.id }, props: { listing: l, redirect: true } }]
+      : [{ params: { slug: l.id }, props: { listing: l, redirect: false } }];
+  });
 }
 
 interface Props {
   listing: Listing;
+  redirect: boolean;
 }
-const { listing: l } = Astro.props;
+const { listing: l, redirect } = Astro.props;
+const destination = new URL(hrefOf(l), Astro.site).href;
 
 const days = daysUntil(l.saleDate);
 const state = urgency(days);
@@ -65,6 +91,16 @@ const cadastral = [
   ...(l.cadastral?.ko ?? []).map((v) => `k.o. ${v}`),
 ].join(' · ');
 
+// Compared folded, because the two fields come from different readings of the
+// same notice and disagree on spelling more often than on place: the header
+// says Žepče and the register says ŽEPĆE, and printing both as if they were
+// two facts is worse than printing neither.
+const settlement =
+  l.location?.settlement &&
+  foldPlaceName(l.location.settlement) !== foldPlaceName(l.location.municipality ?? '')
+    ? l.location.settlement
+    : null;
+
 /** Absent values are stated rather than hidden: a bidder needs to know the notice was silent. */
 const NOT_STATED = 'nije navedeno u oglasu';
 
@@ -78,6 +114,9 @@ const facts: Array<[string, string | null, boolean, string]> = [
   ['Objavljeno', formatDate(l.publishedDate), false, 'calendar-plus'],
   ['Pregled predmeta', l.viewingInfo, true, 'eye'],
   ['Katastar', cadastral || null, false, 'map-trifold'],
+  // Suppressed when it merely repeats the municipality: a k.o. named after its
+  // own town ("k.o. Lukavac" in Lukavac) adds a row and no information.
+  ['Naselje', settlement, false, 'map-pin-area'],
   ['Općina', l.location?.municipality ?? null, false, 'buildings'],
   ['Jezik oglasa', l.language, false, 'translate'],
 ];
@@ -128,6 +167,27 @@ const jsonLd = JSON.stringify(
 ).replace(/</g, '\\u003c');
 ---
 
+{/*
+  The old address. A static host cannot answer 301, so this is the closest
+  honest equivalent: a canonical pointing at the real page for anything that
+  indexes, a meta refresh for anything that renders, `noindex, follow` so the
+  stub itself never competes with the page it points at, and a plain link for
+  the case where neither runs.
+*/}
+{redirect ? (
+  <html lang="bs">
+    <head>
+      <meta charset="utf-8" />
+      <meta http-equiv="refresh" content={`0; url=${destination}`} />
+      <link rel="canonical" href={destination} />
+      <meta name="robots" content="noindex, follow" />
+      <title>{headline(l)}</title>
+    </head>
+    <body>
+      <a href={destination}>{headline(l)}</a>
+    </body>
+  </html>
+) : (
 <Base
   title={`${title.slice(0, 70)} - ${l.court}`}
   description={`Sudska prodaja: ${title.slice(0, 150)}`}
@@ -620,6 +680,13 @@ const jsonLd = JSON.stringify(
           </p>
         </div>
 
+        <Locator
+          settlement={l.location?.settlement ?? null}
+          municipality={l.location?.municipality ?? null}
+          courtId={l.courtId}
+          court={l.court}
+        />
+
         {
           chain.length > 1 && (
             <>
@@ -676,7 +743,7 @@ const jsonLd = JSON.stringify(
                   const cPerM2 = pricePerM2(c);
                   return (
                     <a
-                      href={`/oglas/${c.id}/`}
+                      href={hrefOf(c)}
                       class="flex justify-between gap-2.5 border-b border-rule py-2.5 text-[0.78125rem] leading-snug press last:border-0 hover:text-pine"
                     >
                       <span>{headline(c)}</span>
@@ -709,7 +776,7 @@ const jsonLd = JSON.stringify(
             Podsjetnik 7 dana i 1 dan ranije - kapara se uplaćuje prije ročišta.
           </p>
           <a
-            href={`/oglas/${l.id}.ics`}
+            href={icsHrefOf(l)}
             download={`rociste-${l.id}.ics`}
             class="press press-give flex items-center justify-center gap-1.5 border border-ink bg-ink px-3 py-2.5 text-[0.75rem] font-semibold leading-none text-on-ink"
           >
@@ -743,6 +810,7 @@ const jsonLd = JSON.stringify(
     </div>
   </article>
 </Base>
+)}
 
 <script>
   // The arithmetic lives in lib/costs.ts so the rules are written down once;

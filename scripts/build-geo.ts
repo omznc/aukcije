@@ -39,6 +39,29 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const { listings } = ListingFile.parse(JSON.parse(await readFile(PATHS.listings, 'utf8')));
 
 const { toNominative } = await import('../src/extract/municipality.ts');
+const { settlementOf } = await import('../src/extract/cadastral.ts');
+const { foldPlaceName } = await import('../src/site/lib/place-name.ts');
+
+/**
+ * The coordinates already committed, used as a cache rather than a fallback.
+ *
+ * Every one of them was a Nominatim call at one second apiece, and a name's
+ * position does not change between runs. Reusing them turns a rebuild from
+ * five minutes of rate-limited fetching into a lookup for everything already
+ * known and a request only for what is new. A name that leaves the dataset
+ * still leaves the table - this file stays a picture of the current data, not
+ * an ever-growing pile - but it costs nothing if it comes back.
+ */
+const cached = new Map<string, { lat: number; lon: number }>();
+try {
+  const { PLACES } = await import('../src/site/lib/geo.ts');
+  for (const [name, [lat, lon]] of Object.entries(PLACES)) {
+    cached.set(foldPlaceName(name), { lat, lon });
+  }
+} catch {
+  // First run, or a half-written file from an interrupted one. Either way the
+  // gazetteer is the source of truth and the cache is only ever a shortcut.
+}
 
 /**
  * A court's seat, in the nominative. Court names embed it in the locative
@@ -52,19 +75,66 @@ function seatOf(court: string): string | null {
   return match ? toNominative(match[1].trim()) : null;
 }
 
-const places = new Set<string>();
+/**
+ * One place, however many ways the archive spells it.
+ *
+ * Keyed by the folded name, so "SARAJEVO" and "Sarajevo" are one lookup and
+ * one dot rather than two of each. `display` is whichever spelling the data
+ * uses most - the table has to print something, and the majority spelling is
+ * the least surprising thing to read in a warning or a diff. `within` is the
+ * municipality the rows put this place in, kept because a hamlet is often
+ * only findable with it (see variantsOf).
+ */
+interface Place {
+  display: string;
+  spellings: Map<string, number>;
+  within: Map<string, number>;
+}
+
+const places = new Map<string, Place>();
 const courtPlace = new Map<number, string>();
 
+/** Count one sighting of `name`, optionally inside a municipality. */
+function see(name: string, within?: string | null): string {
+  const key = foldPlaceName(name);
+  const place = places.get(key) ?? {
+    display: name,
+    spellings: new Map<string, number>(),
+    within: new Map<string, number>(),
+  };
+  place.spellings.set(name, (place.spellings.get(name) ?? 0) + 1);
+  if (within && foldPlaceName(within) !== key) {
+    place.within.set(within, (place.within.get(within) ?? 0) + 1);
+  }
+  places.set(key, place);
+  return key;
+}
+
 for (const l of listings) {
-  if (l.location?.municipality) places.add(l.location.municipality);
+  const municipality = l.location?.municipality ?? null;
+  if (municipality) see(municipality);
+  // Read through to the cadastral record rather than trusting the stored
+  // field, so this table can be refreshed before the next scrape rewrites the
+  // archive - the settlement is derived, and deriving it here costs nothing.
+  const settlement = l.location?.settlement ?? settlementOf(l.cadastral);
+  if (settlement) see(settlement, municipality);
   const seat = seatOf(l.court);
   if (seat) {
-    places.add(seat);
+    see(seat);
     courtPlace.set(l.courtId, seat);
   }
 }
 
-console.log(`${places.size} distinct places, ${courtPlace.size} courts`);
+/** The winner of each spelling contest, settled once the counting is done. */
+const commonest = (counts: Map<string, number>): string | null =>
+  [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'bs'))[0]?.[0] ?? null;
+
+for (const place of places.values()) place.display = commonest(place.spellings)!;
+
+const spellings = [...places.values()].reduce((n, p) => n + p.spellings.size, 0);
+console.log(
+  `${places.size} distinct places (${spellings} spellings), ${courtPlace.size} courts`,
+);
 
 // ── Outline ─────────────────────────────────────────────────────────────────
 
@@ -168,7 +238,39 @@ console.log(`outline: ${path.length} chars, viewBox 0 0 ${WIDTH} ${HEIGHT}`);
 const coords = new Map<string, { lat: number; lon: number }>();
 const missing: string[] = [];
 
-for (const name of [...places].sort()) {
+/**
+ * What to ask the gazetteer for a given place, in descending fidelity.
+ *
+ * Municipality names are what a gazetteer is built out of and hit first try.
+ * Cadastral municipalities are not: a hamlet like Donji Butmir shares a name
+ * with hamlets in three other countries, or is too small to be indexed under
+ * the bare string at all. So the second query says where to look - the
+ * municipality the notices themselves put it in - which is the difference
+ * between "Donji Butmir" and "Donji Butmir, Ilidža".
+ *
+ * Each variant costs another second under Nominatim's rate limit, so they run
+ * only when the one before found nothing.
+ */
+function variantsOf(place: Place): string[] {
+  const name = place.display;
+  const within = commonest(place.within);
+  const out = [name];
+  if (within) out.push(`${name}, ${within}`);
+  // "Grad"/"Selo" are stripped only as a *fallback*, never in the data: Novi
+  // Grad, Stari Grad and Zlo Selo are whole names, and cutting them yields
+  // "Novi", "Stari", "Zlo". Because the full string is queried first, those
+  // three hit before this variant is ever reached - it only fires for the
+  // register's qualifiers, "Ilijaš grad" and "Bijeljina selo", which miss.
+  const withoutQualifier = name.replace(/\s+(?:selo|grad|naselje)$/i, '').trim();
+  if (withoutQualifier !== name && withoutQualifier.length > 1) {
+    out.push(withoutQualifier);
+    if (within) out.push(`${withoutQualifier}, ${within}`);
+  }
+  return out;
+}
+
+/** One gazetteer lookup. Null means "no usable hit", not "failed". */
+async function geocode(query: string): Promise<{ lat: number; lon: number } | null> {
   const url = new URL(NOMINATIM);
   url.searchParams.set('format', 'json');
   url.searchParams.set('countrycodes', 'ba');
@@ -176,15 +278,33 @@ for (const name of [...places].sort()) {
   // Settlements only: several municipality names also match a street or a
   // river, and a bare query happily returns those.
   url.searchParams.set('featureType', 'settlement');
-  url.searchParams.set('q', name);
+  url.searchParams.set('q', query);
 
   const response = await fetch(url, { headers: { 'User-Agent': AGENT } });
-  if (!response.ok) throw new Error(`nominatim ${response.status} for ${name}`);
+  if (!response.ok) throw new Error(`nominatim ${response.status} for ${query}`);
   const [hit] = await response.json();
+  return hit ? { lat: Number(hit.lat), lon: Number(hit.lon) } : null;
+}
+
+let fetched = 0;
+for (const [key, place] of [...places].sort(([a], [b]) => a.localeCompare(b))) {
+  const known = cached.get(key);
+  if (known) {
+    coords.set(place.display, known);
+    process.stdout.write(`\r  placed ${coords.size}/${places.size} (${fetched} fetched)`);
+    continue;
+  }
+
+  let hit: { lat: number; lon: number } | null = null;
+  for (const query of variantsOf(place)) {
+    fetched++;
+    hit = await geocode(query);
+    await sleep(1100);
+    if (hit) break;
+  }
 
   if (hit) {
-    const lat = Number(hit.lat);
-    const lon = Number(hit.lon);
+    const { lat, lon } = hit;
     // A hit outside the country's own bounding box is a wrong match, not a
     // border town; keeping it would drop a dot into the sea off the viewBox.
     if (
@@ -193,15 +313,20 @@ for (const name of [...places].sort()) {
       lon >= bounds.minLon - 0.1 &&
       lon <= bounds.maxLon + 0.1
     ) {
-      coords.set(name, { lat: Math.round(lat * 1e4) / 1e4, lon: Math.round(lon * 1e4) / 1e4 });
-    } else missing.push(`${name} (out of bounds: ${lat}, ${lon})`);
-  } else missing.push(name);
+      coords.set(place.display, {
+        lat: Math.round(lat * 1e4) / 1e4,
+        lon: Math.round(lon * 1e4) / 1e4,
+      });
+    } else missing.push(`${place.display} (out of bounds: ${lat}, ${lon})`);
+  } else missing.push(place.display);
 
-  process.stdout.write(`\r  geocoded ${coords.size}/${places.size}`);
-  await sleep(1100);
+  process.stdout.write(`\r  placed ${coords.size}/${places.size} (${fetched} fetched)`);
 }
 console.log();
 if (missing.length) console.warn(`not found: ${missing.join(', ')}`);
+
+/** Coordinates are keyed by the display spelling; lookups fold, as the site does. */
+const placed = new Map([...coords].map(([name, c]) => [foldPlaceName(name), { name, ...c }]));
 
 // ── Emit ────────────────────────────────────────────────────────────────────
 
@@ -211,7 +336,8 @@ const entries = [...coords]
   .join('\n');
 
 const courtEntries = [...courtPlace]
-  .filter(([, seat]) => coords.has(seat))
+  .map(([id, seat]) => [id, placed.get(foldPlaceName(seat))?.name] as const)
+  .filter((entry): entry is readonly [number, string] => Boolean(entry[1]))
   .sort((a, b) => a[0] - b[0])
   .map(([id, seat]) => `  ${id}: ${JSON.stringify(seat)},`)
   .join('\n');
@@ -231,6 +357,8 @@ const file = `/**
  * Carries no dataset import, so the browser can use it for "courts near me"
  * without pulling in data/listings.json.
  */
+
+import { foldPlaceName } from './place-name.ts';
 
 /** Latitude, longitude - in that order, as they are spoken. */
 export type LatLon = readonly [number, number];
@@ -285,9 +413,32 @@ export const COURT_PLACE: Record<number, string> = {
 ${courtEntries}
 };
 
+/**
+ * Every spelling above, folded, so a lookup does not have to guess which one
+ * the table happens to hold. Built once at module load; the table is a few
+ * hundred entries and the site asks it a question per listing.
+ */
+const FOLDED = new Map<string, readonly [string, LatLon]>(
+  Object.entries(PLACES).map(([name, at]) => [foldPlaceName(name), [name, at]]),
+);
+
+/**
+ * The table's own spelling of a name, or null if it does not know the place.
+ *
+ * Two rows that mean the same town have to land in the same bucket on the map,
+ * or one town is drawn as two half-sized dots side by side. Callers that group
+ * by place group by this.
+ */
+export const canonicalPlace = (name: string | null | undefined): string | null =>
+  (name ? FOLDED.get(foldPlaceName(name))?.[0] : undefined) ?? null;
+
+/** Where a place is, whatever case, hyphens or diacritics the name arrived in. */
 export const placeOf = (name: string | null | undefined): LatLon | null =>
-  (name ? PLACES[name] : undefined) ?? null;
+  (name ? FOLDED.get(foldPlaceName(name))?.[1] : undefined) ?? null;
 `;
 
 await writeFile('src/site/lib/geo.ts', file);
-console.log(`wrote src/site/lib/geo.ts - ${coords.size} places, ${courtEntries.split('\n').length} courts`);
+console.log(
+  `wrote src/site/lib/geo.ts - ${coords.size} places (${fetched} geocoder requests), ` +
+    `${courtEntries.split('\n').length} courts`,
+);

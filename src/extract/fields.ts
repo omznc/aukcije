@@ -1,6 +1,7 @@
 import type { Money, SaleType } from '../schema.ts';
 import { fold, toLatin } from '../lib/text.ts';
 import { toNominative } from './municipality.ts';
+import { parseCadastral, type Cadastral } from './cadastral.ts';
 
 /**
  * Rule-based extraction of the fields a bidder actually needs.
@@ -26,7 +27,7 @@ export interface ExtractedFields {
   saleTime: string | null;
   auctionLocation: string | null;
   viewingInfo: string | null;
-  cadastral: { kc: string[]; zkUlozak: string[]; ko: string[] } | null;
+  cadastral: Cadastral | null;
   municipality: string | null;
   itemDescription: string | null;
   /**
@@ -339,44 +340,6 @@ function parseAuctionLocation(t: string): string | null {
 function parseViewing(t: string): string | null {
   const m = t.match(/\b(?:razgledanj\w+|razgledati|pregled\w*)\b[^.]{0,180}/i);
   return m ? tidy(m[0]) : null;
-}
-
-/**
- * Cadastral identifiers: k.č. (parcel), z.k. uložak (land-registry folio) and
- * k.o. (cadastral municipality).
- *
- * Notices spell the number label as "br.", "br" or "broj", and freely mix case
- * ("K.o." / "k.o."), so every pattern here has to tolerate all of those.
- */
-function parseCadastral(t: string): ExtractedFields['cadastral'] {
-  const num = String.raw`(?:br(?:oj)?\.?\s*)?`;
-  const kc = collect(
-    t,
-    new RegExp(String.raw`\b(?:k\.?\s?[cč]\.?|parcel\w*)\s*${num}(\d+(?:\/\d+)?)`, 'gi'),
-  );
-  const zk = collect(
-    t,
-    new RegExp(
-      String.raw`\b(?:z\.?\s?k\.?|zemlji[sš]noknji[zž]n\w*)\s*(?:ul(?:o[zž]ak|\.)?)?\s*${num}(\d+(?:\/\d+)?)`,
-      'gi',
-    ),
-  );
-  const ko = collect(
-    t,
-    // The name itself must still start with a capital, but the "k.o." marker
-    // may be written either way.
-    /\b[Kk]\.?\s?[Oo]\.?\s+((?:SP[_\s]*)?[A-ZČĆŽŠĐ][\wČĆŽŠĐčćžšđ-]+(?:\s+[A-ZČĆŽŠĐ][\wČĆŽŠĐčćžšđ-]+)?)/g,
-  ).map((name) => name.replace(/^SP[_\s]*/i, '').trim())
-    .filter((name) => name.length > 1);
-
-  if (!kc.length && !zk.length && !ko.length) return null;
-  return { kc, zkUlozak: zk, ko };
-}
-
-function collect(t: string, re: RegExp): string[] {
-  const out = new Set<string>();
-  for (const m of t.matchAll(re)) if (m[1]) out.add(m[1].trim());
-  return [...out].slice(0, 25);
 }
 
 /** Municipality from the court's own header line - a locality, not a street. */

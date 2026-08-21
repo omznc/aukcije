@@ -189,5 +189,17 @@ the Express catch-all rather than a real error. Confirmed absent:
   `src/extract/municipality.ts`.
 - **Number labels** are written `br.`, `br` or `broj` interchangeably, and
   `k.o.` appears in both cases; patterns must tolerate all of it.
+- **The `k.o.` is the finest location a notice gives up.** Street addresses are
+  redacted, so the cadastral municipality - a village where `location.municipality`
+  is a district - is what `location.settlement` is derived from. It is present on
+  roughly four in five real-estate notices and absent from most others. Registers
+  prefix it with `SP`/`NP` (stari/novi premjer) and number urban districts
+  (`Sarajevo IV`); both are normalised in `src/extract/cadastral.ts`.
+- **`location.settlement` is normalised; `cadastral.ko` is verbatim.** The
+  settlement is a locator, so a register shouting `DONJI BUTMIR` is written back
+  as `Donji Butmir` and its district number is dropped. The `ko` array quotes
+  the notice and is left exactly as printed, prefixes and all. Compare the two
+  fields case-insensitively if you match on them - the same place is spelled
+  `Žepče` and `ŽEPĆE` by different courts.
 - The archive spans **2013 to the present**, so most records are historical.
   Only a few dozen sales are upcoming at any moment.

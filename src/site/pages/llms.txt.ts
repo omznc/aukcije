@@ -67,7 +67,7 @@ the court's account before the hearing, not on the day of it.
 - [Calendar, everything upcoming](${base}/kalendar.ics)
 - Per court: \`${base}/sudovi/{courtId}/rss.xml\` and \`${base}/sudovi/{courtId}/kalendar.ics\`
 - Per category: \`${base}/predmeti/{tag}/rss.xml\` and \`${base}/predmeti/{tag}/kalendar.ics\`
-- Per notice: \`${base}/oglas/{id}.ics\`
+- Per notice: \`${base}/oglas/{slug}-{id}.ics\`, or \`${base}/oglas/{id}.ics\` - the id alone resolves, the slug is readable decoration on it
 
 ## Browse
 
