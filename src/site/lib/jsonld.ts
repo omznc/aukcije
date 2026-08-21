@@ -24,6 +24,25 @@ export function listingJsonLd(l: Listing, base: string): object {
   const url = `${base}/oglas/${l.id}/`;
   const start = ISO(l.saleDate, l.saleTime);
   const price = l.startingPrice?.amount ?? null;
+  const keywords = l.itemTags.map((t) => TAG_BY_ID.get(t)?.label ?? t).join(', ') || undefined;
+
+  // One offer node, referenced from both the hearing and the lot. Google reads
+  // the two as separate items and asks each for a price of its own.
+  const offer =
+    price === null
+      ? null
+      : {
+          '@type': 'Offer',
+          '@id': `${url}#ponuda`,
+          // The starting price, not a sale price: this is the lowest bid
+          // the court will accept at this hearing.
+          price,
+          priceCurrency: 'BAM',
+          url,
+          availability: 'https://schema.org/LimitedAvailability',
+          validThrough: start,
+          seller: { '@type': 'GovernmentOrganization', name: l.court },
+        };
 
   return {
     '@context': 'https://schema.org',
@@ -56,28 +75,26 @@ export function listingJsonLd(l: Listing, base: string): object {
           name: l.court,
           url: l.sourceUrl,
         },
-        about: {
-          '@type': 'Product',
-          name: headline(l),
-          description: l.itemDescription ?? undefined,
-          category: SALE_TYPE_LABELS[l.saleType],
-          keywords: l.itemTags.map((t) => TAG_BY_ID.get(t)?.label ?? t).join(', ') || undefined,
-        },
-        ...(price !== null
+        keywords,
+        about: offer
           ? {
-              offers: {
-                '@type': 'Offer',
-                // The starting price, not a sale price: this is the lowest bid
-                // the court will accept at this hearing.
-                price,
-                priceCurrency: 'BAM',
-                url,
-                availability: 'https://schema.org/LimitedAvailability',
-                validThrough: start,
-                seller: { '@type': 'GovernmentOrganization', name: l.court },
-              },
+              '@type': 'Product',
+              name: headline(l),
+              description: l.itemDescription ?? undefined,
+              category: SALE_TYPE_LABELS[l.saleType],
+              keywords,
+              image: `${base}/og/${l.id}.png`,
+              offers: offer,
             }
-          : {}),
+          : // A notice that names no starting price leaves nothing to offer, and
+            // a Product offering nothing is a warning rather than a result. The
+            // lot is still named; it just is not priced here.
+            {
+              '@type': 'Thing',
+              name: headline(l),
+              description: l.itemDescription ?? undefined,
+            },
+        ...(offer ? { offers: offer } : {}),
       },
       {
         '@type': 'BreadcrumbList',
