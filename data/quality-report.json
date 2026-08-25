@@ -1,16 +1,25 @@
 {
-  "generatedAt": "2026-08-25T05:32:02.597Z",
-  "listings": 2696,
-  "comparable": 296,
-  "disagreements": 73,
+  "generatedAt": "2026-08-25T17:32:19.819Z",
+  "listings": 2699,
+  "comparable": 299,
+  "disagreements": 74,
   "byField": {
-    "appraisedValue": 46,
+    "appraisedValue": 47,
     "caseNumber": 10,
     "startingPrice": 10,
     "saleTime": 5,
     "deposit": 2
   },
   "worst": [
+    {
+      "id": "32-167247",
+      "court": "Općinski sud u Tuzli",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/32/article/167247",
+      "field": "appraisedValue",
+      "llm": 317,
+      "rules": 31616,
+      "ratio": 99.74
+    },
     {
       "id": "90-82570",
       "court": "Osnovni sud Brčko distrikta BiH",
@@ -183,15 +192,6 @@
       "ratio": 2.92
     },
     {
-      "id": "90-166557",
-      "court": "Osnovni sud Brčko distrikta BiH",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/166557",
-      "field": "appraisedValue",
-      "llm": 70973.73,
-      "rules": 177434.33,
-      "ratio": 2.5
-    },
-    {
       "id": "90-166553",
       "court": "Osnovni sud Brčko distrikta BiH",
       "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/166553",
@@ -300,21 +300,21 @@
       "ratio": 1.5
     },
     {
-      "id": "90-128248",
-      "court": "Osnovni sud Brčko distrikta BiH",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/128248",
-      "field": "startingPrice",
-      "llm": 6239.82,
-      "rules": 9359.74,
-      "ratio": 1.5
-    },
-    {
       "id": "90-128246",
       "court": "Osnovni sud Brčko distrikta BiH",
       "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/128246",
       "field": "startingPrice",
       "llm": 19860.98,
       "rules": 29791.48,
+      "ratio": 1.5
+    },
+    {
+      "id": "90-128248",
+      "court": "Osnovni sud Brčko distrikta BiH",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/128248",
+      "field": "startingPrice",
+      "llm": 6239.82,
+      "rules": 9359.74,
       "ratio": 1.5
     },
     {
