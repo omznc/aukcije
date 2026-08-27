@@ -1,6 +1,6 @@
 import type { Listing } from '../../schema.ts';
 import { hrefOf } from './slug.ts';
-import { SALE_TYPE_LABELS, TAG_BY_ID, listings, courts, generatedAt } from './data.ts';
+import { TAG_BY_ID, listings, courts, generatedAt } from './data.ts';
 import { headline } from './headline.ts';
 import { zonedInstant, DEFAULT_HOUR } from './ics.ts';
 
@@ -15,7 +15,10 @@ import { zonedInstant, DEFAULT_HOUR } from './ics.ts';
  *
  * `SaleEvent` rather than `Product`: what is published is a hearing at a place
  * and a time, and the lot is what it is about. Nobody is selling anything from
- * this domain.
+ * this domain, so the lot stays a bare `Thing`. Typing it as a `Product` did
+ * win a price snippet, but it also enrolled every page in Google's merchant
+ * listing checks, which then asked a court-ordered sale of an apartment for its
+ * shipping options and return policy. There are no honest values for those.
  */
 
 const ISO = (date: string, time: string | null) =>
@@ -27,8 +30,13 @@ export function listingJsonLd(l: Listing, base: string): object {
   const price = l.startingPrice?.amount ?? null;
   const keywords = l.itemTags.map((t) => TAG_BY_ID.get(t)?.label ?? t).join(', ') || undefined;
 
-  // One offer node, referenced from both the hearing and the lot. Google reads
-  // the two as separate items and asks each for a price of its own.
+  // Two dozen notices in the archive carry a publication date after the hearing
+  // they announce - a court clerk's typo, or a notice filed late. Stating an
+  // offer that opens after it closes is worse than not dating its opening.
+  const published = ISO(l.publishedDate, null);
+  const validFrom = published < start ? published : undefined;
+
+  // The hearing's offer, and the only one: the lot is not separately for sale.
   const offer =
     price === null
       ? null
@@ -40,7 +48,10 @@ export function listingJsonLd(l: Listing, base: string): object {
           price,
           priceCurrency: 'BAM',
           url,
-          availability: 'https://schema.org/LimitedAvailability',
+          availability: 'https://schema.org/InStock',
+          // Open from the day the court published the notice until the hearing
+          // begins; after that the price is history, not an offer.
+          validFrom,
           validThrough: start,
           seller: { '@type': 'GovernmentOrganization', name: l.court },
         };
@@ -77,24 +88,14 @@ export function listingJsonLd(l: Listing, base: string): object {
           url: l.sourceUrl,
         },
         keywords,
-        about: offer
-          ? {
-              '@type': 'Product',
-              name: headline(l),
-              description: l.itemDescription ?? undefined,
-              category: SALE_TYPE_LABELS[l.saleType],
-              keywords,
-              image: `${base}/og/${l.id}.png`,
-              offers: offer,
-            }
-          : // A notice that names no starting price leaves nothing to offer, and
-            // a Product offering nothing is a warning rather than a result. The
-            // lot is still named; it just is not priced here.
-            {
-              '@type': 'Thing',
-              name: headline(l),
-              description: l.itemDescription ?? undefined,
-            },
+        // What the hearing is about. `Thing` carries no price of its own, which
+        // is the point: the price belongs to the hearing, and a second priced
+        // node here is read as a second item to be checked.
+        about: {
+          '@type': 'Thing',
+          name: headline(l),
+          description: l.itemDescription ?? undefined,
+        },
         ...(offer ? { offers: offer } : {}),
       },
       {

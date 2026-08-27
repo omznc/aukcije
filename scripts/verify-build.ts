@@ -150,6 +150,12 @@ check(
   'the bare-id url still resolves and points at its slug',
 );
 check(listingHtml.includes('"@type":"SaleEvent"'), 'listing pages carry SaleEvent structured data');
+// A `Product` node here enrols the page in Google's merchant listing checks,
+// which want a shipping option and a return policy for a repossessed flat.
+check(
+  !listingHtml.includes('"@type":"Product"'),
+  'listing pages claim no Product, only a hearing and its lot',
+);
 check(
   listingHtml.includes(`/og/${sampleListing.id}.png`),
   'listing pages point at their own share card',
