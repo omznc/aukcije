@@ -19,6 +19,10 @@ concurrency:
 
 permissions:
   contents: write
+  # The failure notification below opens an issue. Without this the notifier
+  # itself 403s ("Resource not accessible by integration"), so a wedged scrape
+  # announces nothing and the site quietly serves the last good dataset.
+  issues: write
 
 jobs:
   scrape:

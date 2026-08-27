@@ -8,6 +8,7 @@ import {
   ROUND_LABELS,
   SALE_TYPE_LABELS,
   TAG_BY_ID,
+  today,
   formatMoney,
 } from './data.ts';
 import { COURT_PLACE, canonicalPlace, placeOf, type LatLon } from './geo.ts';
@@ -293,7 +294,52 @@ export function chainFor(l: Listing): Listing[] {
   return chain.length > 1 ? [...chain].sort((a, b) => a.saleDate.localeCompare(b.saleDate)) : [];
 }
 
-export const repeatCaseCount = [...byCase.values()].filter((c) => c.length > 1).length;
+/**
+ * One entry per hearing *date*, oldest first.
+ *
+ * A case number covers a whole enforcement, and for one hearing a court
+ * routinely publishes one notice per lot - 49 cases here carry two or more
+ * notices bearing the same date. Read as a sequence of notices that looks like
+ * three rounds; read as a sequence of hearings it is one hearing with three
+ * things on offer. Everything that measures how a case *moves* - the interval
+ * to the next hearing, the fall between two of them, whether it came back at
+ * all - therefore counts dates, not notices. Comparing two notices from the
+ * same day would invent a price fall out of the gap between two different lots.
+ */
+export interface Hearing {
+  date: string;
+  notices: Listing[];
+}
+
+export function hearingsOf(chain: Listing[]): Hearing[] {
+  const byDate = new Map<string, Listing[]>();
+  for (const l of chain) {
+    const day = byDate.get(l.saleDate);
+    if (day) day.push(l);
+    else byDate.set(l.saleDate, [l]);
+  }
+  return [...byDate]
+    .map(([date, notices]) => ({ date, notices }))
+    .sort((a, b) => a.date.localeCompare(b.date));
+}
+
+/**
+ * The one priced notice at a hearing, where the hearing offered exactly one.
+ *
+ * The same rule as `areaM2`, and for the same reason: where a hearing put three
+ * priced lots on offer, no single number describes what it was asking, and
+ * pairing one of them with a lot from the next hearing is a guess about which
+ * is which. A lot-level record would answer it; a notice-level one cannot.
+ */
+function solePriced(hearing: Hearing): Listing | null {
+  const priced = hearing.notices.filter((l) => l.startingPrice);
+  return priced.length === 1 ? priced[0] : null;
+}
+
+/** Cases that came back for a second hearing - a lower bound, see `tempoByCourt`. */
+export const repeatCaseCount = [...byCase.values()].filter(
+  (c) => hearingsOf(c).length > 1,
+).length;
 
 // ── Price drops ─────────────────────────────────────────────────────────────
 
@@ -337,9 +383,13 @@ function fallBetween(previous: Listing, current: Listing): number | null {
 }
 
 function dropFor(l: Listing): PriceDrop | null {
-  const chain = chainFor(l);
-  const position = chain.length ? chain.findIndex((c) => c.id === l.id) + 1 : 1;
-  const previous = position > 1 ? chain[position - 2] : null;
+  // By hearing rather than by notice: a lot listed alongside two others on the
+  // same day is not the third round of anything, and the notice before it in
+  // the chain is its neighbour on the table, not the price it is coming down
+  // from.
+  const hearings = hearingsOf(chainFor(l));
+  const position = hearings.length ? hearings.findIndex((h) => h.date === l.saleDate) + 1 : 1;
+  const previous = position > 1 ? solePriced(hearings[position - 2]) : null;
   const fromPrevious = previous ? fallBetween(previous, l) : null;
   const offAppraisal = discount(l);
   const best = fromPrevious ?? offAppraisal;
@@ -352,7 +402,7 @@ function dropFor(l: Listing): PriceDrop | null {
     offAppraisal,
     best,
     position,
-    total: chain.length || 1,
+    total: hearings.length || 1,
   };
 }
 
@@ -378,14 +428,15 @@ export const repeatDrops = priceDrops.filter((d) => d.fromPrevious !== null);
  * hearings, so it is far smaller than the number of repeat cases.
  */
 const historicalFalls: number[] = [...byCase.values()]
-  .filter((chain) => chain.length > 1)
   .flatMap((chain) => {
-    const sorted = [...chain].sort((a, b) => a.saleDate.localeCompare(b.saleDate));
-    return sorted
-      .slice(1)
-      .map((l, i) => fallBetween(sorted[i], l))
-      .filter((f): f is number => f !== null);
-  });
+    const hearings = hearingsOf(chain);
+    return hearings.slice(1).map((h, i) => {
+      const previous = solePriced(hearings[i]);
+      const current = solePriced(h);
+      return previous && current ? fallBetween(previous, current) : null;
+    });
+  })
+  .filter((f): f is number => f !== null);
 
 export const chainFallMedian = median(historicalFalls);
 export const chainFallSample = historicalFalls.length;
@@ -574,6 +625,249 @@ export function discountByRound(): Array<Slice & { median: number | null }> {
       };
     })
     .filter((r) => r.count > 0);
+}
+
+// ── Tempo ───────────────────────────────────────────────────────────────────
+
+/**
+ * How long a case waits, how often it comes back, and when in the year it is
+ * heard. None of it is published anywhere: a court does not report its own
+ * pace, and no single notice can show it - it only exists once the archive
+ * holds both ends of the same case.
+ *
+ * Every figure here counts hearings rather than notices, for the reason
+ * `hearingsOf` gives, and every one of them is a *lower* bound on repetition:
+ * the portal rotates old sales out of its feeds, so a chain is visible only
+ * where the archive caught both hearings. A court that publishes tidily and
+ * often will look like it repeats more than one that does not.
+ */
+
+function percentile(sorted: number[], p: number): number {
+  return sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * p))];
+}
+
+interface Gap {
+  courtId: number;
+  court: string;
+  days: number;
+}
+
+/** Days between one hearing of a case and the next, across the whole archive. */
+const hearingGaps: Gap[] = [...byCase.values()].flatMap((chain) => {
+  const hearings = hearingsOf(chain);
+  return hearings.slice(1).map((h, i) => ({
+    courtId: h.notices[0].courtId,
+    court: h.notices[0].court,
+    days: Math.round((ms(h.date) - ms(hearings[i].date)) / DAY),
+  }));
+});
+
+export const gapSample = hearingGaps.length;
+export const gapMedian = median(hearingGaps.map((g) => g.days));
+
+export interface TempoRow {
+  courtId: number;
+  court: string;
+  n: number;
+  median: number;
+  /** The slow tail - nine in ten repeats came back sooner than this. */
+  p90: number;
+}
+
+/**
+ * Median days to the next hearing, by court.
+ *
+ * This is the one thing on the page that genuinely varies between courts, and
+ * it is what a bidder waiting on a lot actually wants to know: the same lot at
+ * one court is back in a month, at another in three.
+ */
+export function tempoByCourt(min = 5): TempoRow[] {
+  const buckets = new Map<number, { court: string; days: number[] }>();
+  for (const g of hearingGaps) {
+    const bucket = buckets.get(g.courtId) ?? { court: g.court, days: [] };
+    bucket.days.push(g.days);
+    buckets.set(g.courtId, bucket);
+  }
+  return [...buckets]
+    .map(([courtId, b]) => {
+      const sorted = b.days.sort((x, y) => x - y);
+      return {
+        courtId,
+        court: b.court,
+        n: sorted.length,
+        median: median(sorted)!,
+        p90: percentile(sorted, 0.9),
+      };
+    })
+    .filter((r) => r.n >= min)
+    .sort((a, b) => a.median - b.median);
+}
+
+// ── How often a case comes back ─────────────────────────────────────────────
+
+export interface ReturnRow {
+  courtId: number;
+  court: string;
+  cases: number;
+  returned: number;
+  share: number;
+}
+
+const caseHearings = [...byCase.values()].map((chain) => ({
+  court: chain[0],
+  hearings: hearingsOf(chain).length,
+}));
+
+export const casesWithNumber = caseHearings.length;
+export const returnedCaseCount = caseHearings.filter((c) => c.hearings > 1).length;
+
+/**
+ * The share of a court's cases that came back for a second hearing - which is
+ * to say, did not sell the first time. The threshold is deliberately high: a
+ * rate off a handful of cases says nothing, and this is a number that would be
+ * read as a verdict on the court.
+ */
+export function returnsByCourt(min = 20): ReturnRow[] {
+  const buckets = new Map<number, { court: string; cases: number; returned: number }>();
+  for (const c of caseHearings) {
+    const bucket = buckets.get(c.court.courtId) ?? { court: c.court.court, cases: 0, returned: 0 };
+    bucket.cases++;
+    if (c.hearings > 1) bucket.returned++;
+    buckets.set(c.court.courtId, bucket);
+  }
+  return [...buckets]
+    .map(([courtId, b]) => ({ courtId, ...b, share: b.returned / b.cases }))
+    .filter((r) => r.cases >= min)
+    .sort((a, b) => b.share - a.share);
+}
+
+/** How many hearings a case took, as a distribution. */
+export function hearingsPerCase(): Array<{ hearings: number; cases: number }> {
+  const counts = new Map<number, number>();
+  for (const c of caseHearings) counts.set(c.hearings, (counts.get(c.hearings) ?? 0) + 1);
+  const most = Math.max(...counts.keys());
+  return Array.from({ length: most }, (_, i) => ({
+    hearings: i + 1,
+    cases: counts.get(i + 1) ?? 0,
+  })).filter((r) => r.cases > 0);
+}
+
+// ── The fall between two hearings ───────────────────────────────────────────
+
+/** A fall that is not the statutory third, with the hearing it came down from. */
+export interface FallOutlier {
+  listing: Listing;
+  previous: Listing;
+  fall: number;
+}
+
+const ONE_THIRD = 1 / 3;
+/** Rounding in the notice itself moves the figure a few hundredths of a point. */
+const isStatutory = (fall: number) => Math.abs(fall - ONE_THIRD) < 0.005;
+
+export const statutoryFallCount = historicalFalls.filter(isStatutory).length;
+
+/**
+ * Every measured fall that was not exactly a third.
+ *
+ * These are the interesting ones, and there are few enough to list. A court
+ * that comes down 8% or 69% is either doing something the statute does not
+ * describe or the notice was read wrong, and either way it is worth being able
+ * to open the document.
+ */
+export function fallOutliers(): FallOutlier[] {
+  return [...byCase.values()]
+    .flatMap((chain) => {
+      const hearings = hearingsOf(chain);
+      return hearings.slice(1).map((h, i) => {
+        const previous = solePriced(hearings[i]);
+        const listing = solePriced(h);
+        if (!previous || !listing) return null;
+        const fall = fallBetween(previous, listing);
+        return fall === null || isStatutory(fall) ? null : { listing, previous, fall };
+      });
+    })
+    .filter((o): o is FallOutlier => o !== null)
+    .sort((a, b) => b.listing.saleDate.localeCompare(a.listing.saleDate));
+}
+
+/** The same fall, by what was being sold - a check that it is the law, not the goods. */
+export function fallBySaleType(min = 3): PriceRow[] {
+  const buckets = new Map<string, number[]>();
+  for (const chain of byCase.values()) {
+    const hearings = hearingsOf(chain);
+    for (let i = 1; i < hearings.length; i++) {
+      const previous = solePriced(hearings[i - 1]);
+      const listing = solePriced(hearings[i]);
+      if (!previous || !listing) continue;
+      const fall = fallBetween(previous, listing);
+      if (fall === null) continue;
+      buckets.set(listing.saleType, [...(buckets.get(listing.saleType) ?? []), fall]);
+    }
+  }
+  return [...buckets]
+    .map(([key, values]) => ({
+      key,
+      label: SALE_TYPE_LABELS[key] ?? key,
+      n: values.length,
+      median: median(values)!,
+    }))
+    .filter((r) => r.n >= min)
+    .sort((a, b) => b.n - a.n);
+}
+
+// ── Season ──────────────────────────────────────────────────────────────────
+
+const MONTHS = [
+  'januar',
+  'februar',
+  'mart',
+  'april',
+  'maj',
+  'juni',
+  'juli',
+  'august',
+  'septembar',
+  'oktobar',
+  'novembar',
+  'decembar',
+];
+
+export interface Season {
+  months: Array<{ month: number; label: string; count: number }>;
+  /** The complete calendar years this was counted over. */
+  years: number[];
+  sample: number;
+}
+
+/**
+ * Hearings by month of the year.
+ *
+ * Only complete calendar years count. The running year holds hearings for the
+ * months that have happened and none for the rest, so including it would draw a
+ * cliff in the second half of the chart that is an artefact of today's date
+ * rather than anything the courts do. Thin early years are dropped for the same
+ * reason a median needs a sample: 2011 contributes one hearing to one month.
+ */
+export function season(minPerYear = 50): Season {
+  const thisYear = Number(today().slice(0, 4));
+  const perYear = new Map<number, number>();
+  for (const l of listings) {
+    const year = Number(l.saleDate.slice(0, 4));
+    perYear.set(year, (perYear.get(year) ?? 0) + 1);
+  }
+  const years = [...perYear]
+    .filter(([year, count]) => year < thisYear && count >= minPerYear)
+    .map(([year]) => year)
+    .sort();
+
+  const counted = listings.filter((l) => years.includes(Number(l.saleDate.slice(0, 4))));
+  const months = MONTHS.map((label, i) => ({
+    month: i + 1,
+    label,
+    count: counted.filter((l) => Number(l.saleDate.slice(5, 7)) === i + 1).length,
+  }));
+  return { months, years, sample: counted.length };
 }
 
 // ── Map ─────────────────────────────────────────────────────────────────────

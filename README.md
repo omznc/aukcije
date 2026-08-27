@@ -256,6 +256,37 @@ starting price**. Courts publish what a lot is offered at, never what it sold
 for or whether it sold, so no achieved price exists here and none should be
 attributed to it.
 
+## Tempo
+
+`/tempo/` is the other thing that exists only once an archive holds both ends of
+a case: how long a lot waits before it comes back, how often it comes back at
+all, and when in the year hearings happen. No court reports its own pace, and no
+single notice can show it.
+
+Three rules keep it honest:
+
+- **Hearings are counted by date, not by notice.** A court routinely publishes
+  one notice per lot for a single hearing - 49 cases here carry two or more
+  notices bearing the same date. Counted as notices, that is three rounds;
+  counted as hearings it is one hearing with three things on offer. Reading it
+  the wrong way invents a price fall out of the gap between two different lots,
+  which it previously did in three of the 113 falls behind `/snizenja/`.
+- **A fall is measured only where both hearings offered exactly one priced
+  lot** - the same rule as price per m², for the same reason. Where a hearing put
+  three priced lots on the table, no single number describes what it was asking.
+- **Every figure is a lower bound.** The portal rotates old sales out of its
+  feeds, so a repeat is visible only where the archive caught both hearings. A
+  court that publishes tidily and for longer looks like it repeats more.
+
+The strongest finding is a negative one, and the page leads with it: the fall
+between two hearings is prescribed, so 89 of 110 measured falls are exactly one
+third - at every court, for every kind of goods. A table of it per court would
+be the same number sixteen times. What actually varies is the **wait**, from a
+median of 33 days at one court to 85 at another, and that is the table that
+leads. The 21 falls that are not a third are listed individually, each linking
+to its own notice, because at that sample size an outlier is as likely to be a
+misread document as a court doing something unusual.
+
 ## Structured data
 
 Listing pages carry a `SaleEvent` with an `Offer`, plus a `BreadcrumbList`; the

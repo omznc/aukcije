@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { redactText, redactTitle } from './redact.ts';
+import { redactText, redactTitle, redactVenue } from './redact.ts';
 
 test('a debtor named after their procedural role is removed', () => {
   const out = redactText('u izvršnom postupku protiv izvršenika Radovanović Miloša iz Dvorova');
@@ -73,4 +73,27 @@ test('a person introducing a trade name loses the person, keeps the brand', () =
 test('a company party is left alone', () => {
   assert.ok(redactText('izvršenika „Sport Trade“ d.o.o.')?.includes('Sport Trade'));
   assert.ok(redactText('tražioca izvršenja Komunalac a.d. Bijeljina')?.includes('Komunalac'));
+});
+
+test('a courthouse venue keeps its street address', () => {
+  const venue = 'Općinski sud u Sarajevu, ul. Šenoina br. 1, soba 454/IV';
+  assert.equal(redactVenue(venue), venue);
+});
+
+test('a Cyrillic courthouse venue is recognised as a court', () => {
+  const venue = 'Основни суд у Бијељини, ул. Вука Караџића бр. 3';
+  assert.equal(redactVenue(venue), venue);
+});
+
+test('a street venue that names no court is dropped, room number or not', () => {
+  // A bankruptcy sale held on the debtor company's own premises. "kancelarija"
+  // is not proof of a courthouse, and this shape is what `scripts/verify.ts`
+  // refuses to publish - the pipeline has to drop it first.
+  assert.equal(redactVenue('ul. Željeznička br. 1, kancelarija broj 3, Lukavac'), null);
+  assert.equal(redactVenue('Upravna zgrada, ul. Vase Pelagića br. 22'), null);
+});
+
+test('a venue with no street address survives even without a court name', () => {
+  // Nothing to attribute: no address is published either way.
+  assert.equal(redactVenue('kancelarija broj 41'), 'kancelarija broj 41');
 });

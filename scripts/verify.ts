@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { PATHS } from '../src/config.ts';
 import { ListingFile } from '../src/schema.ts';
 import { plausibleSaleDate } from '../src/extract/fields.ts';
+import { namesACourt } from '../src/redact.ts';
 
 /**
  * Post-scrape assertions.
@@ -140,13 +141,17 @@ if (named.length) {
   for (const l of named.slice(0, 5)) console.log(`      ${l.id}: ${l.title.slice(0, 90)}`);
 }
 
+// The pipeline already drops these in `redactVenue`, so this is the assertion
+// that it did. Share the predicate rather than restating it: a stricter copy
+// here fails every run without naming what it objected to.
 const suspiciousVenues = listings.filter(
-  (l) => l.auctionLocation && STREET.test(l.auctionLocation) && !/\bsud/i.test(l.auctionLocation),
+  (l) => l.auctionLocation && STREET.test(l.auctionLocation) && !namesACourt(l.auctionLocation),
 );
 check(
   suspiciousVenues.length === 0,
   `every venue address belongs to a court (got ${suspiciousVenues.length} that do not)`,
 );
+for (const l of suspiciousVenues.slice(0, 5)) console.log(`      ${l.id}: ${l.auctionLocation}`);
 
 console.log();
 if (failures.length) {

@@ -29,6 +29,7 @@ export const GET: APIRoute = ({ site }) => {
     { path: '/mapa/', lastmod: built },
     { path: '/arhiva/', lastmod: built },
     { path: '/cijene/', lastmod: built },
+    { path: '/tempo/', lastmod: built },
     { path: '/pretraga/', lastmod: built },
     { path: '/sacuvano/', lastmod: built },
     { path: '/kako-se-nadmetati/', lastmod: built },

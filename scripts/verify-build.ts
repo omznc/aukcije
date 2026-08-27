@@ -98,6 +98,7 @@ for (const page of [
   'dist/snizenja/kalendar.ics',
   'dist/mapa/index.html',
   'dist/cijene/index.html',
+  'dist/tempo/index.html',
   'dist/kalendar.ics',
   'dist/og/default.png',
   // The saved-notices page is nothing without its card index, and the index is

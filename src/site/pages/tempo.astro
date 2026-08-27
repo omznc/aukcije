@@ -1,0 +1,312 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { hrefOf } from '../lib/slug.ts';
+import { headline } from '../lib/headline.ts';
+import { formatDate, formatMoney } from '../lib/data.ts';
+import { saleTypeIcon } from '../lib/icons.ts';
+import {
+  gapMedian,
+  gapSample,
+  tempoByCourt,
+  returnsByCourt,
+  casesWithNumber,
+  returnedCaseCount,
+  hearingsPerCase,
+  statutoryFallCount,
+  fallOutliers,
+  fallBySaleType,
+  season,
+  chainFallSample,
+  formatNumber,
+  formatPercent,
+} from '../lib/stats.ts';
+
+/**
+ * How the courts move.
+ *
+ * Nothing on this page is in any single notice, and none of it is published
+ * anywhere else: a court does not report its own pace, and the interval between
+ * two hearings of one case only exists once an archive holds both ends of it.
+ * That makes it the same kind of derivation as /snizenja/ - the site's reason
+ * to exist rather than a restatement of the portal.
+ *
+ * The strongest finding here is a negative one. The fall between two hearings
+ * is prescribed, so a table of it per court would be a table of the same
+ * number sixteen times; what varies is how long the wait is, and that is the
+ * table that leads.
+ */
+
+const tempo = tempoByCourt();
+const returns = returnsByCourt();
+const perCase = hearingsPerCase();
+const outliers = fallOutliers();
+const byType = fallBySaleType();
+const { months, years, sample: seasonSample } = season();
+
+const maxGap = Math.max(1, ...tempo.map((r) => r.median));
+const maxMonth = Math.max(1, ...months.map((m) => m.count));
+const quietest = months.reduce((a, b) => (b.count < a.count ? b : a));
+const busiest = months.reduce((a, b) => (b.count > a.count ? b : a));
+const maxCases = Math.max(1, ...perCase.map((r) => r.cases));
+
+const stats = [
+  {
+    value: gapMedian === null ? '-' : `${formatNumber(gapMedian)} dana`,
+    label: `DO SLJEDEĆEG ROČIŠTA · n=${gapSample}`,
+    accent: true,
+  },
+  {
+    value: `${returnedCaseCount}`,
+    label: `PREDMETA SE VRATILO · OD ${casesWithNumber.toLocaleString('bs-BA')}`,
+    accent: false,
+  },
+  {
+    value: `${statutoryFallCount}/${chainFallSample}`,
+    label: 'PADOVA TAČNO ZA TREĆINU',
+    accent: false,
+  },
+  { value: quietest.label, label: `NAJTIŠI MJESEC · ${years[0]}-${years[years.length - 1]}`, accent: false },
+];
+
+const SECTION =
+  'flex items-center gap-1.5 border-b border-rule pb-[9px] text-[0.75rem] font-semibold uppercase leading-none tracking-label text-dim';
+---
+
+<Base
+  title="Tempo sudskih prodaja u BiH"
+  description="Koliko se čeka na sljedeće ročište po sudu, koliko se predmeta vraća neprodatih, za koliko cijena padne i kako se ročišta raspoređuju kroz godinu."
+>
+  <div class="gut border-b border-rule pb-6 pt-[30px]">
+    <nav class="mb-3 font-mono text-[0.6875rem] leading-none text-dim">
+      <a href="/" class="hover:text-ink">AKTUELNE</a>{' / '}
+      <a href="/cijene/" class="hover:text-ink">CIJENE</a> / TEMPO
+    </nav>
+    <div class="grid items-end gap-8 lg:grid-cols-[1fr_auto]">
+      <div>
+        <h1 class="max-w-[22ch] font-serif text-[2rem] leading-title tracking-title sm:text-[2.5rem] sm:leading-display sm:tracking-display">
+          Koliko se čeka.
+        </h1>
+        <p class="mt-3 max-w-[62ch] text-pretty text-[0.875rem] leading-relaxed text-muted">
+          Ništa od ovoga ne piše ni u jednom oglasu. Sud ne objavljuje kojim tempom radi, a razmak
+          između dva ročišta istog predmeta postoji tek kad arhiva drži oba kraja - pa se ovdje
+          ročišta povezuju po broju predmeta, isto kao na
+          {' '}<a href="/snizenja/" class="text-pine underline">stranici sniženja</a>.
+        </p>
+      </div>
+      <dl class="grid grid-cols-2 gap-x-7 gap-y-4 sm:grid-cols-4 lg:grid-cols-2">
+        {
+          stats.map((s) => (
+            <div>
+              <dd class:list={['font-mono text-[1.375rem] tracking-num font-bold leading-none', s.accent && 'text-pine']}>
+                {s.value}
+              </dd>
+              <dt class="mt-[5px] max-w-[16ch] font-mono text-[0.625rem] leading-tight text-dim">{s.label}</dt>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+
+  <div class="grid lg:grid-cols-[1fr_340px]">
+    <div class="gut min-w-0 border-rule pb-[30px] pt-6 lg:border-r">
+      <h2 class={SECTION}>
+        <Icon name="hourglass-medium" size={13} class="text-faint" />
+        Dani do sljedećeg ročišta, po sudu
+      </h2>
+      {
+        tempo.length === 0 ? (
+          <p class="mt-3 text-[0.8125rem] text-muted">
+            Nijedan sud još nema dovoljno ponovljenih ročišta u arhivi.
+          </p>
+        ) : (
+          <div class="mt-3.5 flex flex-col gap-2.5">
+            {tempo.map((r) => (
+              <div class="flex flex-col gap-1.5 text-[0.78125rem] leading-none sm:grid sm:grid-cols-[190px_1fr_112px] sm:items-center sm:gap-3">
+                <a href={`/sudovi/${r.courtId}/`} class="press hover:text-pine sm:truncate" title={r.court}>
+                  {r.court}
+                </a>
+                {/*
+                  `sm:contents` drops this wrapper out of the layout once the
+                  grid takes over, so the bar and its figure are grid cells on a
+                  laptop and one row under the court's name on a phone - where a
+                  fixed label column would truncate every court to "Općinski sud
+                  u ...".
+                */}
+                <span class="flex items-center gap-3 sm:contents">
+                  <span class="h-2.5 min-w-0 flex-1 bg-track">
+                    <span class="block h-2.5 bg-pine" style={`width:${Math.round((r.median / maxGap) * 100)}%`} />
+                  </span>
+                  <span class="w-[96px] shrink-0 text-right sm:w-auto">
+                    <span class="block whitespace-nowrap font-mono text-[0.71875rem] font-bold">
+                      {formatNumber(r.median)} dana
+                    </span>
+                    <span class="mt-1 block whitespace-nowrap font-mono text-[0.625rem] text-dim">
+                      n={r.n} · do {formatNumber(r.p90)}
+                    </span>
+                  </span>
+                </span>
+              </div>
+            ))}
+          </div>
+        )
+      }
+      <p class="mt-3.5 max-w-[74ch] text-[0.75rem] leading-relaxed text-muted">
+        Medijan razmaka između dva ročišta istog predmeta; prag za red je pet takvih razmaka, pa se
+        {' '}{tempo.length} sudova ovdje pojavljuje. Uz medijan stoji i deveti decil - devet od deset
+        predmeta vrati se prije toga - jer se rep razvlači na godine i medijan ga sam ne pokazuje.
+        Ovo mjeri koliko se čeka na predmet koji se vratio, ne koliko traje izvršenje.
+      </p>
+
+      <h2 class:list={[SECTION, 'mt-8']}>
+        <Icon name="scales" size={13} class="text-faint" />
+        Pad cijene nije odluka suda
+      </h2>
+      <p class="mt-3 max-w-[74ch] text-[0.8125rem] leading-relaxed">
+        Najniža cijena za svako ročište je propisana, pa pad između dva ročišta i nije stvar suda:
+        <b> {statutoryFallCount} od {chainFallSample}</b> izmjerenih padova je tačno jedna trećina.
+        Tabela pada po sudu bila bi tabela istog broja šesnaest puta, a isto vrijedi i po vrsti
+        predmeta - trećina za nekretnine, trećina za vozila, trećina za sve ostalo. Zanimljivo je
+        onih {outliers.length} koji to nisu.
+      </p>
+      <dl class="mt-3.5 flex flex-wrap gap-x-6 gap-y-2">
+        {
+          byType.map((r) => (
+            <div class="flex items-baseline gap-1.5">
+              <dt class="flex items-center gap-1.5 text-[0.78125rem]">
+                <Icon name={saleTypeIcon(r.key)} size={13} class="text-faint" />
+                {r.label}
+              </dt>
+              <dd class="whitespace-nowrap font-mono text-[0.71875rem]">
+                <b>{formatPercent(r.median)}</b>
+                <span class="text-dim"> · n={r.n}</span>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <h3 class="mt-6 font-mono text-[0.65625rem] uppercase leading-none tracking-label text-dim">
+        Padovi koji nisu trećina
+      </h3>
+      <div class="mt-2.5 flex flex-col">
+        {
+          outliers.map((o) => (
+            <a
+              href={hrefOf(o.listing)}
+              class="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-1 press border-b border-hair py-2.5 hover:bg-wash active:bg-wash-deep"
+            >
+              <div class="min-w-0">
+                <div class="truncate text-[0.8125rem] font-semibold leading-snug">
+                  {headline(o.listing)}
+                </div>
+                <div class="mt-[3px] truncate text-[0.6875rem] leading-snug text-dim">
+                  {o.listing.court} · {formatDate(o.previous.saleDate)} → {formatDate(o.listing.saleDate)}
+                </div>
+              </div>
+              <div class="shrink-0 text-right font-mono text-[0.71875rem] leading-tight">
+                <b class="text-pine">{formatPercent(o.fall)}</b>
+                <div class="mt-1 whitespace-nowrap text-[0.625rem] text-faint">
+                  {formatMoney(o.previous.startingPrice)} → {formatMoney(o.listing.startingPrice)}
+                </div>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+      <p class="mt-3 max-w-[74ch] text-[0.75rem] leading-relaxed text-muted">
+        Pad se mjeri samo tamo gdje su oba ročišta imala tačno jedan oglas sa cijenom. Kad je na
+        jednom ročištu ponuđeno više predmeta, ne zna se koji od njih se vratio po kojoj cijeni, pa
+        se takav par ne broji - {chainFallSample} mjerenja na {returnedCaseCount} predmeta koji su
+        se vratili. Odstupanje je ovdje jednako često znak da je oglas pogrešno pročitan kao i da je
+        sud spustio cijenu drugačije; zato svaki red vodi na sam oglas.
+      </p>
+
+      <h2 class:list={[SECTION, 'mt-8']}>
+        <Icon name="calendar-blank" size={13} class="text-faint" />
+        Kroz godinu
+      </h2>
+      <div class="mt-3.5 flex flex-col gap-2.5">
+        {
+          months.map((m) => (
+            <div class="grid grid-cols-[92px_1fr_52px] items-center gap-3 text-[0.78125rem] leading-none sm:grid-cols-[120px_1fr_52px]">
+              <span class:list={['truncate', (m.month === quietest.month || m.month === busiest.month) && 'font-semibold']}>
+                {m.label}
+              </span>
+              <span class="h-2.5 bg-track">
+                <span class="block h-2.5 bg-bar" style={`width:${Math.round((m.count / maxMonth) * 100)}%`} />
+              </span>
+              <span class="text-right font-mono text-[0.71875rem] font-bold">{m.count}</span>
+            </div>
+          ))
+        }
+      </div>
+      <p class="mt-3.5 max-w-[74ch] text-[0.75rem] leading-relaxed text-muted">
+        {seasonSample.toLocaleString('bs-BA')} ročišta iz punih godina {years[0]}-{years[years.length - 1]}.
+        Tekuća godina se ne broji: ona ima ročišta u mjesecima koji su prošli i nijedno u onima koji
+        nisu, pa bi u drugoj polovini grafikona nacrtala provaliju koja je posljedica današnjeg
+        datuma, a ne rada sudova. Najtiši mjesec je {quietest.label} ({quietest.count}), najgušći
+        {' '}{busiest.label} ({busiest.count}) - razlika je godišnji odmor, ne potražnja.
+      </p>
+    </div>
+
+    <aside class="gut bg-band pb-[30px] pt-6">
+      <h2 class="flex items-center gap-1.5 text-[0.6875rem] font-semibold uppercase leading-none tracking-caps text-dim">
+        <Icon name="repeat" size={13} class="text-faint" />
+        Koliko ročišta po predmetu
+      </h2>
+      <p class="mt-2 font-mono text-[0.625rem] leading-none text-dim">ROČIŠTA × PREDMETA</p>
+      <dl class="mt-2.5 flex flex-col gap-2">
+        {
+          perCase.map((r) => (
+            <div class="grid grid-cols-[28px_1fr_46px] items-center gap-2 text-[0.75rem] leading-none">
+              <dt class="whitespace-nowrap font-mono text-[0.6875rem] text-dim">{r.hearings}×</dt>
+              <dd class="h-2 bg-track">
+                <span class="block h-2 bg-ink" style={`width:${Math.round((r.cases / maxCases) * 100)}%`} />
+              </dd>
+              <dd class="text-right font-mono text-[0.6875rem] font-bold">{r.cases}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <h2 class="mt-7 flex items-center gap-1.5 text-[0.6875rem] font-semibold uppercase leading-none tracking-caps text-dim">
+        <Icon name="bank" size={13} class="text-faint" />
+        Koliko se vraća, po sudu
+      </h2>
+      <dl class="mt-2.5 flex flex-col">
+        {
+          returns.map((r) => (
+            <div class="flex items-baseline justify-between gap-3 border-b border-hair py-2 last:border-0">
+              <dt class="min-w-0 text-[0.8125rem] leading-snug">
+                <a href={`/sudovi/${r.courtId}/`} class="press hover:text-pine">{r.court}</a>
+              </dt>
+              <dd class="shrink-0 whitespace-nowrap text-right font-mono text-[0.71875rem]">
+                <b>{Math.round(r.share * 100)}%</b>
+                <span class="text-dim"> · n={r.cases}</span>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+      <p class="mt-3 text-[0.75rem] leading-relaxed text-muted">
+        Udio predmeta tog suda koji su imali bar dva ročišta. Prag je dvadeset predmeta, jer bi
+        stopa iz šačice slučajeva bila pročitana kao ocjena suda.
+      </p>
+
+      <div class="mt-6 border border-warn-edge bg-warn-bg px-3.5 py-3">
+        <h2 class="flex items-center gap-1.5 text-[0.75rem] font-semibold leading-none">
+          <Icon name="warning" size={14} class="text-rust" />
+          Sve su ovo donje granice
+        </h2>
+        <p class="mt-2 text-[0.75rem] leading-relaxed text-muted">
+          Portal povlači stare prodaje iz svojih pregleda, pa se ponovljeno ročište vidi samo ako je
+          arhiva uhvatila oba. Sud koji objavljuje uredno i dugo izgleda kao da mu se predmeti češće
+          vraćaju od suda koji ne objavljuje - razlika među sudovima je dijelom razlika u tome
+          koliko je njihove historije ovdje.
+        </p>
+      </div>
+    </aside>
+  </div>
+</Base>

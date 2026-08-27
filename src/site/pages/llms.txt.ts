@@ -78,6 +78,7 @@ the court's account before the hearing, not on the day of it.
 - [Map](${base}/mapa/): where the sales are, by municipality and by court.
 - [Archive](${base}/arhiva/): past auctions, useful as a price reference.
 - [Prices](${base}/cijene/): median price per m² by municipality, median starting price by category, and how both move by year. Every figure carries its sample size; the samples are small.
+- [Tempo](${base}/tempo/): how long a case waits for its next hearing by court, how often a lot comes back unsold, and how hearings fall across the year. Derived by linking hearings by case number, and every figure is a lower bound - the portal rotates old sales out, so a repeat is visible only where the archive caught both hearings.
 - [Search](${base}/pretraga/): full-text, runs in the browser.
 
 ## Background

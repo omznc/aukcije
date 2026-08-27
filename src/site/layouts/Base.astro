@@ -39,6 +39,7 @@ const nav = {
     map: { href: "/mapa/", label: "Mapa", icon: "map-trifold" },
     archive: { href: "/arhiva/", label: "Arhiva", icon: "archive" },
     prices: { href: "/cijene/", label: "Cijene", icon: "chart-bar" },
+    tempo: { href: "/tempo/", label: "Tempo", icon: "hourglass-medium" },
     search: { href: "/pretraga/", label: "Pretraga", icon: "magnifying-glass" },
     guide: {
         href: "/kako-se-nadmetati/",
@@ -59,7 +60,7 @@ const tabs = Object.values(nav);
 
 const footerColumns = [
     [nav.now, nav.drops, nav.items, nav.courts],
-    [nav.map, nav.archive, nav.prices, nav.search, nav.saved],
+    [nav.map, nav.archive, nav.prices, nav.tempo, nav.search, nav.saved],
     [
         nav.guide,
         { href: "/privatnost/", label: "Privatnost", icon: "shield-check" },

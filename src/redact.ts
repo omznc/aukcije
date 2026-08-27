@@ -110,11 +110,21 @@ export function redactTitle(title: string): string {
 }
 
 /**
- * A court's own address is public infrastructure. This guards against the
- * address redaction above stripping the auction venue, which bidders need.
+ * Does the text name a court? A court's own address is public infrastructure,
+ * which is what makes the venue exempt from the street-address redaction above.
+ *
+ * Room and building words ("kancelarija", "soba", "ured", "zgrada") deliberately
+ * do NOT count: every venue names a room, so accepting them exempts any address
+ * that happens to end in an office number - including a bankruptcy sale held on
+ * the debtor company's own premises. `\bsud` covers the declensions and
+ * "sudnica"/"sudski"; the Cyrillic fold makes "суд" count too.
+ *
+ * `scripts/verify.ts` asserts this same predicate over the published dataset, so
+ * it must stay the single definition - the two drifting apart is what wedged the
+ * scrape: the pipeline published a venue the verifier then refused.
  */
-export function isCourtAddress(text: string): boolean {
-  return /\b(?:sud|sudu|suda|sudnic|kancelarij|soba|zgrad)/i.test(toLatin(text));
+export function namesACourt(text: string): boolean {
+  return /\bsud/i.test(toLatin(text));
 }
 
 export function redactVenue(venue: string | null): string | null {
@@ -122,13 +132,10 @@ export function redactVenue(venue: string | null): string | null {
   const cleaned = venue.replace(/\b\d{13}\b/g, REDACTED).trim();
 
   // A street address is only publishable here because it is the courthouse. If
-  // nothing in the text identifies it as a court or a courtroom, its provenance
-  // is unclear - drop it rather than publish an unattributed address.
+  // nothing in the text names a court, its provenance is unclear - drop it
+  // rather than publish an unattributed address.
   const hasStreet = /\b(?:ul\.|ulica|ulici)\s+\S/i.test(cleaned);
-  const identifiesCourt = /\b(?:sud|sudnic|kancelarij|soba|ured|prostorij|zgrad)/i.test(
-    toLatin(cleaned),
-  );
-  if (hasStreet && !identifiesCourt) return null;
+  if (hasStreet && !namesACourt(cleaned)) return null;
 
   return cleaned;
 }
