@@ -95,7 +95,7 @@ jobs:
               owner: context.repo.owner, repo: context.repo.repo,
               title,
               labels: ['scraper'],
-              body: `The scheduled scrape failed.\n\n[Run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\n\nUpstream layout changes are the usual cause — check \`docs/API.md\`.`,
+              body: `The scheduled scrape failed.\n\n[Run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\n\nRead the run log before assuming a layout change: the portal also 500s when its Oracle pool saturates (\`NJS-076 … queueMax 500\`), which is transient and needs no fix. See "Failure modes" in \`docs/API.md\`.`,
             });
 
   # Rebuild the site on the fresh data. This has to be called explicitly:

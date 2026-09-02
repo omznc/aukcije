@@ -90,7 +90,20 @@ export const POLITENESS = {
   minDelayMs: 350,
   /** Random extra delay so we don't hammer in lockstep, ms. */
   jitterMs: 250,
-  retries: 4,
+  /**
+   * Attempts after the first, alternating between the two API mirrors, so this
+   * is also how many shots each mirror gets.
+   */
+  retries: 5,
+  /**
+   * Exponential backoff base, doubling per attempt and capped at 30s.
+   *
+   * Sized against a real failure: the portal's Oracle pool saturates under load
+   * and answers `NJS-076 … queueMax 500 reached` as a 500 for tens of seconds at
+   * a time. At the previous 800 ms the whole budget was spent in ~12 s, well
+   * inside one such blip, and a scheduled run died on the very first request.
+   */
+  backoffMs: 1_000,
   timeoutMs: 45_000,
 };
 

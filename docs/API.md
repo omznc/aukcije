@@ -178,6 +178,31 @@ the Express catch-all rather than a real error. Confirmed absent:
 `/institucije`, `/navigacija`, `/vijesti/{insId}`, `/sudske-prodaje/{id}`,
 `/kategorije-vijesti/…`, `/napredna-pretraga`.
 
+## Failure modes - a 500 is ambiguous
+
+The portal answers `500` for two unrelated reasons, and telling them apart is
+the difference between a real regression and a blip:
+
+- **A catch-all 500** carries `Server error: … requested //<path>` and means the
+  path is wrong - a genuine upstream change, worth investigating.
+- **A pool-exhaustion 500** carries an Oracle driver message and means the
+  portal is merely overloaded:
+
+  ```
+  Server error: NJS-076: connection request rejected.
+                Pool queue length queueMax 500 reached
+  ```
+
+  This is the portal's own node-oracledb pool refusing new work under load, and
+  it clears on its own within tens of seconds. It can hit *any* endpoint,
+  including the very first request of a crawl.
+
+`portalfo1` and `portalfo2` are separate Express processes, each with its own
+connection pool, so a saturated mirror has a healthy sibling. Every endpoint
+here is served identically by both - `src/lib/http.ts` alternates between them
+across retry attempts, which is the intended handling for a pool-exhaustion 500.
+Do not treat a lone 500 as a layout change until it reproduces on both hosts.
+
 ## Data shape notes
 
 - **Amounts** use `1.234.567,89`, but some courts write `2.000.00`, using the dot
