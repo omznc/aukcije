@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-05T18:49:22.531Z",
+  "generatedAt": "2026-09-06T09:10:58.879Z",
   "count": 2724,
   "listings": [
     {
@@ -301,7 +301,7 @@
         "confidence": 0.5,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.082Z"
+      "scrapedAt": "2026-09-06T09:10:58.458Z"
     },
     {
       "id": "80-166864",
@@ -405,7 +405,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.115Z"
+      "scrapedAt": "2026-09-06T09:10:58.494Z"
     },
     {
       "id": "162-168419",
@@ -852,7 +852,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.946Z"
+      "scrapedAt": "2026-09-06T09:10:58.331Z"
     },
     {
       "id": "32-166764",
@@ -898,7 +898,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.118Z"
+      "scrapedAt": "2026-09-06T09:10:58.495Z"
     },
     {
       "id": "32-163659",
@@ -931,7 +931,7 @@
       "documents": [
         {
           "id": 162189,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/162189",
           "sha256": "eedd2b8d1083b9c2a980c630e03d9905d58002f25246afd7231c1d416701eaa2"
@@ -944,7 +944,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.164Z"
+      "scrapedAt": "2026-09-06T09:10:58.539Z"
     },
     {
       "id": "80-166303",
@@ -1079,63 +1079,6 @@
       "scrapedAt": "2026-08-21T22:13:52.152Z"
     },
     {
-      "id": "90-167346",
-      "articleId": 167346,
-      "court": "Osnovni sud Brčko distrikta BiH",
-      "courtId": 90,
-      "entity": "BD",
-      "caseNumber": "96 0 Ip 124015 25 Ip 2",
-      "saleType": "nekretnine",
-      "title": "Prva prodaja nekretnina - 30.09.2026. godine u predmetu 96 0 Ip 124015 25 Ip 2 I",
-      "headline": "Stan 100 m², Brčko",
-      "itemDescription": "Petosoban stan br. 16, površine 100 m2, na trećem spratu stambenog objekta.",
-      "itemTags": [
-        "stan"
-      ],
-      "cadastral": {
-        "kc": [
-          "3497/3"
-        ],
-        "zkUlozak": [
-          "1652",
-          "1849"
-        ],
-        "ko": [
-          "Brčko 1"
-        ]
-      },
-      "location": {
-        "municipality": "Brčko",
-        "settlement": "Brčko"
-      },
-      "appraisedValue": {
-        "amount": 195000,
-        "currency": "BAM"
-      },
-      "startingPrice": {
-        "amount": 97500,
-        "currency": "BAM"
-      },
-      "deposit": null,
-      "auctionRound": "prvo",
-      "saleMethod": "usmeno-javno-nadmetanje",
-      "saleDate": "2026-09-30",
-      "saleTime": "13:30",
-      "auctionLocation": "zgrada ovog suda, sudnica broj 16",
-      "viewingInfo": null,
-      "publishedDate": "2026-08-28",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/167346",
-      "documents": [],
-      "language": "B",
-      "extraction": {
-        "pipelineVersion": "3.3.8",
-        "source": "inline",
-        "confidence": 0.88,
-        "llm": true
-      },
-      "scrapedAt": "2026-09-05T18:49:21.935Z"
-    },
-    {
       "id": "90-167203",
       "articleId": 167203,
       "court": "Osnovni sud Brčko distrikta BiH",
@@ -1193,7 +1136,64 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.940Z"
+      "scrapedAt": "2026-09-06T09:10:58.322Z"
+    },
+    {
+      "id": "90-167346",
+      "articleId": 167346,
+      "court": "Osnovni sud Brčko distrikta BiH",
+      "courtId": 90,
+      "entity": "BD",
+      "caseNumber": "96 0 Ip 124015 25 Ip 2",
+      "saleType": "nekretnine",
+      "title": "Prva prodaja nekretnina - 30.09.2026. godine u predmetu 96 0 Ip 124015 25 Ip 2 I",
+      "headline": "Stan 100 m², Brčko",
+      "itemDescription": "Petosoban stan br. 16, površine 100 m2, na trećem spratu stambenog objekta.",
+      "itemTags": [
+        "stan"
+      ],
+      "cadastral": {
+        "kc": [
+          "3497/3"
+        ],
+        "zkUlozak": [
+          "1652",
+          "1849"
+        ],
+        "ko": [
+          "Brčko 1"
+        ]
+      },
+      "location": {
+        "municipality": "Brčko",
+        "settlement": "Brčko"
+      },
+      "appraisedValue": {
+        "amount": 195000,
+        "currency": "BAM"
+      },
+      "startingPrice": {
+        "amount": 97500,
+        "currency": "BAM"
+      },
+      "deposit": null,
+      "auctionRound": "prvo",
+      "saleMethod": "usmeno-javno-nadmetanje",
+      "saleDate": "2026-09-30",
+      "saleTime": "13:30",
+      "auctionLocation": "zgrada ovog suda, sudnica broj 16",
+      "viewingInfo": null,
+      "publishedDate": "2026-08-28",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/167346",
+      "documents": [],
+      "language": "B",
+      "extraction": {
+        "pipelineVersion": "3.3.8",
+        "source": "inline",
+        "confidence": 0.88,
+        "llm": true
+      },
+      "scrapedAt": "2026-09-06T09:10:58.327Z"
     },
     {
       "id": "90-167180",
@@ -1250,7 +1250,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.961Z"
+      "scrapedAt": "2026-09-06T09:10:58.334Z"
     },
     {
       "id": "162-167260",
@@ -1431,65 +1431,67 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.951Z"
+      "scrapedAt": "2026-09-06T09:10:58.338Z"
     },
     {
-      "id": "90-166961",
-      "articleId": 166961,
+      "id": "90-166555",
+      "articleId": 166555,
       "court": "Osnovni sud Brčko distrikta BiH",
       "courtId": 90,
       "entity": "BD",
-      "caseNumber": "96 0 I 164291 24 I",
+      "caseNumber": "96 0 I 170916 25 I",
       "saleType": "nekretnine",
-      "title": "Prva prodaja nekretnina - 29.09.2026. godine u predmetu 96 0 I 164291 24 I",
-      "headline": "Stambena zgrada i pravo građenja, Brčko",
-      "itemDescription": "Stambena zgrada površine 99 m2, pravo građenja na zemljištu površine 56 m2",
+      "title": "Prva prodaja nekretnina - 29.09.2026. godine u predmetu 96 0 I 170916 25 I",
+      "headline": "Stambena zgrada i dvorište, Omerbegovača",
+      "itemDescription": "k.č. 386/2 „Slatina“ površine 256 m2 u naravi dvorište površine 186 m2 i stambena zgrada 1 površine 70 m2, zk.uložak br. 565",
       "itemTags": [
         "kuca",
         "zemljiste"
       ],
       "cadastral": {
         "kc": [
-          "2184"
+          "386/2"
         ],
         "zkUlozak": [
-          "5155",
-          "5156"
+          "565"
         ],
         "ko": [
-          "Brčko 1"
+          "Omerbegovača"
         ]
       },
       "location": {
         "municipality": "Brčko",
-        "settlement": "Brčko"
+        "settlement": "Omerbegovača"
       },
       "appraisedValue": {
-        "amount": 402183.77,
+        "amount": 71366.18,
         "currency": "BAM"
       },
       "startingPrice": {
-        "amount": 100545.94,
+        "amount": 35683.09,
         "currency": "BAM"
       },
-      "deposit": null,
+      "deposit": {
+        "amount": 7136.62,
+        "currency": "BAM"
+      },
       "auctionRound": "prvo",
       "saleMethod": "usmeno-javno-nadmetanje",
       "saleDate": "2026-09-29",
-      "saleTime": "11:45",
+      "saleTime": "08:45",
       "auctionLocation": "Osnovni sud Brčko distrikta BiH, sudnica broj 16",
       "viewingInfo": null,
-      "publishedDate": "2026-08-11",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/166961",
+      "publishedDate": "2026-07-24",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/166555",
       "documents": [],
       "language": "B",
       "extraction": {
         "pipelineVersion": "3.3.8",
         "source": "inline",
-        "confidence": 0.88,
+        "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.957Z"
+      "scrapedAt": "2026-09-06T09:10:58.341Z"
     },
     {
       "id": "90-166553",
@@ -1551,127 +1553,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.964Z"
-    },
-    {
-      "id": "90-166555",
-      "articleId": 166555,
-      "court": "Osnovni sud Brčko distrikta BiH",
-      "courtId": 90,
-      "entity": "BD",
-      "caseNumber": "96 0 I 170916 25 I",
-      "saleType": "nekretnine",
-      "title": "Prva prodaja nekretnina - 29.09.2026. godine u predmetu 96 0 I 170916 25 I",
-      "headline": "Stambena zgrada i dvorište, Omerbegovača",
-      "itemDescription": "k.č. 386/2 „Slatina“ površine 256 m2 u naravi dvorište površine 186 m2 i stambena zgrada 1 površine 70 m2, zk.uložak br. 565",
-      "itemTags": [
-        "kuca",
-        "zemljiste"
-      ],
-      "cadastral": {
-        "kc": [
-          "386/2"
-        ],
-        "zkUlozak": [
-          "565"
-        ],
-        "ko": [
-          "Omerbegovača"
-        ]
-      },
-      "location": {
-        "municipality": "Brčko",
-        "settlement": "Omerbegovača"
-      },
-      "appraisedValue": {
-        "amount": 71366.18,
-        "currency": "BAM"
-      },
-      "startingPrice": {
-        "amount": 35683.09,
-        "currency": "BAM"
-      },
-      "deposit": {
-        "amount": 7136.62,
-        "currency": "BAM"
-      },
-      "auctionRound": "prvo",
-      "saleMethod": "usmeno-javno-nadmetanje",
-      "saleDate": "2026-09-29",
-      "saleTime": "08:45",
-      "auctionLocation": "Osnovni sud Brčko distrikta BiH, sudnica broj 16",
-      "viewingInfo": null,
-      "publishedDate": "2026-07-24",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/166555",
-      "documents": [],
-      "language": "B",
-      "extraction": {
-        "pipelineVersion": "3.3.8",
-        "source": "inline",
-        "confidence": 1,
-        "llm": true
-      },
-      "scrapedAt": "2026-09-05T18:49:21.967Z"
-    },
-    {
-      "id": "90-166550",
-      "articleId": 166550,
-      "court": "Osnovni sud Brčko distrikta BiH",
-      "courtId": 90,
-      "entity": "BD",
-      "caseNumber": "96 0 I 175770 25 I",
-      "saleType": "nekretnine",
-      "title": "Prva prodaja nekretnina - 29.09.2026. godine u predmetu 96 0 I 175770 25 I",
-      "headline": "Njiva 14.524 m², Šuma 5.04 m², Bukvik Donji",
-      "itemDescription": "Njiva 7. klase površine 14.524 m², Šuma 4. klase površine 5.04 m², upisane u zk.uložak br. 343 k.o. Bukvik Donji sa dijelom od 1/3.",
-      "itemTags": [
-        "zemljiste"
-      ],
-      "cadastral": {
-        "kc": [
-          "422",
-          "457"
-        ],
-        "zkUlozak": [
-          "343"
-        ],
-        "ko": [
-          "Bukvik Donji"
-        ]
-      },
-      "location": {
-        "municipality": "Brčko",
-        "settlement": "Bukvik Donji"
-      },
-      "appraisedValue": {
-        "amount": 9364.57,
-        "currency": "BAM"
-      },
-      "startingPrice": {
-        "amount": 4682.28,
-        "currency": "BAM"
-      },
-      "deposit": {
-        "amount": 936.46,
-        "currency": "BAM"
-      },
-      "auctionRound": "prvo",
-      "saleMethod": "usmeno-javno-nadmetanje",
-      "saleDate": "2026-09-29",
-      "saleTime": "09:00",
-      "auctionLocation": "Osnovni sud Brčko distrikta BiH, sudnica broj 16",
-      "viewingInfo": null,
-      "publishedDate": "2026-07-24",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/166550",
-      "documents": [],
-      "language": "B",
-      "extraction": {
-        "pipelineVersion": "3.3.8",
-        "source": "inline",
-        "confidence": 1,
-        "llm": true
-      },
-      "scrapedAt": "2026-09-05T18:49:21.971Z"
+      "scrapedAt": "2026-09-06T09:10:58.347Z"
     },
     {
       "id": "90-166549",
@@ -1733,7 +1615,67 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.974Z"
+      "scrapedAt": "2026-09-06T09:10:58.350Z"
+    },
+    {
+      "id": "90-166550",
+      "articleId": 166550,
+      "court": "Osnovni sud Brčko distrikta BiH",
+      "courtId": 90,
+      "entity": "BD",
+      "caseNumber": "96 0 I 175770 25 I",
+      "saleType": "nekretnine",
+      "title": "Prva prodaja nekretnina - 29.09.2026. godine u predmetu 96 0 I 175770 25 I",
+      "headline": "Njiva 14.524 m², Šuma 5.04 m², Bukvik Donji",
+      "itemDescription": "Njiva 7. klase površine 14.524 m², Šuma 4. klase površine 5.04 m², upisane u zk.uložak br. 343 k.o. Bukvik Donji sa dijelom od 1/3.",
+      "itemTags": [
+        "zemljiste"
+      ],
+      "cadastral": {
+        "kc": [
+          "422",
+          "457"
+        ],
+        "zkUlozak": [
+          "343"
+        ],
+        "ko": [
+          "Bukvik Donji"
+        ]
+      },
+      "location": {
+        "municipality": "Brčko",
+        "settlement": "Bukvik Donji"
+      },
+      "appraisedValue": {
+        "amount": 9364.57,
+        "currency": "BAM"
+      },
+      "startingPrice": {
+        "amount": 4682.28,
+        "currency": "BAM"
+      },
+      "deposit": {
+        "amount": 936.46,
+        "currency": "BAM"
+      },
+      "auctionRound": "prvo",
+      "saleMethod": "usmeno-javno-nadmetanje",
+      "saleDate": "2026-09-29",
+      "saleTime": "09:00",
+      "auctionLocation": "Osnovni sud Brčko distrikta BiH, sudnica broj 16",
+      "viewingInfo": null,
+      "publishedDate": "2026-07-24",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/166550",
+      "documents": [],
+      "language": "B",
+      "extraction": {
+        "pipelineVersion": "3.3.8",
+        "source": "inline",
+        "confidence": 1,
+        "llm": true
+      },
+      "scrapedAt": "2026-09-06T09:10:58.354Z"
     },
     {
       "id": "90-166963",
@@ -1793,7 +1735,65 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.330Z"
+      "scrapedAt": "2026-09-06T09:10:58.703Z"
+    },
+    {
+      "id": "90-166961",
+      "articleId": 166961,
+      "court": "Osnovni sud Brčko distrikta BiH",
+      "courtId": 90,
+      "entity": "BD",
+      "caseNumber": "96 0 I 164291 24 I",
+      "saleType": "nekretnine",
+      "title": "Prva prodaja nekretnina - 29.09.2026. godine u predmetu 96 0 I 164291 24 I",
+      "headline": "Stambena zgrada i pravo građenja, Brčko",
+      "itemDescription": "Stambena zgrada površine 99 m2, pravo građenja na zemljištu površine 56 m2",
+      "itemTags": [
+        "kuca",
+        "zemljiste"
+      ],
+      "cadastral": {
+        "kc": [
+          "2184"
+        ],
+        "zkUlozak": [
+          "5155",
+          "5156"
+        ],
+        "ko": [
+          "Brčko 1"
+        ]
+      },
+      "location": {
+        "municipality": "Brčko",
+        "settlement": "Brčko"
+      },
+      "appraisedValue": {
+        "amount": 402183.77,
+        "currency": "BAM"
+      },
+      "startingPrice": {
+        "amount": 100545.94,
+        "currency": "BAM"
+      },
+      "deposit": null,
+      "auctionRound": "prvo",
+      "saleMethod": "usmeno-javno-nadmetanje",
+      "saleDate": "2026-09-29",
+      "saleTime": "11:45",
+      "auctionLocation": "Osnovni sud Brčko distrikta BiH, sudnica broj 16",
+      "viewingInfo": null,
+      "publishedDate": "2026-08-11",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/166961",
+      "documents": [],
+      "language": "B",
+      "extraction": {
+        "pipelineVersion": "3.3.8",
+        "source": "inline",
+        "confidence": 0.88,
+        "llm": true
+      },
+      "scrapedAt": "2026-09-05T18:49:21.957Z"
     },
     {
       "id": "32-167456",
@@ -1839,22 +1839,21 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.101Z"
+      "scrapedAt": "2026-09-06T09:10:58.477Z"
     },
     {
-      "id": "33-167396",
-      "articleId": 167396,
+      "id": "33-167397",
+      "articleId": 167397,
       "court": "Općinski sud u Živinicama",
       "courtId": 33,
       "entity": "FBiH",
-      "caseNumber": "33 0 Mal 100818 25 I",
+      "caseNumber": "33 0 I 080567 25 Kom",
       "saleType": "tehnika",
-      "title": "Zaključak o prodaji pokretnih stvari",
-      "headline": "LCD TV i frižider",
-      "itemDescription": "LCD TV marke LG, 50 inča, Frižider marke Beko",
+      "title": "Zaključak o prodaji pokretne stvari",
+      "headline": "Smart TV LCD 65\" Grundig",
+      "itemDescription": "Smart TV LCD 65\" marke Grundig",
       "itemTags": [
-        "tv",
-        "frizider"
+        "tv"
       ],
       "cadastral": null,
       "location": {
@@ -1862,26 +1861,29 @@
         "settlement": null
       },
       "appraisedValue": {
-        "amount": 1000,
+        "amount": 800,
         "currency": "BAM"
       },
-      "startingPrice": null,
+      "startingPrice": {
+        "amount": 400,
+        "currency": "BAM"
+      },
       "deposit": null,
-      "auctionRound": "drugo",
+      "auctionRound": "prvo",
       "saleMethod": "usmeno-javno-nadmetanje",
       "saleDate": "2026-09-25",
-      "saleTime": "08:30",
+      "saleTime": "08:15",
       "auctionLocation": "Općinski sud u Živinicama, kancelarija broj 7",
       "viewingInfo": null,
       "publishedDate": "2026-08-31",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/33/article/167396",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/33/article/167397",
       "documents": [
         {
-          "id": 166520,
-          "name": "II prodaja pokretnih stvari 100818 ",
+          "id": 166521,
+          "name": "I prodaja pokretnih stvari 80567 ",
           "type": "DOC",
-          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/166520",
-          "sha256": "6d8b261985c57b207f2f7c06a5ff7e61aad98fd16b6e79ad3e0c64800b70c29b"
+          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/166521",
+          "sha256": "e331183a89230c82b92ca5f2d93208a321479ddffc7b82ef021dd8fbfd282766"
         }
       ],
       "language": "B",
@@ -1891,7 +1893,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-08-31T21:45:32.079Z"
+      "scrapedAt": "2026-08-31T21:45:32.080Z"
     },
     {
       "id": "33-167398",
@@ -1952,18 +1954,19 @@
       "scrapedAt": "2026-08-31T21:45:32.082Z"
     },
     {
-      "id": "33-167397",
-      "articleId": 167397,
+      "id": "33-167396",
+      "articleId": 167396,
       "court": "Općinski sud u Živinicama",
       "courtId": 33,
       "entity": "FBiH",
-      "caseNumber": "33 0 I 080567 25 Kom",
+      "caseNumber": "33 0 Mal 100818 25 I",
       "saleType": "tehnika",
-      "title": "Zaključak o prodaji pokretne stvari",
-      "headline": "Smart TV LCD 65\" Grundig",
-      "itemDescription": "Smart TV LCD 65\" marke Grundig",
+      "title": "Zaključak o prodaji pokretnih stvari",
+      "headline": "LCD TV i frižider",
+      "itemDescription": "LCD TV marke LG, 50 inča, Frižider marke Beko",
       "itemTags": [
-        "tv"
+        "tv",
+        "frizider"
       ],
       "cadastral": null,
       "location": {
@@ -1971,29 +1974,26 @@
         "settlement": null
       },
       "appraisedValue": {
-        "amount": 800,
+        "amount": 1000,
         "currency": "BAM"
       },
-      "startingPrice": {
-        "amount": 400,
-        "currency": "BAM"
-      },
+      "startingPrice": null,
       "deposit": null,
-      "auctionRound": "prvo",
+      "auctionRound": "drugo",
       "saleMethod": "usmeno-javno-nadmetanje",
       "saleDate": "2026-09-25",
-      "saleTime": "08:15",
+      "saleTime": "08:30",
       "auctionLocation": "Općinski sud u Živinicama, kancelarija broj 7",
       "viewingInfo": null,
       "publishedDate": "2026-08-31",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/33/article/167397",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/33/article/167396",
       "documents": [
         {
-          "id": 166521,
-          "name": "I prodaja pokretnih stvari 80567 ",
+          "id": 166520,
+          "name": "II prodaja pokretnih stvari 100818 ",
           "type": "DOC",
-          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/166521",
-          "sha256": "e331183a89230c82b92ca5f2d93208a321479ddffc7b82ef021dd8fbfd282766"
+          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/166520",
+          "sha256": "6d8b261985c57b207f2f7c06a5ff7e61aad98fd16b6e79ad3e0c64800b70c29b"
         }
       ],
       "language": "B",
@@ -2003,7 +2003,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-08-31T21:45:32.080Z"
+      "scrapedAt": "2026-08-31T21:45:32.079Z"
     },
     {
       "id": "161-167243",
@@ -2623,7 +2623,7 @@
         "confidence": 0.5,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.084Z"
+      "scrapedAt": "2026-09-06T09:10:58.460Z"
     },
     {
       "id": "32-166457",
@@ -2658,7 +2658,7 @@
       "documents": [
         {
           "id": 165276,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/165276",
           "sha256": "96344e05f4fdd6e2b5f74a5091a1980de227af08a83728b672a284929e111132"
@@ -2671,7 +2671,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.123Z"
+      "scrapedAt": "2026-09-06T09:10:58.499Z"
     },
     {
       "id": "32-166468",
@@ -2704,7 +2704,7 @@
       "documents": [
         {
           "id": 165287,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/165287",
           "sha256": "34cac12e56b6c4196071e22aae4bd39ca32d87268a58c7ba39b6715d4fa395b8"
@@ -2717,7 +2717,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.125Z"
+      "scrapedAt": "2026-09-06T09:10:58.501Z"
     },
     {
       "id": "80-166107",
@@ -2956,7 +2956,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.119Z"
+      "scrapedAt": "2026-09-06T09:10:58.496Z"
     },
     {
       "id": "33-167147",
@@ -3206,7 +3206,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.981Z"
+      "scrapedAt": "2026-09-06T09:10:58.358Z"
     },
     {
       "id": "23-166942",
@@ -3256,7 +3256,7 @@
         "confidence": 0.5,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.083Z"
+      "scrapedAt": "2026-09-06T09:10:58.459Z"
     },
     {
       "id": "23-166825",
@@ -3312,7 +3312,7 @@
         "confidence": 0.5,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.084Z"
+      "scrapedAt": "2026-09-06T09:10:58.461Z"
     },
     {
       "id": "23-166732",
@@ -3364,7 +3364,7 @@
         "confidence": 0.5,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.085Z"
+      "scrapedAt": "2026-09-06T09:10:58.462Z"
     },
     {
       "id": "42-166449",
@@ -3671,7 +3671,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.977Z"
+      "scrapedAt": "2026-09-06T09:10:58.360Z"
     },
     {
       "id": "42-163592",
@@ -3728,18 +3728,18 @@
       "scrapedAt": "2026-08-21T22:13:49.590Z"
     },
     {
-      "id": "42-163593",
-      "articleId": 163593,
+      "id": "42-163591",
+      "articleId": 163591,
       "court": "Općinski sud u Zavidovićima",
       "courtId": 42,
       "entity": "FBiH",
-      "caseNumber": "42 0 I 072626 26 Kom",
-      "saleType": "ostalo",
-      "title": "Zaključak o prodaji 42 0 I 072626 26 Kom",
-      "headline": "Peč na drva bubnjara",
-      "itemDescription": "Peč na drva bubnjara",
+      "caseNumber": "42 0 I 071784 25 Kom",
+      "saleType": "namjestaj",
+      "title": "Zaključak o prodaji 42 0 I 071784 25 Kom",
+      "headline": "Trosjed sive boje",
+      "itemDescription": "Trosjed sive boje",
       "itemTags": [
-        "drvo"
+        "kreveti"
       ],
       "cadastral": null,
       "location": {
@@ -3751,32 +3751,35 @@
         "amount": 200,
         "currency": "BAM"
       },
-      "deposit": null,
+      "deposit": {
+        "amount": 20,
+        "currency": "BAM"
+      },
       "auctionRound": "prvo",
       "saleMethod": "usmeno-javno-nadmetanje",
       "saleDate": "2026-09-08",
-      "saleTime": "09:00",
+      "saleTime": "10:00",
       "auctionLocation": "Općinski sud u Zavidovićima, soba broj 11",
       "viewingInfo": null,
       "publishedDate": "2026-05-07",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/42/article/163593",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/42/article/163591",
       "documents": [
         {
-          "id": 162129,
-          "name": "42 0 I 072626 26 Kom",
+          "id": 162125,
+          "name": "42 0 I 071784 25 Kom",
           "type": "PDF",
-          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/162129",
-          "sha256": "6f270bde4b873e25727573349163ab86abc628cec670bbbd482ad48f3d38545a"
+          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/162125",
+          "sha256": "0141bfdd6e6863df993eced55a860abf847ac19781071e83ad927caf2445feec"
         }
       ],
       "language": "B",
       "extraction": {
         "pipelineVersion": "3.3.8",
         "source": "pdf",
-        "confidence": 0.75,
+        "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-08-21T22:13:49.594Z"
+      "scrapedAt": "2026-08-21T22:13:49.596Z"
     },
     {
       "id": "42-163904",
@@ -3838,18 +3841,18 @@
       "scrapedAt": "2026-08-21T22:13:49.592Z"
     },
     {
-      "id": "42-163591",
-      "articleId": 163591,
+      "id": "42-163593",
+      "articleId": 163593,
       "court": "Općinski sud u Zavidovićima",
       "courtId": 42,
       "entity": "FBiH",
-      "caseNumber": "42 0 I 071784 25 Kom",
-      "saleType": "namjestaj",
-      "title": "Zaključak o prodaji 42 0 I 071784 25 Kom",
-      "headline": "Trosjed sive boje",
-      "itemDescription": "Trosjed sive boje",
+      "caseNumber": "42 0 I 072626 26 Kom",
+      "saleType": "ostalo",
+      "title": "Zaključak o prodaji 42 0 I 072626 26 Kom",
+      "headline": "Peč na drva bubnjara",
+      "itemDescription": "Peč na drva bubnjara",
       "itemTags": [
-        "kreveti"
+        "drvo"
       ],
       "cadastral": null,
       "location": {
@@ -3861,35 +3864,32 @@
         "amount": 200,
         "currency": "BAM"
       },
-      "deposit": {
-        "amount": 20,
-        "currency": "BAM"
-      },
+      "deposit": null,
       "auctionRound": "prvo",
       "saleMethod": "usmeno-javno-nadmetanje",
       "saleDate": "2026-09-08",
-      "saleTime": "10:00",
+      "saleTime": "09:00",
       "auctionLocation": "Općinski sud u Zavidovićima, soba broj 11",
       "viewingInfo": null,
       "publishedDate": "2026-05-07",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/42/article/163591",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/42/article/163593",
       "documents": [
         {
-          "id": 162125,
-          "name": "42 0 I 071784 25 Kom",
+          "id": 162129,
+          "name": "42 0 I 072626 26 Kom",
           "type": "PDF",
-          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/162125",
-          "sha256": "0141bfdd6e6863df993eced55a860abf847ac19781071e83ad927caf2445feec"
+          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/162129",
+          "sha256": "6f270bde4b873e25727573349163ab86abc628cec670bbbd482ad48f3d38545a"
         }
       ],
       "language": "B",
       "extraction": {
         "pipelineVersion": "3.3.8",
         "source": "pdf",
-        "confidence": 0.88,
+        "confidence": 0.75,
         "llm": true
       },
-      "scrapedAt": "2026-08-21T22:13:49.596Z"
+      "scrapedAt": "2026-08-21T22:13:49.594Z"
     },
     {
       "id": "32-162459",
@@ -3994,7 +3994,7 @@
         "confidence": 0.5,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.086Z"
+      "scrapedAt": "2026-09-06T09:10:58.462Z"
     },
     {
       "id": "65-167022",
@@ -4504,7 +4504,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.104Z"
+      "scrapedAt": "2026-09-06T09:10:58.476Z"
     },
     {
       "id": "33-166851",
@@ -4657,7 +4657,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.110Z"
+      "scrapedAt": "2026-09-06T09:10:58.483Z"
     },
     {
       "id": "33-166689",
@@ -5467,7 +5467,7 @@
         "confidence": 0.13,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.112Z"
+      "scrapedAt": "2026-09-06T09:10:58.489Z"
     },
     {
       "id": "32-167276",
@@ -5572,7 +5572,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.106Z"
+      "scrapedAt": "2026-09-06T09:10:58.486Z"
     },
     {
       "id": "32-167274",
@@ -5623,7 +5623,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.114Z"
+      "scrapedAt": "2026-09-06T09:10:58.491Z"
     },
     {
       "id": "32-167247",
@@ -5720,7 +5720,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.182Z"
+      "scrapedAt": "2026-09-06T09:10:58.557Z"
     },
     {
       "id": "33-166479",
@@ -6210,7 +6210,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.117Z"
+      "scrapedAt": "2026-09-06T09:10:58.493Z"
     },
     {
       "id": "42-165677",
@@ -6310,7 +6310,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.317Z"
+      "scrapedAt": "2026-09-06T09:10:58.690Z"
     },
     {
       "id": "58-166359",
@@ -6718,7 +6718,7 @@
         "confidence": 0.5,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.083Z"
+      "scrapedAt": "2026-09-06T09:10:58.459Z"
     },
     {
       "id": "23-165330",
@@ -7297,7 +7297,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.985Z"
+      "scrapedAt": "2026-09-06T09:10:58.364Z"
     },
     {
       "id": "161-165754",
@@ -8198,14 +8198,14 @@
       "documents": [
         {
           "id": 165510,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/165510",
           "sha256": "b6a75114d8d63dbd153ce3ce4c0b024e5f425cf6d097f06a47c0edee4b6111e8"
         },
         {
           "id": 165511,
-          "name": "Оглас",
+          "name": "Oglas",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/165511",
           "sha256": null
@@ -8218,7 +8218,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.120Z"
+      "scrapedAt": "2026-09-06T09:10:58.496Z"
     },
     {
       "id": "161-165673",
@@ -8562,7 +8562,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.988Z"
+      "scrapedAt": "2026-09-06T09:10:58.367Z"
     },
     {
       "id": "42-165481",
@@ -8857,7 +8857,7 @@
       "documents": [
         {
           "id": 165326,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/165326",
           "sha256": "22040092228fc31d8d755ceb8fa1e01d5cbc520c7f927fb90bd8f6f0d47e85d4"
@@ -8870,7 +8870,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.122Z"
+      "scrapedAt": "2026-09-06T09:10:58.499Z"
     },
     {
       "id": "32-166471",
@@ -9130,7 +9130,7 @@
       "documents": [
         {
           "id": 165249,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/165249",
           "sha256": "b8008ffe605ca71d09ef85159120754a3b9894ac62fab0d5b620f8d7c3df24c5"
@@ -9143,7 +9143,7 @@
         "confidence": 0.13,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.127Z"
+      "scrapedAt": "2026-09-06T09:10:58.503Z"
     },
     {
       "id": "126-165287",
@@ -9189,7 +9189,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.516Z"
+      "scrapedAt": "2026-09-06T09:10:58.865Z"
     },
     {
       "id": "65-166412",
@@ -9697,7 +9697,7 @@
       "documents": [
         {
           "id": 165023,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/165023",
           "sha256": "ca1a48330a3e39662d6d2673d417283e8579ebf99f8b24dcef77e60c745cae53"
@@ -9710,7 +9710,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.128Z"
+      "scrapedAt": "2026-09-06T09:10:58.504Z"
     },
     {
       "id": "161-164881",
@@ -10690,7 +10690,7 @@
       "documents": [
         {
           "id": 164604,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/164604",
           "sha256": "5b156b1dbd7ce65b1044e6107b0b011da5cb8e5788f339d39e8d1aeb9eb8ea32"
@@ -10703,7 +10703,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.132Z"
+      "scrapedAt": "2026-09-06T09:10:58.506Z"
     },
     {
       "id": "80-161559",
@@ -10798,7 +10798,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.986Z"
+      "scrapedAt": "2026-09-06T09:10:58.365Z"
     },
     {
       "id": "32-165807",
@@ -11135,7 +11135,7 @@
       "documents": [
         {
           "id": 164361,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/164361",
           "sha256": "f388af3bdf61b950011495d9b7dc84aae307f358767eaa7a100b845849f6be06"
@@ -11148,7 +11148,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.130Z"
+      "scrapedAt": "2026-09-06T09:10:58.508Z"
     },
     {
       "id": "32-164327",
@@ -11872,7 +11872,7 @@
       "documents": [
         {
           "id": 164084,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/164084",
           "sha256": "b1cf1bf43f7c541ae20c42cf8047062957c35128b7bb1b74c97e4a100c6a56a4"
@@ -11885,7 +11885,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.137Z"
+      "scrapedAt": "2026-09-06T09:10:58.515Z"
     },
     {
       "id": "58-164564",
@@ -12777,7 +12777,7 @@
       "documents": [
         {
           "id": 163782,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/163782",
           "sha256": "6f6dfffef1f3d58f683b216622ca1f5e5cdff8e753d2ff94b0215d5650664dc6"
@@ -12790,7 +12790,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.134Z"
+      "scrapedAt": "2026-09-06T09:10:58.513Z"
     },
     {
       "id": "42-161849",
@@ -13545,7 +13545,7 @@
         "confidence": 0.13,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.988Z"
+      "scrapedAt": "2026-09-06T09:10:58.366Z"
     },
     {
       "id": "161-163419",
@@ -13995,14 +13995,14 @@
       "documents": [
         {
           "id": 163382,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/163382",
           "sha256": "0916766ff66f96c5e7d645d802aefbaef4bb30a837d347f1c3b92eb079a6cab2"
         },
         {
           "id": 163384,
-          "name": "ПОСЉЕДЊИ Оглас о продаји правног лица Коксаре",
+          "name": "POSLJEDNJI Oglas o prodaji pravnog lica Koksare",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/163384",
           "sha256": null
@@ -14015,7 +14015,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.138Z"
+      "scrapedAt": "2026-09-06T09:10:58.516Z"
     },
     {
       "id": "32-164718",
@@ -14463,7 +14463,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.168Z"
+      "scrapedAt": "2026-09-06T09:10:58.543Z"
     },
     {
       "id": "32-164561",
@@ -14504,7 +14504,7 @@
       "documents": [
         {
           "id": 163179,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/163179",
           "sha256": "96416ab56d41c373d45801fb16e32e24757631e1e21c5a61e95d4586c75ea411"
@@ -14517,58 +14517,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.140Z"
-    },
-    {
-      "id": "32-164563",
-      "articleId": 164563,
-      "court": "Općinski sud u Tuzli",
-      "courtId": 32,
-      "entity": "FBiH",
-      "caseNumber": "32 0 St 503017 26 St",
-      "saleType": "nekretnine",
-      "title": "Rješenje kojim se pokreće prethodni postupak nad imovinom privrednog društva „EKSER-KOMERC“ d.o.o. za proizvodnju, usluge i promet Gračanica, Babići, Omerbašići b.b. - 32 0 St 503017 26 St",
-      "headline": "Stečajni postupak nad \"EKSER-KOMERC\" d.o.o. Gračanica",
-      "itemDescription": "Pokretanje prethodnog postupka radi utvrđivanja uslova za otvaranje stečajnog postupka nad privrednim društvom \"EKSER-KOMERC\" d.o.o. Gračanica. Društvo nema nepokretne, pokretne stvari niti bilo koje druge imovine. Račun društva blokiran od 2008. godine.",
-      "itemTags": [
-        "poslovni"
-      ],
-      "cadastral": null,
-      "location": {
-        "municipality": "Gračanica",
-        "settlement": null
-      },
-      "appraisedValue": null,
-      "startingPrice": null,
-      "deposit": {
-        "amount": 3000,
-        "currency": "BAM"
-      },
-      "auctionRound": "nepoznato",
-      "saleMethod": "nepoznato",
-      "saleDate": "2026-06-01",
-      "saleTime": null,
-      "auctionLocation": "Općinski sud u Tuzli",
-      "viewingInfo": "pregledu blokada računa banke",
-      "publishedDate": "2026-06-01",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/32/article/164563",
-      "documents": [
-        {
-          "id": 163180,
-          "name": "Рјешење",
-          "type": "PDF",
-          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/163180",
-          "sha256": "0159f979b22e11ae23d3243f3d528fa96742c0de1a189014719d5df0ff924319"
-        }
-      ],
-      "language": null,
-      "extraction": {
-        "pipelineVersion": "3.3.8",
-        "source": "pdf",
-        "confidence": 0.38,
-        "llm": true
-      },
-      "scrapedAt": "2026-09-05T18:49:22.145Z"
+      "scrapedAt": "2026-09-06T09:10:58.518Z"
     },
     {
       "id": "32-164575",
@@ -14609,7 +14558,7 @@
       "documents": [
         {
           "id": 163192,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/163192",
           "sha256": "e7dd57228240e547e1dfbbf1c73fa414e4e4d67014187cecc620022e3b69dab5"
@@ -14622,7 +14571,58 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.149Z"
+      "scrapedAt": "2026-09-06T09:10:58.522Z"
+    },
+    {
+      "id": "32-164563",
+      "articleId": 164563,
+      "court": "Općinski sud u Tuzli",
+      "courtId": 32,
+      "entity": "FBiH",
+      "caseNumber": "32 0 St 503017 26 St",
+      "saleType": "nekretnine",
+      "title": "Rješenje kojim se pokreće prethodni postupak nad imovinom privrednog društva „EKSER-KOMERC“ d.o.o. za proizvodnju, usluge i promet Gračanica, Babići, Omerbašići b.b. - 32 0 St 503017 26 St",
+      "headline": "Stečajni postupak nad \"EKSER-KOMERC\" d.o.o. Gračanica",
+      "itemDescription": "Pokretanje prethodnog postupka radi utvrđivanja uslova za otvaranje stečajnog postupka nad privrednim društvom \"EKSER-KOMERC\" d.o.o. Gračanica. Društvo nema nepokretne, pokretne stvari niti bilo koje druge imovine. Račun društva blokiran od 2008. godine.",
+      "itemTags": [
+        "poslovni"
+      ],
+      "cadastral": null,
+      "location": {
+        "municipality": "Gračanica",
+        "settlement": null
+      },
+      "appraisedValue": null,
+      "startingPrice": null,
+      "deposit": {
+        "amount": 3000,
+        "currency": "BAM"
+      },
+      "auctionRound": "nepoznato",
+      "saleMethod": "nepoznato",
+      "saleDate": "2026-06-01",
+      "saleTime": null,
+      "auctionLocation": "Općinski sud u Tuzli",
+      "viewingInfo": "pregledu blokada računa banke",
+      "publishedDate": "2026-06-01",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/32/article/164563",
+      "documents": [
+        {
+          "id": 163180,
+          "name": "Rješenje",
+          "type": "PDF",
+          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/163180",
+          "sha256": "0159f979b22e11ae23d3243f3d528fa96742c0de1a189014719d5df0ff924319"
+        }
+      ],
+      "language": null,
+      "extraction": {
+        "pipelineVersion": "3.3.8",
+        "source": "pdf",
+        "confidence": 0.38,
+        "llm": true
+      },
+      "scrapedAt": "2026-09-06T09:10:58.524Z"
     },
     {
       "id": "32-164568",
@@ -14657,7 +14657,7 @@
       "documents": [
         {
           "id": 163184,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/163184",
           "sha256": "051d74c526dbd69c5aeee6e2654a4547ad037496bb2ae2ff5264a71ed1405806"
@@ -14670,7 +14670,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.152Z"
+      "scrapedAt": "2026-09-06T09:10:58.527Z"
     },
     {
       "id": "46-162763",
@@ -14886,7 +14886,7 @@
         "confidence": 0.38,
         "llm": false
       },
-      "scrapedAt": "2026-09-05T18:49:22.323Z"
+      "scrapedAt": "2026-09-06T09:10:58.696Z"
     },
     {
       "id": "42-162907",
@@ -15121,7 +15121,7 @@
       "documents": [
         {
           "id": 163028,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/163028",
           "sha256": "5c2fb12a532040c2824c66488f6e26dee80cbf3d12f2b0f174856dc32dfcb9ca"
@@ -15134,7 +15134,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.154Z"
+      "scrapedAt": "2026-09-06T09:10:58.530Z"
     },
     {
       "id": "51-162627",
@@ -15308,7 +15308,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.488Z"
+      "scrapedAt": "2026-09-06T09:10:58.838Z"
     },
     {
       "id": "46-163309",
@@ -15594,14 +15594,14 @@
       "documents": [
         {
           "id": 162958,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/162958",
           "sha256": "c61b838d0bede248358ec6d3433af5a7b102c203d36a23b04881638b06a7971a"
         },
         {
           "id": 162959,
-          "name": "Оглас",
+          "name": "Oglas",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/162959",
           "sha256": null
@@ -15614,7 +15614,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.155Z"
+      "scrapedAt": "2026-09-06T09:10:58.530Z"
     },
     {
       "id": "46-162765",
@@ -15919,7 +15919,7 @@
         "confidence": 0.25,
         "llm": false
       },
-      "scrapedAt": "2026-09-05T18:49:22.323Z"
+      "scrapedAt": "2026-09-06T09:10:58.697Z"
     },
     {
       "id": "80-159500",
@@ -16151,7 +16151,7 @@
       "documents": [
         {
           "id": 162725,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/162725",
           "sha256": "d28f1f66a2784e0dbfc742697acd60feca3206cd5e2c6eb671cba9472985ce49"
@@ -16164,7 +16164,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.157Z"
+      "scrapedAt": "2026-09-06T09:10:58.533Z"
     },
     {
       "id": "32-164169",
@@ -16202,7 +16202,7 @@
       "documents": [
         {
           "id": 162728,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/162728",
           "sha256": "a62b46a444744dfac0b52d0b4fda9e9d3d0af426488cb7c7d7ac5b079d92d02d"
@@ -16215,7 +16215,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.159Z"
+      "scrapedAt": "2026-09-06T09:10:58.534Z"
     },
     {
       "id": "42-162889",
@@ -17035,7 +17035,7 @@
       "documents": [
         {
           "id": 162470,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/162470",
           "sha256": "f0980055e5affaf70d556a12b1fc292df5128ad8ed74d921f33f890af720ee12"
@@ -17048,7 +17048,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.162Z"
+      "scrapedAt": "2026-09-06T09:10:58.537Z"
     },
     {
       "id": "43-163727",
@@ -17086,7 +17086,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.301Z"
+      "scrapedAt": "2026-09-06T09:10:58.675Z"
     },
     {
       "id": "46-162154",
@@ -17345,7 +17345,7 @@
       "documents": [
         {
           "id": 162289,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/162289",
           "sha256": "a9b073544988b5631d3ac9a02d7b5d0704fd8fbfd0bd6f878a5d000d01d78950"
@@ -17358,7 +17358,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.167Z"
+      "scrapedAt": "2026-09-06T09:10:58.542Z"
     },
     {
       "id": "43-155934",
@@ -18316,57 +18316,6 @@
       "scrapedAt": "2026-08-21T22:13:49.811Z"
     },
     {
-      "id": "32-163257",
-      "articleId": 163257,
-      "court": "Općinski sud u Tuzli",
-      "courtId": 32,
-      "entity": "FBiH",
-      "caseNumber": "32 0 St 494044 25 St",
-      "saleType": "ostalo",
-      "title": "Rješenje o visini predujma za otvaranje stečajnog postupka nad imovinom stečajnog dužnika „N & G PLUS“ d.o.o. za proizvodnju, promet i usluge Tuzla, Stupine, Zanatski centar broj 4 - 32 0 St 494044 25 St",
-      "headline": "Stečajni postupak nad \"N & G PLUS\" d.o.o. Tuzla",
-      "itemDescription": "Prijedlog za otvaranje stečajnog postupka nad imovinom privrednog društva \"N & G PLUS\" d.o.o. Tuzla, uplata predujma troškova stečajnog postupka",
-      "itemTags": [
-        "poslovni"
-      ],
-      "cadastral": null,
-      "location": {
-        "municipality": "Tuzla",
-        "settlement": null
-      },
-      "appraisedValue": null,
-      "startingPrice": null,
-      "deposit": {
-        "amount": 2290,
-        "currency": "BAM"
-      },
-      "auctionRound": "nepoznato",
-      "saleMethod": "nepoznato",
-      "saleDate": "2026-04-29",
-      "saleTime": null,
-      "auctionLocation": "Općinski sud u Tuzli",
-      "viewingInfo": null,
-      "publishedDate": "2026-04-29",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/32/article/163257",
-      "documents": [
-        {
-          "id": 161769,
-          "name": "Рјешење",
-          "type": "PDF",
-          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/161769",
-          "sha256": "26e62ae106def9dd0c33eab945dcbce6fade0d1894d4749d99574a3ea0b459e9"
-        }
-      ],
-      "language": null,
-      "extraction": {
-        "pipelineVersion": "3.3.8",
-        "source": "pdf",
-        "confidence": 0.38,
-        "llm": true
-      },
-      "scrapedAt": "2026-09-05T18:49:22.170Z"
-    },
-    {
       "id": "32-163182",
       "articleId": 163182,
       "court": "Općinski sud u Tuzli",
@@ -18415,7 +18364,58 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.172Z"
+      "scrapedAt": "2026-09-06T09:10:58.545Z"
+    },
+    {
+      "id": "32-163257",
+      "articleId": 163257,
+      "court": "Općinski sud u Tuzli",
+      "courtId": 32,
+      "entity": "FBiH",
+      "caseNumber": "32 0 St 494044 25 St",
+      "saleType": "ostalo",
+      "title": "Rješenje o visini predujma za otvaranje stečajnog postupka nad imovinom stečajnog dužnika „N & G PLUS“ d.o.o. za proizvodnju, promet i usluge Tuzla, Stupine, Zanatski centar broj 4 - 32 0 St 494044 25 St",
+      "headline": "Stečajni postupak nad \"N & G PLUS\" d.o.o. Tuzla",
+      "itemDescription": "Prijedlog za otvaranje stečajnog postupka nad imovinom privrednog društva \"N & G PLUS\" d.o.o. Tuzla, uplata predujma troškova stečajnog postupka",
+      "itemTags": [
+        "poslovni"
+      ],
+      "cadastral": null,
+      "location": {
+        "municipality": "Tuzla",
+        "settlement": null
+      },
+      "appraisedValue": null,
+      "startingPrice": null,
+      "deposit": {
+        "amount": 2290,
+        "currency": "BAM"
+      },
+      "auctionRound": "nepoznato",
+      "saleMethod": "nepoznato",
+      "saleDate": "2026-04-29",
+      "saleTime": null,
+      "auctionLocation": "Općinski sud u Tuzli",
+      "viewingInfo": null,
+      "publishedDate": "2026-04-29",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/32/article/163257",
+      "documents": [
+        {
+          "id": 161769,
+          "name": "Rješenje",
+          "type": "PDF",
+          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/161769",
+          "sha256": "26e62ae106def9dd0c33eab945dcbce6fade0d1894d4749d99574a3ea0b459e9"
+        }
+      ],
+      "language": null,
+      "extraction": {
+        "pipelineVersion": "3.3.8",
+        "source": "pdf",
+        "confidence": 0.38,
+        "llm": true
+      },
+      "scrapedAt": "2026-09-06T09:10:58.547Z"
     },
     {
       "id": "42-161154",
@@ -18505,21 +18505,21 @@
       "documents": [
         {
           "id": 161657,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/161657",
           "sha256": "783b47bb43da7d80720ad5bfce8165d5a84e8cc08f33ad047ae8fc2619b08e02"
         },
         {
           "id": 161658,
-          "name": "Оглас И",
+          "name": "Oglas I",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/161658",
           "sha256": null
         },
         {
           "id": 161659,
-          "name": "Оглас ИИ",
+          "name": "Oglas II",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/161659",
           "sha256": null
@@ -18532,7 +18532,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.173Z"
+      "scrapedAt": "2026-09-06T09:10:58.548Z"
     },
     {
       "id": "32-163106",
@@ -18570,7 +18570,7 @@
       "documents": [
         {
           "id": 161660,
-          "name": "Рјешење - 32 0 Ст 502793 26 Ст",
+          "name": "Rješenje - 32 0 St 502793 26 St",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/161660",
           "sha256": "c750141ed811ed92df3bebb42e7fc40effefd267a4e64a03318ee5ebc854824b"
@@ -18583,7 +18583,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.175Z"
+      "scrapedAt": "2026-09-06T09:10:58.550Z"
     },
     {
       "id": "42-161857",
@@ -19440,7 +19440,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.178Z"
+      "scrapedAt": "2026-09-06T09:10:58.553Z"
     },
     {
       "id": "126-160907",
@@ -19731,7 +19731,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.988Z"
+      "scrapedAt": "2026-09-06T09:10:58.368Z"
     },
     {
       "id": "32-162476",
@@ -19777,7 +19777,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.178Z"
+      "scrapedAt": "2026-09-06T09:10:58.553Z"
     },
     {
       "id": "32-162475",
@@ -19826,7 +19826,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.181Z"
+      "scrapedAt": "2026-09-06T09:10:58.556Z"
     },
     {
       "id": "42-160806",
@@ -20357,7 +20357,7 @@
       "documents": [
         {
           "id": 160747,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/160747",
           "sha256": "efe373f1432489652efc9bf285ece90d97e4632aba3a8c6416a9744dd6afd770"
@@ -20370,7 +20370,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.186Z"
+      "scrapedAt": "2026-09-06T09:10:58.560Z"
     },
     {
       "id": "42-159998",
@@ -20425,57 +20425,6 @@
         "llm": true
       },
       "scrapedAt": "2026-08-21T22:13:49.837Z"
-    },
-    {
-      "id": "32-162178",
-      "articleId": 162178,
-      "court": "Općinski sud u Tuzli",
-      "courtId": 32,
-      "entity": "FBiH",
-      "caseNumber": "32 0 St 497731 25 St",
-      "saleType": "ostalo",
-      "title": "Rješenje kojim se pokreće prethodni postupak radi utvrđivanja uslova za otvaranje stečajnog postupka nad imovinom privrednog društva „MAŠA“ d.o.o. - 32 0 St 497731 25 St",
-      "headline": "Stečajni postupak nad \"MAŠA\" d.o.o. Građevinsko-transportno preduzeće Sniježnica",
-      "itemDescription": "Pokretanje prethodnog postupka radi utvrđivanja uslova za otvaranje stečajnog postupka nad privrednim društvom \"MAŠA\" d.o.o. Građevinsko-transportno preduzeće Sniježnica.",
-      "itemTags": [
-        "gradjevinske"
-      ],
-      "cadastral": null,
-      "location": {
-        "municipality": "Teočak",
-        "settlement": null
-      },
-      "appraisedValue": null,
-      "startingPrice": null,
-      "deposit": {
-        "amount": 3500,
-        "currency": "BAM"
-      },
-      "auctionRound": "nepoznato",
-      "saleMethod": "nepoznato",
-      "saleDate": "2026-04-13",
-      "saleTime": null,
-      "auctionLocation": "Općinski sud u Tuzli",
-      "viewingInfo": null,
-      "publishedDate": "2026-04-13",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/32/article/162178",
-      "documents": [
-        {
-          "id": 160694,
-          "name": "Rješenje",
-          "type": "PDF",
-          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/160694",
-          "sha256": "ae2078c028e374ecf75770dacd0f3a441a7eff7f70d409f5d2004186baf13f2b"
-        }
-      ],
-      "language": null,
-      "extraction": {
-        "pipelineVersion": "3.3.8",
-        "source": "pdf",
-        "confidence": 0.38,
-        "llm": true
-      },
-      "scrapedAt": "2026-09-05T18:49:22.188Z"
     },
     {
       "id": "32-162181",
@@ -20534,7 +20483,58 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.193Z"
+      "scrapedAt": "2026-09-06T09:10:58.564Z"
+    },
+    {
+      "id": "32-162178",
+      "articleId": 162178,
+      "court": "Općinski sud u Tuzli",
+      "courtId": 32,
+      "entity": "FBiH",
+      "caseNumber": "32 0 St 497731 25 St",
+      "saleType": "ostalo",
+      "title": "Rješenje kojim se pokreće prethodni postupak radi utvrđivanja uslova za otvaranje stečajnog postupka nad imovinom privrednog društva „MAŠA“ d.o.o. - 32 0 St 497731 25 St",
+      "headline": "Stečajni postupak nad \"MAŠA\" d.o.o. Građevinsko-transportno preduzeće Sniježnica",
+      "itemDescription": "Pokretanje prethodnog postupka radi utvrđivanja uslova za otvaranje stečajnog postupka nad privrednim društvom \"MAŠA\" d.o.o. Građevinsko-transportno preduzeće Sniježnica.",
+      "itemTags": [
+        "gradjevinske"
+      ],
+      "cadastral": null,
+      "location": {
+        "municipality": "Teočak",
+        "settlement": null
+      },
+      "appraisedValue": null,
+      "startingPrice": null,
+      "deposit": {
+        "amount": 3500,
+        "currency": "BAM"
+      },
+      "auctionRound": "nepoznato",
+      "saleMethod": "nepoznato",
+      "saleDate": "2026-04-13",
+      "saleTime": null,
+      "auctionLocation": "Općinski sud u Tuzli",
+      "viewingInfo": null,
+      "publishedDate": "2026-04-13",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/32/article/162178",
+      "documents": [
+        {
+          "id": 160694,
+          "name": "Rješenje",
+          "type": "PDF",
+          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/160694",
+          "sha256": "ae2078c028e374ecf75770dacd0f3a441a7eff7f70d409f5d2004186baf13f2b"
+        }
+      ],
+      "language": null,
+      "extraction": {
+        "pipelineVersion": "3.3.8",
+        "source": "pdf",
+        "confidence": 0.38,
+        "llm": true
+      },
+      "scrapedAt": "2026-09-06T09:10:58.566Z"
     },
     {
       "id": "42-162886",
@@ -20788,7 +20788,7 @@
         "confidence": 0.13,
         "llm": false
       },
-      "scrapedAt": "2026-09-05T18:49:21.989Z"
+      "scrapedAt": "2026-09-06T09:10:58.367Z"
     },
     {
       "id": "32-160151",
@@ -20836,7 +20836,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.215Z"
+      "scrapedAt": "2026-09-06T09:10:58.589Z"
     },
     {
       "id": "32-161958",
@@ -21886,7 +21886,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.188Z"
+      "scrapedAt": "2026-09-06T09:10:58.564Z"
     },
     {
       "id": "32-161764",
@@ -21937,7 +21937,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.195Z"
+      "scrapedAt": "2026-09-06T09:10:58.568Z"
     },
     {
       "id": "32-161667",
@@ -21989,7 +21989,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.200Z"
+      "scrapedAt": "2026-09-06T09:10:58.571Z"
     },
     {
       "id": "55-160088",
@@ -22513,7 +22513,64 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.201Z"
+      "scrapedAt": "2026-09-06T09:10:58.574Z"
+    },
+    {
+      "id": "68-160051",
+      "articleId": 160051,
+      "court": "Općinski sud u Livnu",
+      "courtId": 68,
+      "entity": "FBiH",
+      "caseNumber": "68 0 P 067557 24 I 2",
+      "saleType": "ostalo",
+      "title": "Zaključak o prodaji pokretnine 68 0 P 067557 24 I 2",
+      "headline": "Muzna krava",
+      "itemDescription": "Muzna krava",
+      "itemTags": [
+        "stoka"
+      ],
+      "cadastral": null,
+      "location": {
+        "municipality": "Livno",
+        "settlement": null
+      },
+      "appraisedValue": {
+        "amount": 3000,
+        "currency": "BAM"
+      },
+      "startingPrice": {
+        "amount": 1500,
+        "currency": "BAM"
+      },
+      "deposit": {
+        "amount": 300,
+        "currency": "BAM"
+      },
+      "auctionRound": "prvo",
+      "saleMethod": "usmeno-javno-nadmetanje",
+      "saleDate": "2026-03-27",
+      "saleTime": "12:00",
+      "auctionLocation": "Općinski sud u Livnu, ured broj 115",
+      "viewingInfo": null,
+      "publishedDate": "2026-02-24",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/68/article/160051",
+      "documents": [
+        {
+          "id": 158323,
+          "name": "68 0 P 067557 24 I 2",
+          "type": "PDF",
+          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/158323",
+          "sha256": "ffdf8b7dd4a89860ef99b89e00d28efcc3d5d11bfe09e47981bb624e4db529bd"
+        }
+      ],
+      "language": null,
+      "extraction": {
+        "pipelineVersion": "3.3.8",
+        "source": "pdf",
+        "confidence": 1,
+        "llm": true
+      },
+      "scrapedAt": "2026-08-21T22:13:52.726Z"
     },
     {
       "id": "65-159488",
@@ -22639,63 +22696,6 @@
         "llm": true
       },
       "scrapedAt": "2026-08-21T22:13:52.431Z"
-    },
-    {
-      "id": "68-160051",
-      "articleId": 160051,
-      "court": "Općinski sud u Livnu",
-      "courtId": 68,
-      "entity": "FBiH",
-      "caseNumber": "68 0 P 067557 24 I 2",
-      "saleType": "ostalo",
-      "title": "Zaključak o prodaji pokretnine 68 0 P 067557 24 I 2",
-      "headline": "Muzna krava",
-      "itemDescription": "Muzna krava",
-      "itemTags": [
-        "stoka"
-      ],
-      "cadastral": null,
-      "location": {
-        "municipality": "Livno",
-        "settlement": null
-      },
-      "appraisedValue": {
-        "amount": 3000,
-        "currency": "BAM"
-      },
-      "startingPrice": {
-        "amount": 1500,
-        "currency": "BAM"
-      },
-      "deposit": {
-        "amount": 300,
-        "currency": "BAM"
-      },
-      "auctionRound": "prvo",
-      "saleMethod": "usmeno-javno-nadmetanje",
-      "saleDate": "2026-03-27",
-      "saleTime": "12:00",
-      "auctionLocation": "Općinski sud u Livnu, ured broj 115",
-      "viewingInfo": null,
-      "publishedDate": "2026-02-24",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/68/article/160051",
-      "documents": [
-        {
-          "id": 158323,
-          "name": "68 0 P 067557 24 I 2",
-          "type": "PDF",
-          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/158323",
-          "sha256": "ffdf8b7dd4a89860ef99b89e00d28efcc3d5d11bfe09e47981bb624e4db529bd"
-        }
-      ],
-      "language": null,
-      "extraction": {
-        "pipelineVersion": "3.3.8",
-        "source": "pdf",
-        "confidence": 1,
-        "llm": true
-      },
-      "scrapedAt": "2026-08-21T22:13:52.726Z"
     },
     {
       "id": "42-160114",
@@ -23013,7 +23013,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.304Z"
+      "scrapedAt": "2026-09-06T09:10:58.676Z"
     },
     {
       "id": "80-159431",
@@ -23192,7 +23192,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.197Z"
+      "scrapedAt": "2026-09-06T09:10:58.573Z"
     },
     {
       "id": "32-161253",
@@ -23227,7 +23227,7 @@
       "documents": [
         {
           "id": 159696,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/159696",
           "sha256": "b22e6f65140b05171ca94703b5a82bae645c61e0e3db6a59bea1f2c94bbd3a1d"
@@ -23240,7 +23240,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.204Z"
+      "scrapedAt": "2026-09-06T09:10:58.578Z"
     },
     {
       "id": "46-160035",
@@ -23469,7 +23469,7 @@
       "documents": [
         {
           "id": 159381,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/159381",
           "sha256": null
@@ -23482,7 +23482,7 @@
         "confidence": 0.13,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.200Z"
+      "scrapedAt": "2026-09-06T09:10:58.574Z"
     },
     {
       "id": "42-159111",
@@ -24032,7 +24032,7 @@
         "confidence": 0.13,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.201Z"
+      "scrapedAt": "2026-09-06T09:10:58.576Z"
     },
     {
       "id": "32-160849",
@@ -24070,7 +24070,7 @@
       "documents": [
         {
           "id": 159165,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/159165",
           "sha256": "9ee70793f3edf19c04a1565789f1bdf26ab474fba52dbea60175330c6593d3fd"
@@ -24083,7 +24083,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.206Z"
+      "scrapedAt": "2026-09-06T09:10:58.580Z"
     },
     {
       "id": "164-160776",
@@ -24388,7 +24388,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.516Z"
+      "scrapedAt": "2026-09-06T09:10:58.864Z"
     },
     {
       "id": "80-158444",
@@ -24564,7 +24564,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.518Z"
+      "scrapedAt": "2026-09-06T09:10:58.868Z"
     },
     {
       "id": "55-160086",
@@ -25044,7 +25044,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.989Z"
+      "scrapedAt": "2026-09-06T09:10:58.368Z"
     },
     {
       "id": "80-158039",
@@ -25440,7 +25440,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.209Z"
+      "scrapedAt": "2026-09-06T09:10:58.582Z"
     },
     {
       "id": "32-159897",
@@ -25489,7 +25489,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.217Z"
+      "scrapedAt": "2026-09-06T09:10:58.591Z"
     },
     {
       "id": "65-158345",
@@ -25527,7 +25527,7 @@
         "confidence": 0.38,
         "llm": false
       },
-      "scrapedAt": "2026-09-05T18:49:22.323Z"
+      "scrapedAt": "2026-09-06T09:10:58.697Z"
     },
     {
       "id": "42-158448",
@@ -25697,7 +25697,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.214Z"
+      "scrapedAt": "2026-09-06T09:10:58.585Z"
     },
     {
       "id": "94-158479",
@@ -25757,7 +25757,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.490Z"
+      "scrapedAt": "2026-09-06T09:10:58.840Z"
     },
     {
       "id": "32-160102",
@@ -25911,7 +25911,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.211Z"
+      "scrapedAt": "2026-09-06T09:10:58.588Z"
     },
     {
       "id": "42-158447",
@@ -26256,7 +26256,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.219Z"
+      "scrapedAt": "2026-09-06T09:10:58.596Z"
     },
     {
       "id": "65-157390",
@@ -26442,7 +26442,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.333Z"
+      "scrapedAt": "2026-09-06T09:10:58.705Z"
     },
     {
       "id": "42-158450",
@@ -26726,7 +26726,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.217Z"
+      "scrapedAt": "2026-09-06T09:10:58.592Z"
     },
     {
       "id": "42-158449",
@@ -26992,7 +26992,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.222Z"
+      "scrapedAt": "2026-09-06T09:10:58.599Z"
     },
     {
       "id": "32-157414",
@@ -27892,7 +27892,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.492Z"
+      "scrapedAt": "2026-09-06T09:10:58.842Z"
     },
     {
       "id": "80-157468",
@@ -29384,7 +29384,7 @@
       "documents": [
         {
           "id": 152223,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/152223",
           "sha256": "e7b380949bc2a076091ceacc98b535963ffcb8d34b0b4572ba7e9a032a11912f"
@@ -29397,7 +29397,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.250Z"
+      "scrapedAt": "2026-09-06T09:10:58.627Z"
     },
     {
       "id": "80-155607",
@@ -30244,7 +30244,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.497Z"
+      "scrapedAt": "2026-09-06T09:10:58.847Z"
     },
     {
       "id": "65-153192",
@@ -30941,7 +30941,7 @@
       "documents": [
         {
           "id": 153789,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/153789",
           "sha256": "989933d1d3622eec75e90eee876fdd7a485489886082268b131c239b3e3bfd96"
@@ -30954,7 +30954,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.224Z"
+      "scrapedAt": "2026-09-06T09:10:58.601Z"
     },
     {
       "id": "32-156044",
@@ -30989,7 +30989,7 @@
       "documents": [
         {
           "id": 153702,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/153702",
           "sha256": "275174a7f476a96441c518b25b4bb9d1bc8cb311bea9dff1f09e93e291137123"
@@ -31002,7 +31002,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.229Z"
+      "scrapedAt": "2026-09-06T09:10:58.603Z"
     },
     {
       "id": "94-154695",
@@ -31062,7 +31062,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.494Z"
+      "scrapedAt": "2026-09-06T09:10:58.845Z"
     },
     {
       "id": "65-154338",
@@ -31500,7 +31500,7 @@
       "documents": [
         {
           "id": 153554,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/153554",
           "sha256": "a745693fe807a56c47415ac61ca77687b3499b016f7daed953a751faf2059732"
@@ -31513,7 +31513,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.227Z"
+      "scrapedAt": "2026-09-06T09:10:58.606Z"
     },
     {
       "id": "164-153762",
@@ -31830,7 +31830,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.232Z"
+      "scrapedAt": "2026-09-06T09:10:58.608Z"
     },
     {
       "id": "32-155855",
@@ -31868,7 +31868,7 @@
       "documents": [
         {
           "id": 153450,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/153450",
           "sha256": "93254756f8691a4aa267857d0e51722bc4be0a9da70f1d09a9ff492d6ecdbcfc"
@@ -31881,7 +31881,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.234Z"
+      "scrapedAt": "2026-09-06T09:10:58.611Z"
     },
     {
       "id": "65-153992",
@@ -31997,7 +31997,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.236Z"
+      "scrapedAt": "2026-09-06T09:10:58.613Z"
     },
     {
       "id": "94-154268",
@@ -32057,7 +32057,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.500Z"
+      "scrapedAt": "2026-09-06T09:10:58.849Z"
     },
     {
       "id": "32-155638",
@@ -32116,7 +32116,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.237Z"
+      "scrapedAt": "2026-09-06T09:10:58.614Z"
     },
     {
       "id": "80-153472",
@@ -32423,7 +32423,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.239Z"
+      "scrapedAt": "2026-09-06T09:10:58.616Z"
     },
     {
       "id": "80-153942",
@@ -32665,7 +32665,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.241Z"
+      "scrapedAt": "2026-09-06T09:10:58.618Z"
     },
     {
       "id": "36-153450",
@@ -32920,7 +32920,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.291Z"
+      "scrapedAt": "2026-09-06T09:10:58.668Z"
     },
     {
       "id": "43-153531",
@@ -33140,7 +33140,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.247Z"
+      "scrapedAt": "2026-09-06T09:10:58.620Z"
     },
     {
       "id": "80-154064",
@@ -33824,7 +33824,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.312Z"
+      "scrapedAt": "2026-09-06T09:10:58.685Z"
     },
     {
       "id": "43-153086",
@@ -34049,7 +34049,7 @@
       "documents": [
         {
           "id": 152264,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/152264",
           "sha256": "92e8d8a84e4a2bc58319850413eed19f57f6d5bdee081096143dc80d4754a96e"
@@ -34062,7 +34062,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.244Z"
+      "scrapedAt": "2026-09-06T09:10:58.622Z"
     },
     {
       "id": "94-153305",
@@ -34122,7 +34122,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.502Z"
+      "scrapedAt": "2026-09-06T09:10:58.851Z"
     },
     {
       "id": "94-153259",
@@ -34182,7 +34182,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.504Z"
+      "scrapedAt": "2026-09-06T09:10:58.853Z"
     },
     {
       "id": "80-152540",
@@ -34591,7 +34591,7 @@
       "documents": [
         {
           "id": 151997,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/151997",
           "sha256": "866c9c95026b56572b21572ec6467e241b587513b6d7b116a10869416b1dcb11"
@@ -34604,7 +34604,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.252Z"
+      "scrapedAt": "2026-09-06T09:10:58.626Z"
     },
     {
       "id": "36-153601",
@@ -34756,7 +34756,7 @@
       "documents": [
         {
           "id": 151745,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/151745",
           "sha256": "19ecee2fa4db9978dc9ea87b0f948e19996308fb16a71598f4f6ff7bb59acb4f"
@@ -34769,7 +34769,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.249Z"
+      "scrapedAt": "2026-09-06T09:10:58.624Z"
     },
     {
       "id": "20-154084",
@@ -35011,7 +35011,7 @@
         "confidence": 0.13,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.520Z"
+      "scrapedAt": "2026-09-06T09:10:58.867Z"
     },
     {
       "id": "89-153132",
@@ -35060,7 +35060,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.324Z"
+      "scrapedAt": "2026-09-06T09:10:58.698Z"
     },
     {
       "id": "164-153136",
@@ -35232,7 +35232,7 @@
       "documents": [
         {
           "id": 151555,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/151555",
           "sha256": "a40647d70affc5042ff2b7ee901e236d148c30ad9eac1ee206d054110c17b02a"
@@ -35245,7 +35245,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.255Z"
+      "scrapedAt": "2026-09-06T09:10:58.629Z"
     },
     {
       "id": "80-151484",
@@ -35530,7 +35530,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.257Z"
+      "scrapedAt": "2026-09-06T09:10:58.632Z"
     },
     {
       "id": "32-154037",
@@ -35589,7 +35589,7 @@
       "documents": [
         {
           "id": 151304,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/151304",
           "sha256": "3c021fb5734753ab606b750e934173e72ca53d75410031b93026658fb85ff5b7"
@@ -35602,7 +35602,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.261Z"
+      "scrapedAt": "2026-09-06T09:10:58.636Z"
     },
     {
       "id": "65-152120",
@@ -35724,7 +35724,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.268Z"
+      "scrapedAt": "2026-09-06T09:10:58.643Z"
     },
     {
       "id": "43-152542",
@@ -35970,7 +35970,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.266Z"
+      "scrapedAt": "2026-09-06T09:10:58.641Z"
     },
     {
       "id": "80-151591",
@@ -36196,7 +36196,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.991Z"
+      "scrapedAt": "2026-09-06T09:10:58.369Z"
     },
     {
       "id": "32-153780",
@@ -36247,7 +36247,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.263Z"
+      "scrapedAt": "2026-09-06T09:10:58.638Z"
     },
     {
       "id": "32-153781",
@@ -36293,7 +36293,7 @@
         "confidence": 0.13,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.271Z"
+      "scrapedAt": "2026-09-06T09:10:58.645Z"
     },
     {
       "id": "80-151588",
@@ -36463,7 +36463,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.273Z"
+      "scrapedAt": "2026-09-06T09:10:58.648Z"
     },
     {
       "id": "32-153695",
@@ -36509,7 +36509,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.276Z"
+      "scrapedAt": "2026-09-06T09:10:58.650Z"
     },
     {
       "id": "164-152244",
@@ -36878,7 +36878,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.278Z"
+      "scrapedAt": "2026-09-06T09:10:58.652Z"
     },
     {
       "id": "32-151556",
@@ -37112,7 +37112,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.281Z"
+      "scrapedAt": "2026-09-06T09:10:58.655Z"
     },
     {
       "id": "43-151512",
@@ -37423,7 +37423,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.283Z"
+      "scrapedAt": "2026-09-06T09:10:58.658Z"
     },
     {
       "id": "80-150545",
@@ -38092,7 +38092,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.990Z"
+      "scrapedAt": "2026-09-06T09:10:58.370Z"
     },
     {
       "id": "126-151417",
@@ -38321,7 +38321,7 @@
         "confidence": 0.63,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.990Z"
+      "scrapedAt": "2026-09-06T09:10:58.368Z"
     },
     {
       "id": "32-152796",
@@ -38367,7 +38367,7 @@
         "confidence": 0.13,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.280Z"
+      "scrapedAt": "2026-09-06T09:10:58.655Z"
     },
     {
       "id": "80-149739",
@@ -38488,7 +38488,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.285Z"
+      "scrapedAt": "2026-09-06T09:10:58.660Z"
     },
     {
       "id": "32-152602",
@@ -38526,7 +38526,7 @@
       "documents": [
         {
           "id": 149715,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/149715",
           "sha256": "bc7b6e0bb17cd5ba26e8dedad119cdb15c4bac08dc6cda9111c36235f8f02913"
@@ -38539,7 +38539,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.287Z"
+      "scrapedAt": "2026-09-06T09:10:58.662Z"
     },
     {
       "id": "80-151052",
@@ -38831,14 +38831,14 @@
       "documents": [
         {
           "id": 149667,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/149667",
           "sha256": "aa7683dcfba9b636f9632670af261695d82d6a7393eb63d9f16ee544de2de83a"
         },
         {
           "id": 149668,
-          "name": "Јавни оглас",
+          "name": "Javni oglas",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/149668",
           "sha256": null
@@ -38851,7 +38851,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.288Z"
+      "scrapedAt": "2026-09-06T09:10:58.663Z"
     },
     {
       "id": "33-151771",
@@ -39024,7 +39024,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.291Z"
+      "scrapedAt": "2026-09-06T09:10:58.665Z"
     },
     {
       "id": "32-152464",
@@ -39075,7 +39075,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.296Z"
+      "scrapedAt": "2026-09-06T09:10:58.670Z"
     },
     {
       "id": "80-150780",
@@ -39377,7 +39377,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.294Z"
+      "scrapedAt": "2026-09-06T09:10:58.667Z"
     },
     {
       "id": "51-152368",
@@ -39476,7 +39476,7 @@
       "documents": [
         {
           "id": 149409,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/149409",
           "sha256": "a4bf348ae81b6eda6d349eebc314c0332bd2b1b7e081c28ffaeff926deeb139d"
@@ -39489,7 +39489,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.298Z"
+      "scrapedAt": "2026-09-06T09:10:58.673Z"
     },
     {
       "id": "32-152342",
@@ -39537,7 +39537,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.300Z"
+      "scrapedAt": "2026-09-06T09:10:58.675Z"
     },
     {
       "id": "33-151804",
@@ -39756,7 +39756,7 @@
       "documents": [
         {
           "id": 149349,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/149349",
           "sha256": "e25743608dc9bc3e98fa1f77a37288919fcde67879fe8330c4f8b71d25442c79"
@@ -39769,7 +39769,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.304Z"
+      "scrapedAt": "2026-09-06T09:10:58.678Z"
     },
     {
       "id": "32-152294",
@@ -39807,7 +39807,7 @@
       "documents": [
         {
           "id": 149354,
-          "name": "Рјешење",
+          "name": "Rješenje",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/149354",
           "sha256": "78686a7f423421003a1eef40fef283d7949c4306f9acc7ecc47d9a47b67dc0d5"
@@ -39820,7 +39820,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.314Z"
+      "scrapedAt": "2026-09-06T09:10:58.688Z"
     },
     {
       "id": "126-150176",
@@ -40080,7 +40080,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.514Z"
+      "scrapedAt": "2026-09-06T09:10:58.697Z"
     },
     {
       "id": "80-149069",
@@ -41323,7 +41323,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.998Z"
+      "scrapedAt": "2026-09-06T09:10:58.373Z"
     },
     {
       "id": "32-151632",
@@ -42059,7 +42059,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.994Z"
+      "scrapedAt": "2026-09-06T09:10:58.376Z"
     },
     {
       "id": "43-148993",
@@ -42676,7 +42676,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.507Z"
+      "scrapedAt": "2026-09-06T09:10:58.856Z"
     },
     {
       "id": "32-150992",
@@ -43752,7 +43752,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.509Z"
+      "scrapedAt": "2026-09-06T09:10:58.858Z"
     },
     {
       "id": "94-149054",
@@ -43811,7 +43811,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.511Z"
+      "scrapedAt": "2026-09-06T09:10:58.861Z"
     },
     {
       "id": "126-149478",
@@ -45478,7 +45478,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.325Z"
+      "scrapedAt": "2026-09-06T09:10:58.699Z"
     },
     {
       "id": "32-149521",
@@ -46056,7 +46056,7 @@
       "documents": [
         {
           "id": 144421,
-          "name": "65 0 И 505581 15 И одгадја се роцисте ",
+          "name": "65 0 I 505581 15 I odgadja se rociste ",
           "type": "PDF",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/144421",
           "sha256": "17539000f0f3f818b7730bbfa688d4f65073f2ba2af68abf1eebe41d072f0a37"
@@ -46069,7 +46069,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.321Z"
+      "scrapedAt": "2026-09-06T09:10:58.695Z"
     },
     {
       "id": "32-149268",
@@ -46895,7 +46895,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.513Z"
+      "scrapedAt": "2026-09-06T09:10:58.863Z"
     },
     {
       "id": "43-147260",
@@ -47578,6 +47578,66 @@
       "scrapedAt": "2026-08-21T22:13:50.079Z"
     },
     {
+      "id": "68-146897",
+      "articleId": 146897,
+      "court": "Općinski sud u Livnu",
+      "courtId": 68,
+      "entity": "FBiH",
+      "caseNumber": "68 2 I 036781 24 I",
+      "saleType": "tehnika",
+      "title": "Zaključak o prodaji pokretnine 68 2 I 036781 24 I",
+      "headline": "TV, stol i stolice, hladnjak",
+      "itemDescription": "TV uređaj, Stol i stolice, Hladnjak",
+      "itemTags": [
+        "tv",
+        "stolovi",
+        "stolice",
+        "frizider"
+      ],
+      "cadastral": null,
+      "location": {
+        "municipality": "Tomislavgrad",
+        "settlement": null
+      },
+      "appraisedValue": {
+        "amount": 800,
+        "currency": "BAM"
+      },
+      "startingPrice": {
+        "amount": 400,
+        "currency": "BAM"
+      },
+      "deposit": {
+        "amount": 80,
+        "currency": "BAM"
+      },
+      "auctionRound": "prvo",
+      "saleMethod": "usmeno-javno-nadmetanje",
+      "saleDate": "2025-05-08",
+      "saleTime": "11:00",
+      "auctionLocation": "Općinski sud u Livnu, ul. Trg branitelja 2, Livno, ured broj 115",
+      "viewingInfo": null,
+      "publishedDate": "2025-03-25",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/68/article/146897",
+      "documents": [
+        {
+          "id": 143311,
+          "name": "68 2 I 036781 24 I",
+          "type": "PDF",
+          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/143311",
+          "sha256": "246d217ca645d7d017251c2d9803d323acd9750dde21f629a97102c799d16a4f"
+        }
+      ],
+      "language": null,
+      "extraction": {
+        "pipelineVersion": "3.3.8",
+        "source": "pdf",
+        "confidence": 1,
+        "llm": true
+      },
+      "scrapedAt": "2026-08-21T22:13:52.728Z"
+    },
+    {
       "id": "65-147261",
       "articleId": 147261,
       "court": "Općinski sud u Sarajevu",
@@ -47653,66 +47713,6 @@
         "llm": true
       },
       "scrapedAt": "2026-08-21T22:13:52.294Z"
-    },
-    {
-      "id": "68-146897",
-      "articleId": 146897,
-      "court": "Općinski sud u Livnu",
-      "courtId": 68,
-      "entity": "FBiH",
-      "caseNumber": "68 2 I 036781 24 I",
-      "saleType": "tehnika",
-      "title": "Zaključak o prodaji pokretnine 68 2 I 036781 24 I",
-      "headline": "TV, stol i stolice, hladnjak",
-      "itemDescription": "TV uređaj, Stol i stolice, Hladnjak",
-      "itemTags": [
-        "tv",
-        "stolovi",
-        "stolice",
-        "frizider"
-      ],
-      "cadastral": null,
-      "location": {
-        "municipality": "Tomislavgrad",
-        "settlement": null
-      },
-      "appraisedValue": {
-        "amount": 800,
-        "currency": "BAM"
-      },
-      "startingPrice": {
-        "amount": 400,
-        "currency": "BAM"
-      },
-      "deposit": {
-        "amount": 80,
-        "currency": "BAM"
-      },
-      "auctionRound": "prvo",
-      "saleMethod": "usmeno-javno-nadmetanje",
-      "saleDate": "2025-05-08",
-      "saleTime": "11:00",
-      "auctionLocation": "Općinski sud u Livnu, ul. Trg branitelja 2, Livno, ured broj 115",
-      "viewingInfo": null,
-      "publishedDate": "2025-03-25",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/68/article/146897",
-      "documents": [
-        {
-          "id": 143311,
-          "name": "68 2 I 036781 24 I",
-          "type": "PDF",
-          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/143311",
-          "sha256": "246d217ca645d7d017251c2d9803d323acd9750dde21f629a97102c799d16a4f"
-        }
-      ],
-      "language": null,
-      "extraction": {
-        "pipelineVersion": "3.3.8",
-        "source": "pdf",
-        "confidence": 1,
-        "llm": true
-      },
-      "scrapedAt": "2026-08-21T22:13:52.728Z"
     },
     {
       "id": "32-148505",
@@ -48202,7 +48202,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.995Z"
+      "scrapedAt": "2026-09-06T09:10:58.374Z"
     },
     {
       "id": "89-147639",
@@ -48250,7 +48250,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.326Z"
+      "scrapedAt": "2026-09-06T09:10:58.700Z"
     },
     {
       "id": "32-144870",
@@ -51081,6 +51081,63 @@
       "scrapedAt": "2026-08-16T22:04:15.907Z"
     },
     {
+      "id": "68-145805",
+      "articleId": 145805,
+      "court": "Općinski sud u Livnu",
+      "courtId": 68,
+      "entity": "FBiH",
+      "caseNumber": "68 2 I 025068 06 Kom",
+      "saleType": "tehnika",
+      "title": "Zaključak o prodaji pokretnine 68 2 I 025068 06 Kom",
+      "headline": "TV uređaj LCD",
+      "itemDescription": "TV uređaj LCD",
+      "itemTags": [
+        "tv"
+      ],
+      "cadastral": null,
+      "location": {
+        "municipality": "Tomislavgrad",
+        "settlement": null
+      },
+      "appraisedValue": {
+        "amount": 300,
+        "currency": "BAM"
+      },
+      "startingPrice": {
+        "amount": 100,
+        "currency": "BAM"
+      },
+      "deposit": {
+        "amount": 30,
+        "currency": "BAM"
+      },
+      "auctionRound": "drugo",
+      "saleMethod": "usmeno-javno-nadmetanje",
+      "saleDate": "2025-04-03",
+      "saleTime": "11:00",
+      "auctionLocation": "Općinski sud u Livnu, ured broj 115",
+      "viewingInfo": null,
+      "publishedDate": "2025-02-26",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/68/article/145805",
+      "documents": [
+        {
+          "id": 142203,
+          "name": "68 2 И 025068 06 Ком-Закључак-друга продаја",
+          "type": "PDF",
+          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/142203",
+          "sha256": "660b9fb8f1006c424e51a2f1a31901e781115eddda8053d5fca595d37d090785"
+        }
+      ],
+      "language": null,
+      "extraction": {
+        "pipelineVersion": "3.3.8",
+        "source": "pdf",
+        "confidence": 1,
+        "llm": true
+      },
+      "scrapedAt": "2026-08-21T22:13:52.732Z"
+    },
+    {
       "id": "65-147117",
       "articleId": 147117,
       "court": "Općinski sud u Sarajevu",
@@ -51269,63 +51326,6 @@
       "scrapedAt": "2026-08-21T22:13:52.348Z"
     },
     {
-      "id": "68-145805",
-      "articleId": 145805,
-      "court": "Općinski sud u Livnu",
-      "courtId": 68,
-      "entity": "FBiH",
-      "caseNumber": "68 2 I 025068 06 Kom",
-      "saleType": "tehnika",
-      "title": "Zaključak o prodaji pokretnine 68 2 I 025068 06 Kom",
-      "headline": "TV uređaj LCD",
-      "itemDescription": "TV uređaj LCD",
-      "itemTags": [
-        "tv"
-      ],
-      "cadastral": null,
-      "location": {
-        "municipality": "Tomislavgrad",
-        "settlement": null
-      },
-      "appraisedValue": {
-        "amount": 300,
-        "currency": "BAM"
-      },
-      "startingPrice": {
-        "amount": 100,
-        "currency": "BAM"
-      },
-      "deposit": {
-        "amount": 30,
-        "currency": "BAM"
-      },
-      "auctionRound": "drugo",
-      "saleMethod": "usmeno-javno-nadmetanje",
-      "saleDate": "2025-04-03",
-      "saleTime": "11:00",
-      "auctionLocation": "Općinski sud u Livnu, ured broj 115",
-      "viewingInfo": null,
-      "publishedDate": "2025-02-26",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/68/article/145805",
-      "documents": [
-        {
-          "id": 142203,
-          "name": "68 2 И 025068 06 Ком-Закључак-друга продаја",
-          "type": "PDF",
-          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/142203",
-          "sha256": "660b9fb8f1006c424e51a2f1a31901e781115eddda8053d5fca595d37d090785"
-        }
-      ],
-      "language": null,
-      "extraction": {
-        "pipelineVersion": "3.3.8",
-        "source": "pdf",
-        "confidence": 1,
-        "llm": true
-      },
-      "scrapedAt": "2026-08-21T22:13:52.732Z"
-    },
-    {
       "id": "65-146988",
       "articleId": 146988,
       "court": "Općinski sud u Sarajevu",
@@ -51369,7 +51369,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.515Z"
+      "scrapedAt": "2026-09-06T09:10:58.864Z"
     },
     {
       "id": "32-147355",
@@ -63550,6 +63550,61 @@
       "scrapedAt": "2026-08-16T22:04:16.021Z"
     },
     {
+      "id": "68-140729",
+      "articleId": 140729,
+      "court": "Općinski sud u Livnu",
+      "courtId": 68,
+      "entity": "FBiH",
+      "caseNumber": "68 0 Ps 052258 23 Ip 2",
+      "saleType": "ostalo",
+      "title": "Zaključak o prodaji pokretnine 68 0 Ps 052258 23 Ip 2",
+      "headline": "Fotonaponska elektrana",
+      "itemDescription": "Fotonaponska elektrana „SE Gradska toplana Livno“",
+      "itemTags": [
+        "agregat"
+      ],
+      "cadastral": null,
+      "location": {
+        "municipality": "Livno",
+        "settlement": null
+      },
+      "appraisedValue": null,
+      "startingPrice": null,
+      "deposit": null,
+      "auctionRound": "prvo",
+      "saleMethod": "usmeno-javno-nadmetanje",
+      "saleDate": "2024-11-28",
+      "saleTime": "12:00",
+      "auctionLocation": "Općinski sud u Livnu, ured broj 102",
+      "viewingInfo": null,
+      "publishedDate": "2024-10-23",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/68/article/140729",
+      "documents": [
+        {
+          "id": 135958,
+          "name": "68 0 Пс 052258 23 Ип 2",
+          "type": "PDF",
+          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/135958",
+          "sha256": null
+        },
+        {
+          "id": 136314,
+          "name": "Закљуцак - 68 0 Пс 052258 23 Ип 2",
+          "type": "PDF",
+          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/136314",
+          "sha256": null
+        }
+      ],
+      "language": null,
+      "extraction": {
+        "pipelineVersion": "3.3.8",
+        "source": "inline",
+        "confidence": 0.63,
+        "llm": true
+      },
+      "scrapedAt": "2026-08-21T22:13:52.730Z"
+    },
+    {
       "id": "65-140017",
       "articleId": 140017,
       "court": "Općinski sud u Sarajevu",
@@ -63616,61 +63671,6 @@
         "llm": true
       },
       "scrapedAt": "2026-08-21T22:13:52.383Z"
-    },
-    {
-      "id": "68-140729",
-      "articleId": 140729,
-      "court": "Općinski sud u Livnu",
-      "courtId": 68,
-      "entity": "FBiH",
-      "caseNumber": "68 0 Ps 052258 23 Ip 2",
-      "saleType": "ostalo",
-      "title": "Zaključak o prodaji pokretnine 68 0 Ps 052258 23 Ip 2",
-      "headline": "Fotonaponska elektrana",
-      "itemDescription": "Fotonaponska elektrana „SE Gradska toplana Livno“",
-      "itemTags": [
-        "agregat"
-      ],
-      "cadastral": null,
-      "location": {
-        "municipality": "Livno",
-        "settlement": null
-      },
-      "appraisedValue": null,
-      "startingPrice": null,
-      "deposit": null,
-      "auctionRound": "prvo",
-      "saleMethod": "usmeno-javno-nadmetanje",
-      "saleDate": "2024-11-28",
-      "saleTime": "12:00",
-      "auctionLocation": "Općinski sud u Livnu, ured broj 102",
-      "viewingInfo": null,
-      "publishedDate": "2024-10-23",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/68/article/140729",
-      "documents": [
-        {
-          "id": 135958,
-          "name": "68 0 Пс 052258 23 Ип 2",
-          "type": "PDF",
-          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/135958",
-          "sha256": null
-        },
-        {
-          "id": 136314,
-          "name": "Закљуцак - 68 0 Пс 052258 23 Ип 2",
-          "type": "PDF",
-          "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/136314",
-          "sha256": null
-        }
-      ],
-      "language": null,
-      "extraction": {
-        "pipelineVersion": "3.3.8",
-        "source": "inline",
-        "confidence": 0.63,
-        "llm": true
-      },
-      "scrapedAt": "2026-08-21T22:13:52.730Z"
     },
     {
       "id": "43-110580",
@@ -65377,7 +65377,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.322Z"
+      "scrapedAt": "2026-09-06T09:10:58.696Z"
     },
     {
       "id": "126-139892",
@@ -65667,7 +65667,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.317Z"
+      "scrapedAt": "2026-09-06T09:10:58.691Z"
     },
     {
       "id": "126-139732",
@@ -66340,14 +66340,14 @@
       "documents": [
         {
           "id": 136495,
-          "name": "Јавни позив Масив",
+          "name": "Javni poziv Masiv",
           "type": "DOC",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/136495",
           "sha256": null
         },
         {
           "id": 136496,
-          "name": "ОБРАЗАЦ ПОНУДЕ",
+          "name": "OBRAZAC PONUDE",
           "type": "DOC",
           "url": "https://portalfo2.pravosudje.ba/vstvfo-api/vijest/download/136496",
           "sha256": null
@@ -66360,7 +66360,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.322Z"
+      "scrapedAt": "2026-09-06T09:10:58.696Z"
     },
     {
       "id": "126-140362",
@@ -66778,7 +66778,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.515Z"
+      "scrapedAt": "2026-09-06T09:10:58.863Z"
     },
     {
       "id": "32-140878",
@@ -67962,7 +67962,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.998Z"
+      "scrapedAt": "2026-09-06T09:10:58.377Z"
     },
     {
       "id": "65-139023",
@@ -68240,7 +68240,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.998Z"
+      "scrapedAt": "2026-09-06T09:10:58.377Z"
     },
     {
       "id": "164-139521",
@@ -68278,7 +68278,7 @@
         "confidence": 0.5,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.999Z"
+      "scrapedAt": "2026-09-06T09:10:58.378Z"
     },
     {
       "id": "32-140462",
@@ -70020,7 +70020,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.318Z"
+      "scrapedAt": "2026-09-06T09:10:58.692Z"
     },
     {
       "id": "68-136552",
@@ -72418,7 +72418,7 @@
         "confidence": 0.5,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.000Z"
+      "scrapedAt": "2026-09-06T09:10:58.378Z"
     },
     {
       "id": "65-138333",
@@ -72653,7 +72653,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.999Z"
+      "scrapedAt": "2026-09-06T09:10:58.379Z"
     },
     {
       "id": "32-138319",
@@ -74574,7 +74574,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:21.999Z"
+      "scrapedAt": "2026-09-06T09:10:58.378Z"
     },
     {
       "id": "32-137324",
@@ -79248,7 +79248,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.001Z"
+      "scrapedAt": "2026-09-06T09:10:58.379Z"
     },
     {
       "id": "65-134280",
@@ -82535,7 +82535,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.001Z"
+      "scrapedAt": "2026-09-06T09:10:58.380Z"
     },
     {
       "id": "32-134034",
@@ -83854,7 +83854,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.318Z"
+      "scrapedAt": "2026-09-06T09:10:58.692Z"
     },
     {
       "id": "65-132450",
@@ -85980,7 +85980,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.000Z"
+      "scrapedAt": "2026-09-06T09:10:58.380Z"
     },
     {
       "id": "51-132934",
@@ -86028,7 +86028,7 @@
         "confidence": 0.13,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.319Z"
+      "scrapedAt": "2026-09-06T09:10:58.693Z"
     },
     {
       "id": "65-133046",
@@ -94432,7 +94432,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.007Z"
+      "scrapedAt": "2026-09-06T09:10:58.383Z"
     },
     {
       "id": "90-128246",
@@ -94491,7 +94491,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.010Z"
+      "scrapedAt": "2026-09-06T09:10:58.388Z"
     },
     {
       "id": "32-129620",
@@ -97376,7 +97376,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.003Z"
+      "scrapedAt": "2026-09-06T09:10:58.385Z"
     },
     {
       "id": "65-126865",
@@ -97698,7 +97698,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.013Z"
+      "scrapedAt": "2026-09-06T09:10:58.391Z"
     },
     {
       "id": "65-126399",
@@ -98650,7 +98650,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.335Z"
+      "scrapedAt": "2026-09-06T09:10:58.707Z"
     },
     {
       "id": "65-126565",
@@ -105379,7 +105379,7 @@
         "confidence": 0.5,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.014Z"
+      "scrapedAt": "2026-09-06T09:10:58.393Z"
     },
     {
       "id": "80-120700",
@@ -110538,7 +110538,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.338Z"
+      "scrapedAt": "2026-09-06T09:10:58.710Z"
     },
     {
       "id": "90-122726",
@@ -110601,7 +110601,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.343Z"
+      "scrapedAt": "2026-09-06T09:10:58.714Z"
     },
     {
       "id": "32-123813",
@@ -113878,7 +113878,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.015Z"
+      "scrapedAt": "2026-09-06T09:10:58.392Z"
     },
     {
       "id": "32-122886",
@@ -115361,7 +115361,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.016Z"
+      "scrapedAt": "2026-09-06T09:10:58.393Z"
     },
     {
       "id": "126-121068",
@@ -117235,7 +117235,7 @@
         "confidence": 0.5,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.016Z"
+      "scrapedAt": "2026-09-06T09:10:58.395Z"
     },
     {
       "id": "126-119743",
@@ -119009,7 +119009,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.017Z"
+      "scrapedAt": "2026-09-06T09:10:58.394Z"
     },
     {
       "id": "32-119489",
@@ -119241,7 +119241,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.017Z"
+      "scrapedAt": "2026-09-06T09:10:58.394Z"
     },
     {
       "id": "32-119457",
@@ -120192,7 +120192,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.019Z"
+      "scrapedAt": "2026-09-06T09:10:58.395Z"
     },
     {
       "id": "126-118063",
@@ -121389,7 +121389,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.349Z"
+      "scrapedAt": "2026-09-06T09:10:58.717Z"
     },
     {
       "id": "126-117277",
@@ -121929,7 +121929,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.019Z"
+      "scrapedAt": "2026-09-06T09:10:58.396Z"
     },
     {
       "id": "32-117939",
@@ -122256,7 +122256,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.020Z"
+      "scrapedAt": "2026-09-06T09:10:58.395Z"
     },
     {
       "id": "32-117798",
@@ -122708,7 +122708,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.022Z"
+      "scrapedAt": "2026-09-06T09:10:58.398Z"
     },
     {
       "id": "32-117323",
@@ -123591,7 +123591,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.023Z"
+      "scrapedAt": "2026-09-06T09:10:58.399Z"
     },
     {
       "id": "32-116035",
@@ -124394,7 +124394,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.023Z"
+      "scrapedAt": "2026-09-06T09:10:58.399Z"
     },
     {
       "id": "32-116792",
@@ -126060,7 +126060,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.024Z"
+      "scrapedAt": "2026-09-06T09:10:58.400Z"
     },
     {
       "id": "32-116322",
@@ -126233,7 +126233,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.024Z"
+      "scrapedAt": "2026-09-06T09:10:58.400Z"
     },
     {
       "id": "32-112465",
@@ -127104,7 +127104,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.024Z"
+      "scrapedAt": "2026-09-06T09:10:58.400Z"
     },
     {
       "id": "32-113615",
@@ -127621,7 +127621,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.032Z"
+      "scrapedAt": "2026-09-06T09:10:58.406Z"
     },
     {
       "id": "80-114907",
@@ -130531,64 +130531,6 @@
       "scrapedAt": "2026-08-21T22:13:50.705Z"
     },
     {
-      "id": "90-112916",
-      "articleId": 112916,
-      "court": "Osnovni sud Brčko distrikta BiH",
-      "courtId": 90,
-      "entity": "BD",
-      "caseNumber": "96 0 I 135425 21 I",
-      "saleType": "nekretnine",
-      "title": "Prva prodaja nekretnina - 07.07.2022. godine u predmetu 96 0 I 135425 21 I",
-      "headline": "Njiva 880 m², dvorište 408 m², stambena zgrada 171 m², Brod",
-      "itemDescription": "Njiva 4. klase, dvorište, stambena zgrada",
-      "itemTags": [
-        "zemljiste",
-        "kuca"
-      ],
-      "cadastral": {
-        "kc": [
-          "326/36",
-          "326/63"
-        ],
-        "zkUlozak": [
-          "549"
-        ],
-        "ko": [
-          "Brod"
-        ]
-      },
-      "location": {
-        "municipality": "Brod",
-        "settlement": "Brod"
-      },
-      "appraisedValue": {
-        "amount": 327633.61,
-        "currency": "BAM"
-      },
-      "startingPrice": {
-        "amount": 163816.8,
-        "currency": "BAM"
-      },
-      "deposit": null,
-      "auctionRound": "prvo",
-      "saleMethod": "usmeno-javno-nadmetanje",
-      "saleDate": "2022-07-07",
-      "saleTime": "13:00",
-      "auctionLocation": "Osnovni sud Brčko distrikta BiH, sudnica broj 16",
-      "viewingInfo": null,
-      "publishedDate": "2022-05-17",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/112916",
-      "documents": [],
-      "language": "B",
-      "extraction": {
-        "pipelineVersion": "3.3.8",
-        "source": "inline",
-        "confidence": 0.88,
-        "llm": true
-      },
-      "scrapedAt": "2026-09-05T18:49:22.028Z"
-    },
-    {
       "id": "90-112958",
       "articleId": 112958,
       "court": "Osnovni sud Brčko distrikta BiH",
@@ -130648,7 +130590,65 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.031Z"
+      "scrapedAt": "2026-09-06T09:10:58.404Z"
+    },
+    {
+      "id": "90-112916",
+      "articleId": 112916,
+      "court": "Osnovni sud Brčko distrikta BiH",
+      "courtId": 90,
+      "entity": "BD",
+      "caseNumber": "96 0 I 135425 21 I",
+      "saleType": "nekretnine",
+      "title": "Prva prodaja nekretnina - 07.07.2022. godine u predmetu 96 0 I 135425 21 I",
+      "headline": "Njiva 880 m², dvorište 408 m², stambena zgrada 171 m², Brod",
+      "itemDescription": "Njiva 4. klase, dvorište, stambena zgrada",
+      "itemTags": [
+        "zemljiste",
+        "kuca"
+      ],
+      "cadastral": {
+        "kc": [
+          "326/36",
+          "326/63"
+        ],
+        "zkUlozak": [
+          "549"
+        ],
+        "ko": [
+          "Brod"
+        ]
+      },
+      "location": {
+        "municipality": "Brod",
+        "settlement": "Brod"
+      },
+      "appraisedValue": {
+        "amount": 327633.61,
+        "currency": "BAM"
+      },
+      "startingPrice": {
+        "amount": 163816.8,
+        "currency": "BAM"
+      },
+      "deposit": null,
+      "auctionRound": "prvo",
+      "saleMethod": "usmeno-javno-nadmetanje",
+      "saleDate": "2022-07-07",
+      "saleTime": "13:00",
+      "auctionLocation": "Osnovni sud Brčko distrikta BiH, sudnica broj 16",
+      "viewingInfo": null,
+      "publishedDate": "2022-05-17",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/112916",
+      "documents": [],
+      "language": "B",
+      "extraction": {
+        "pipelineVersion": "3.3.8",
+        "source": "inline",
+        "confidence": 0.88,
+        "llm": true
+      },
+      "scrapedAt": "2026-09-06T09:10:58.410Z"
     },
     {
       "id": "90-112915",
@@ -130703,7 +130703,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.035Z"
+      "scrapedAt": "2026-09-06T09:10:58.413Z"
     },
     {
       "id": "90-112914",
@@ -130760,7 +130760,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.038Z"
+      "scrapedAt": "2026-09-06T09:10:58.417Z"
     },
     {
       "id": "80-113541",
@@ -131002,7 +131002,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.032Z"
+      "scrapedAt": "2026-09-06T09:10:58.410Z"
     },
     {
       "id": "80-113381",
@@ -131596,7 +131596,7 @@
         "confidence": 0.5,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.042Z"
+      "scrapedAt": "2026-09-06T09:10:58.417Z"
     },
     {
       "id": "90-112837",
@@ -131655,7 +131655,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.045Z"
+      "scrapedAt": "2026-09-06T09:10:58.423Z"
     },
     {
       "id": "32-114214",
@@ -132374,7 +132374,69 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.042Z"
+      "scrapedAt": "2026-09-06T09:10:58.420Z"
+    },
+    {
+      "id": "90-112713",
+      "articleId": 112713,
+      "court": "Osnovni sud Brčko distrikta BiH",
+      "courtId": 90,
+      "entity": "BD",
+      "caseNumber": "96 0 I 114704 05 Kom",
+      "saleType": "nekretnine",
+      "title": "Treća prodaja nekretnina - 23.06.2021. godine u predmetu 96 0 I 114704 05 Kom",
+      "headline": "Kuća sa okućnicom i pomoćnom zgradom, 123 m2",
+      "itemDescription": "Okućnica 498 m2, dvorište 344 m2, stambena zgrada 123 m2, pomoćna zgrada 31 m2, njiva 5. klase 3 m2",
+      "itemTags": [
+        "kuca",
+        "zemljiste"
+      ],
+      "cadastral": {
+        "kc": [
+          "614/3",
+          "614/6"
+        ],
+        "zkUlozak": [
+          "2281",
+          "2282"
+        ],
+        "ko": [
+          "Brčko 4"
+        ]
+      },
+      "location": {
+        "municipality": "Brčko",
+        "settlement": "Brčko"
+      },
+      "appraisedValue": {
+        "amount": 84075.8,
+        "currency": "BAM"
+      },
+      "startingPrice": {
+        "amount": 67260.64,
+        "currency": "BAM"
+      },
+      "deposit": {
+        "amount": 8397.58,
+        "currency": "BAM"
+      },
+      "auctionRound": "trece",
+      "saleMethod": "usmeno-javno-nadmetanje",
+      "saleDate": "2022-06-23",
+      "saleTime": "08:30",
+      "auctionLocation": "Osnovni sud Brčko distrikta BiH, sudnica broj 16",
+      "viewingInfo": null,
+      "publishedDate": "2022-05-11",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/112713",
+      "documents": [],
+      "language": "B",
+      "extraction": {
+        "pipelineVersion": "3.3.8",
+        "source": "inline",
+        "confidence": 1,
+        "llm": true
+      },
+      "scrapedAt": "2026-09-06T09:10:58.425Z"
     },
     {
       "id": "90-112839",
@@ -132433,7 +132495,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.049Z"
+      "scrapedAt": "2026-09-06T09:10:58.428Z"
     },
     {
       "id": "90-112840",
@@ -132497,69 +132559,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.052Z"
-    },
-    {
-      "id": "90-112713",
-      "articleId": 112713,
-      "court": "Osnovni sud Brčko distrikta BiH",
-      "courtId": 90,
-      "entity": "BD",
-      "caseNumber": "96 0 I 114704 05 Kom",
-      "saleType": "nekretnine",
-      "title": "Treća prodaja nekretnina - 23.06.2021. godine u predmetu 96 0 I 114704 05 Kom",
-      "headline": "Kuća sa okućnicom i pomoćnom zgradom, 123 m2",
-      "itemDescription": "Okućnica 498 m2, dvorište 344 m2, stambena zgrada 123 m2, pomoćna zgrada 31 m2, njiva 5. klase 3 m2",
-      "itemTags": [
-        "kuca",
-        "zemljiste"
-      ],
-      "cadastral": {
-        "kc": [
-          "614/3",
-          "614/6"
-        ],
-        "zkUlozak": [
-          "2281",
-          "2282"
-        ],
-        "ko": [
-          "Brčko 4"
-        ]
-      },
-      "location": {
-        "municipality": "Brčko",
-        "settlement": "Brčko"
-      },
-      "appraisedValue": {
-        "amount": 84075.8,
-        "currency": "BAM"
-      },
-      "startingPrice": {
-        "amount": 67260.64,
-        "currency": "BAM"
-      },
-      "deposit": {
-        "amount": 8397.58,
-        "currency": "BAM"
-      },
-      "auctionRound": "trece",
-      "saleMethod": "usmeno-javno-nadmetanje",
-      "saleDate": "2022-06-23",
-      "saleTime": "08:30",
-      "auctionLocation": "Osnovni sud Brčko distrikta BiH, sudnica broj 16",
-      "viewingInfo": null,
-      "publishedDate": "2022-05-11",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/112713",
-      "documents": [],
-      "language": "B",
-      "extraction": {
-        "pipelineVersion": "3.3.8",
-        "source": "inline",
-        "confidence": 1,
-        "llm": true
-      },
-      "scrapedAt": "2026-09-05T18:49:22.054Z"
+      "scrapedAt": "2026-09-06T09:10:58.431Z"
     },
     {
       "id": "90-112707",
@@ -132620,7 +132620,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.056Z"
+      "scrapedAt": "2026-09-06T09:10:58.436Z"
     },
     {
       "id": "32-114013",
@@ -132990,7 +132990,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.058Z"
+      "scrapedAt": "2026-09-06T09:10:58.433Z"
     },
     {
       "id": "90-112950",
@@ -133064,7 +133064,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.062Z"
+      "scrapedAt": "2026-09-06T09:10:58.439Z"
     },
     {
       "id": "80-112822",
@@ -133156,6 +133156,64 @@
       "scrapedAt": "2026-08-21T22:13:50.778Z"
     },
     {
+      "id": "90-112918",
+      "articleId": 112918,
+      "court": "Osnovni sud Brčko distrikta BiH",
+      "courtId": 90,
+      "entity": "BD",
+      "caseNumber": "96 0 I 133054 21 I 2",
+      "saleType": "nekretnine",
+      "title": "Prva prodaja nekretnina - 16.06.2022. godine u predmetu 96 0 I 133054 21 I 2",
+      "headline": "Nekretnine 964 m², Brčko",
+      "itemDescription": "Okućnica, gradilište, dvorište",
+      "itemTags": [
+        "zemljiste"
+      ],
+      "cadastral": {
+        "kc": [],
+        "zkUlozak": [
+          "442",
+          "3859"
+        ],
+        "ko": [
+          "Brčko 3"
+        ]
+      },
+      "location": {
+        "municipality": "Brčko",
+        "settlement": "Brčko"
+      },
+      "appraisedValue": {
+        "amount": 48041.09,
+        "currency": "BAM"
+      },
+      "startingPrice": {
+        "amount": 16013.69,
+        "currency": "BAM"
+      },
+      "deposit": {
+        "amount": 4804.11,
+        "currency": "BAM"
+      },
+      "auctionRound": "prvo",
+      "saleMethod": "usmeno-javno-nadmetanje",
+      "saleDate": "2022-06-16",
+      "saleTime": "10:15",
+      "auctionLocation": "Osnovni sud Brčko distrikta BiH, sudnica broj 5",
+      "viewingInfo": null,
+      "publishedDate": "2022-05-17",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/112918",
+      "documents": [],
+      "language": "B",
+      "extraction": {
+        "pipelineVersion": "3.3.8",
+        "source": "inline",
+        "confidence": 1,
+        "llm": true
+      },
+      "scrapedAt": "2026-09-06T09:10:58.441Z"
+    },
+    {
       "id": "90-112924",
       "articleId": 112924,
       "court": "Osnovni sud Brčko distrikta BiH",
@@ -133213,65 +133271,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.063Z"
-    },
-    {
-      "id": "90-112918",
-      "articleId": 112918,
-      "court": "Osnovni sud Brčko distrikta BiH",
-      "courtId": 90,
-      "entity": "BD",
-      "caseNumber": "96 0 I 133054 21 I 2",
-      "saleType": "nekretnine",
-      "title": "Prva prodaja nekretnina - 16.06.2022. godine u predmetu 96 0 I 133054 21 I 2",
-      "headline": "Nekretnine 964 m², Brčko",
-      "itemDescription": "Okućnica, gradilište, dvorište",
-      "itemTags": [
-        "zemljiste"
-      ],
-      "cadastral": {
-        "kc": [],
-        "zkUlozak": [
-          "442",
-          "3859"
-        ],
-        "ko": [
-          "Brčko 3"
-        ]
-      },
-      "location": {
-        "municipality": "Brčko",
-        "settlement": "Brčko"
-      },
-      "appraisedValue": {
-        "amount": 48041.09,
-        "currency": "BAM"
-      },
-      "startingPrice": {
-        "amount": 16013.69,
-        "currency": "BAM"
-      },
-      "deposit": {
-        "amount": 4804.11,
-        "currency": "BAM"
-      },
-      "auctionRound": "prvo",
-      "saleMethod": "usmeno-javno-nadmetanje",
-      "saleDate": "2022-06-16",
-      "saleTime": "10:15",
-      "auctionLocation": "Osnovni sud Brčko distrikta BiH, sudnica broj 5",
-      "viewingInfo": null,
-      "publishedDate": "2022-05-17",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/112918",
-      "documents": [],
-      "language": "B",
-      "extraction": {
-        "pipelineVersion": "3.3.8",
-        "source": "inline",
-        "confidence": 1,
-        "llm": true
-      },
-      "scrapedAt": "2026-09-05T18:49:22.065Z"
+      "scrapedAt": "2026-09-06T09:10:58.442Z"
     },
     {
       "id": "32-123190",
@@ -133568,7 +133568,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.068Z"
+      "scrapedAt": "2026-09-06T09:10:58.445Z"
     },
     {
       "id": "90-112903",
@@ -133626,7 +133626,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.075Z"
+      "scrapedAt": "2026-09-06T09:10:58.449Z"
     },
     {
       "id": "126-112701",
@@ -135392,7 +135392,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.071Z"
+      "scrapedAt": "2026-09-06T09:10:58.452Z"
     },
     {
       "id": "32-113235",
@@ -135560,7 +135560,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.078Z"
+      "scrapedAt": "2026-09-06T09:10:58.455Z"
     },
     {
       "id": "80-112321",
@@ -136200,7 +136200,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.100Z"
+      "scrapedAt": "2026-09-06T09:10:58.480Z"
     },
     {
       "id": "32-112931",
@@ -136805,7 +136805,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.095Z"
+      "scrapedAt": "2026-09-06T09:10:58.472Z"
     },
     {
       "id": "126-112148",
@@ -139103,7 +139103,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.081Z"
+      "scrapedAt": "2026-09-06T09:10:58.458Z"
     },
     {
       "id": "126-110871",
@@ -142480,7 +142480,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.354Z"
+      "scrapedAt": "2026-09-06T09:10:58.720Z"
     },
     {
       "id": "179-108820",
@@ -142763,7 +142763,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.080Z"
+      "scrapedAt": "2026-09-06T09:10:58.457Z"
     },
     {
       "id": "46-108782",
@@ -144397,7 +144397,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.091Z"
+      "scrapedAt": "2026-09-06T09:10:58.468Z"
     },
     {
       "id": "32-107959",
@@ -144499,7 +144499,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.096Z"
+      "scrapedAt": "2026-09-06T09:10:58.473Z"
     },
     {
       "id": "32-107853",
@@ -144610,7 +144610,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.092Z"
+      "scrapedAt": "2026-09-06T09:10:58.469Z"
     },
     {
       "id": "36-106339",
@@ -144666,7 +144666,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.094Z"
+      "scrapedAt": "2026-09-06T09:10:58.471Z"
     },
     {
       "id": "32-107824",
@@ -145686,7 +145686,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.143Z"
+      "scrapedAt": "2026-09-06T09:10:58.511Z"
     },
     {
       "id": "32-107295",
@@ -146365,7 +146365,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.357Z"
+      "scrapedAt": "2026-09-06T09:10:58.722Z"
     },
     {
       "id": "32-106674",
@@ -146766,7 +146766,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.360Z"
+      "scrapedAt": "2026-09-06T09:10:58.725Z"
     },
     {
       "id": "32-104287",
@@ -147129,7 +147129,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.305Z"
+      "scrapedAt": "2026-09-06T09:10:58.679Z"
     },
     {
       "id": "90-103999",
@@ -147189,7 +147189,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.363Z"
+      "scrapedAt": "2026-09-06T09:10:58.728Z"
     },
     {
       "id": "32-105289",
@@ -147958,7 +147958,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.369Z"
+      "scrapedAt": "2026-09-06T09:10:58.732Z"
     },
     {
       "id": "32-104077",
@@ -148071,7 +148071,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.375Z"
+      "scrapedAt": "2026-09-06T09:10:58.734Z"
     },
     {
       "id": "43-102353",
@@ -148355,7 +148355,7 @@
         "confidence": 0.75,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.088Z"
+      "scrapedAt": "2026-09-06T09:10:58.465Z"
     },
     {
       "id": "43-100834",
@@ -149061,7 +149061,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.378Z"
+      "scrapedAt": "2026-09-06T09:10:58.735Z"
     },
     {
       "id": "39-100948",
@@ -149332,7 +149332,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.323Z"
+      "scrapedAt": "2026-09-06T09:10:58.835Z"
     },
     {
       "id": "39-100943",
@@ -150050,7 +150050,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.305Z"
+      "scrapedAt": "2026-09-06T09:10:58.679Z"
     },
     {
       "id": "39-99318",
@@ -153474,7 +153474,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.383Z"
+      "scrapedAt": "2026-09-06T09:10:58.738Z"
     },
     {
       "id": "128-93595",
@@ -153596,7 +153596,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.387Z"
+      "scrapedAt": "2026-09-06T09:10:58.741Z"
     },
     {
       "id": "90-92214",
@@ -153656,7 +153656,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.394Z"
+      "scrapedAt": "2026-09-06T09:10:58.746Z"
     },
     {
       "id": "90-92282",
@@ -153713,7 +153713,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.391Z"
+      "scrapedAt": "2026-09-06T09:10:58.743Z"
     },
     {
       "id": "44-91399",
@@ -153974,7 +153974,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.403Z"
+      "scrapedAt": "2026-09-06T09:10:58.755Z"
     },
     {
       "id": "56-89864",
@@ -154046,7 +154046,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.310Z"
+      "scrapedAt": "2026-09-06T09:10:58.684Z"
     },
     {
       "id": "90-89779",
@@ -154102,7 +154102,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.397Z"
+      "scrapedAt": "2026-09-06T09:10:58.749Z"
     },
     {
       "id": "56-89809",
@@ -154161,7 +154161,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.312Z"
+      "scrapedAt": "2026-09-06T09:10:58.685Z"
     },
     {
       "id": "90-89261",
@@ -154222,7 +154222,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.400Z"
+      "scrapedAt": "2026-09-06T09:10:58.752Z"
     },
     {
       "id": "90-87260",
@@ -154283,7 +154283,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.404Z"
+      "scrapedAt": "2026-09-06T09:10:58.756Z"
     },
     {
       "id": "90-87261",
@@ -154339,7 +154339,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.406Z"
+      "scrapedAt": "2026-09-06T09:10:58.758Z"
     },
     {
       "id": "43-84575",
@@ -154466,7 +154466,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.410Z"
+      "scrapedAt": "2026-09-06T09:10:58.762Z"
     },
     {
       "id": "90-82561",
@@ -154560,7 +154560,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.409Z"
+      "scrapedAt": "2026-09-06T09:10:58.761Z"
     },
     {
       "id": "90-82370",
@@ -154619,7 +154619,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.412Z"
+      "scrapedAt": "2026-09-06T09:10:58.764Z"
     },
     {
       "id": "90-81892",
@@ -154687,7 +154687,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.416Z"
+      "scrapedAt": "2026-09-06T09:10:58.768Z"
     },
     {
       "id": "128-81863",
@@ -154785,7 +154785,7 @@
         "confidence": 0.75,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.090Z"
+      "scrapedAt": "2026-09-06T09:10:58.467Z"
     },
     {
       "id": "90-81339",
@@ -154845,7 +154845,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.418Z"
+      "scrapedAt": "2026-09-06T09:10:58.769Z"
     },
     {
       "id": "56-78568",
@@ -154891,7 +154891,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.320Z"
+      "scrapedAt": "2026-09-06T09:10:58.689Z"
     },
     {
       "id": "56-78416",
@@ -154937,7 +154937,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.321Z"
+      "scrapedAt": "2026-09-06T09:10:58.694Z"
     },
     {
       "id": "90-80758",
@@ -155000,7 +155000,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.420Z"
+      "scrapedAt": "2026-09-06T09:10:58.771Z"
     },
     {
       "id": "90-80708",
@@ -155060,7 +155060,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.421Z"
+      "scrapedAt": "2026-09-06T09:10:58.773Z"
     },
     {
       "id": "56-78413",
@@ -155106,7 +155106,7 @@
         "confidence": 0.25,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.315Z"
+      "scrapedAt": "2026-09-06T09:10:58.694Z"
     },
     {
       "id": "43-79693",
@@ -155299,7 +155299,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.427Z"
+      "scrapedAt": "2026-09-06T09:10:58.778Z"
     },
     {
       "id": "90-79569",
@@ -155360,7 +155360,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.425Z"
+      "scrapedAt": "2026-09-06T09:10:58.776Z"
     },
     {
       "id": "56-76864",
@@ -155814,7 +155814,7 @@
         "confidence": 0,
         "llm": false
       },
-      "scrapedAt": "2026-09-05T18:49:22.517Z"
+      "scrapedAt": "2026-09-06T09:10:58.866Z"
     },
     {
       "id": "181-69574",
@@ -155852,7 +155852,7 @@
         "confidence": 0,
         "llm": false
       },
-      "scrapedAt": "2026-09-05T18:49:22.517Z"
+      "scrapedAt": "2026-09-06T09:10:58.866Z"
     },
     {
       "id": "181-69572",
@@ -155890,7 +155890,7 @@
         "confidence": 0,
         "llm": false
       },
-      "scrapedAt": "2026-09-05T18:49:22.518Z"
+      "scrapedAt": "2026-09-06T09:10:58.866Z"
     },
     {
       "id": "90-66050",
@@ -155953,7 +155953,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.429Z"
+      "scrapedAt": "2026-09-06T09:10:58.781Z"
     },
     {
       "id": "90-65851",
@@ -156015,7 +156015,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.433Z"
+      "scrapedAt": "2026-09-06T09:10:58.785Z"
     },
     {
       "id": "90-65769",
@@ -156069,7 +156069,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.436Z"
+      "scrapedAt": "2026-09-06T09:10:58.787Z"
     },
     {
       "id": "90-65305",
@@ -156128,7 +156128,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.438Z"
+      "scrapedAt": "2026-09-06T09:10:58.789Z"
     },
     {
       "id": "90-65306",
@@ -156187,7 +156187,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.440Z"
+      "scrapedAt": "2026-09-06T09:10:58.791Z"
     },
     {
       "id": "90-65913",
@@ -156244,7 +156244,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.432Z"
+      "scrapedAt": "2026-09-06T09:10:58.783Z"
     },
     {
       "id": "90-64703",
@@ -156305,7 +156305,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.442Z"
+      "scrapedAt": "2026-09-06T09:10:58.793Z"
     },
     {
       "id": "90-64676",
@@ -156365,7 +156365,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.444Z"
+      "scrapedAt": "2026-09-06T09:10:58.794Z"
     },
     {
       "id": "53-65712",
@@ -156405,7 +156405,7 @@
         "confidence": 0.38,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.309Z"
+      "scrapedAt": "2026-09-06T09:10:58.682Z"
     },
     {
       "id": "90-64593",
@@ -156464,7 +156464,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.446Z"
+      "scrapedAt": "2026-09-06T09:10:58.796Z"
     },
     {
       "id": "90-64359",
@@ -156524,7 +156524,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.448Z"
+      "scrapedAt": "2026-09-06T09:10:58.798Z"
     },
     {
       "id": "43-64279",
@@ -156650,7 +156650,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.450Z"
+      "scrapedAt": "2026-09-06T09:10:58.800Z"
     },
     {
       "id": "90-62651",
@@ -156710,7 +156710,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.453Z"
+      "scrapedAt": "2026-09-06T09:10:58.804Z"
     },
     {
       "id": "90-62949",
@@ -156766,7 +156766,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.452Z"
+      "scrapedAt": "2026-09-06T09:10:58.802Z"
     },
     {
       "id": "90-62653",
@@ -156820,7 +156820,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.456Z"
+      "scrapedAt": "2026-09-06T09:10:58.806Z"
     },
     {
       "id": "90-62593",
@@ -156885,7 +156885,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.457Z"
+      "scrapedAt": "2026-09-06T09:10:58.808Z"
     },
     {
       "id": "90-62538",
@@ -156936,7 +156936,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.459Z"
+      "scrapedAt": "2026-09-06T09:10:58.810Z"
     },
     {
       "id": "90-62189",
@@ -156993,7 +156993,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.461Z"
+      "scrapedAt": "2026-09-06T09:10:58.811Z"
     },
     {
       "id": "90-62112",
@@ -157049,7 +157049,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.463Z"
+      "scrapedAt": "2026-09-06T09:10:58.813Z"
     },
     {
       "id": "90-61950",
@@ -157109,7 +157109,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.465Z"
+      "scrapedAt": "2026-09-06T09:10:58.815Z"
     },
     {
       "id": "90-61955",
@@ -157168,7 +157168,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.466Z"
+      "scrapedAt": "2026-09-06T09:10:58.816Z"
     },
     {
       "id": "90-61954",
@@ -157225,7 +157225,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.468Z"
+      "scrapedAt": "2026-09-06T09:10:58.818Z"
     },
     {
       "id": "90-61801",
@@ -157284,7 +157284,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.470Z"
+      "scrapedAt": "2026-09-06T09:10:58.820Z"
     },
     {
       "id": "90-61403",
@@ -157341,7 +157341,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.471Z"
+      "scrapedAt": "2026-09-06T09:10:58.822Z"
     },
     {
       "id": "90-59873",
@@ -157400,7 +157400,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.473Z"
+      "scrapedAt": "2026-09-06T09:10:58.824Z"
     },
     {
       "id": "90-57578",
@@ -157456,7 +157456,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.475Z"
+      "scrapedAt": "2026-09-06T09:10:58.825Z"
     },
     {
       "id": "90-57579",
@@ -157513,7 +157513,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.477Z"
+      "scrapedAt": "2026-09-06T09:10:58.827Z"
     },
     {
       "id": "90-56473",
@@ -157568,7 +157568,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.479Z"
+      "scrapedAt": "2026-09-06T09:10:58.829Z"
     },
     {
       "id": "90-55572",
@@ -157625,7 +157625,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.480Z"
+      "scrapedAt": "2026-09-06T09:10:58.830Z"
     },
     {
       "id": "90-55573",
@@ -157686,7 +157686,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.482Z"
+      "scrapedAt": "2026-09-06T09:10:58.832Z"
     },
     {
       "id": "90-54966",
@@ -157743,7 +157743,7 @@
         "confidence": 0.88,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.484Z"
+      "scrapedAt": "2026-09-06T09:10:58.833Z"
     },
     {
       "id": "90-52415",
@@ -157804,7 +157804,7 @@
         "confidence": 1,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.485Z"
+      "scrapedAt": "2026-09-06T09:10:58.835Z"
     },
     {
       "id": "51-50518",
@@ -158493,7 +158493,7 @@
         "confidence": 0,
         "llm": true
       },
-      "scrapedAt": "2026-09-05T18:49:22.308Z"
+      "scrapedAt": "2026-09-06T09:10:58.681Z"
     },
     {
       "id": "91-29200",
