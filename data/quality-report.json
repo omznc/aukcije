@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-09-08T09:24:18.134Z",
+  "generatedAt": "2026-09-08T19:45:46.715Z",
   "listings": 2727,
   "comparable": 293,
-  "disagreements": 72,
+  "disagreements": 71,
   "byField": {
     "caseNumber": 10,
     "appraisedValue": 45,
     "startingPrice": 10,
-    "saleTime": 5,
+    "saleTime": 4,
     "deposit": 2
   },
   "worst": [
@@ -300,21 +300,21 @@
       "ratio": 1.5
     },
     {
-      "id": "90-128246",
-      "court": "Osnovni sud Brčko distrikta BiH",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/128246",
-      "field": "startingPrice",
-      "llm": 19860.98,
-      "rules": 29791.48,
-      "ratio": 1.5
-    },
-    {
       "id": "90-128248",
       "court": "Osnovni sud Brčko distrikta BiH",
       "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/128248",
       "field": "startingPrice",
       "llm": 6239.82,
       "rules": 9359.74,
+      "ratio": 1.5
+    },
+    {
+      "id": "90-128246",
+      "court": "Osnovni sud Brčko distrikta BiH",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/128246",
+      "field": "startingPrice",
+      "llm": 19860.98,
+      "rules": 29791.48,
       "ratio": 1.5
     },
     {
@@ -378,15 +378,6 @@
       "field": "saleTime",
       "llm": "11:00",
       "rules": "12:00",
-      "ratio": null
-    },
-    {
-      "id": "23-166023",
-      "court": "Općinski sud u Velikoj Kladuši",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/23/article/166023",
-      "field": "saleTime",
-      "llm": "13:00",
-      "rules": "14:00",
       "ratio": null
     },
     {
