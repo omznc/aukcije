@@ -202,6 +202,16 @@ connection pool, so a saturated mirror has a healthy sibling. Every endpoint
 here is served identically by both - `src/lib/http.ts` alternates between them
 across retry attempts, which is the intended handling for a pool-exhaustion 500.
 Do not treat a lone 500 as a layout change until it reproduces on both hosts.
+The `retry n/5 <url>` line names the host the *next* attempt will use, so
+alternation is visible in the log rather than something to take on trust.
+
+The portal also drops connections outright. A run has failed with `ECONNRESET`
+on both mirrors for the ~45 s the retry budget covers - no status code, no
+Oracle message, just a reset TLS socket, and gone again by the next scheduled
+run. Only the per-court categories are load-bearing: a failure of the central
+feed is logged and the crawl continues without it, because anything that feed
+alone knows about is already in `data/listings.json` and carried forward. The
+run aborts only when *both* routes come back empty.
 
 ## Data shape notes
 

@@ -45,6 +45,26 @@ test('the path and query survive the switch to the mirror', async (t) => {
   assert.equal(calls[1], `${MIRROR}/news-categories//news?insId=80&page=0&pageSize=200`);
 });
 
+test('the retry line names the host the next attempt will use', async (t) => {
+  t.after(() => mock.restoreAll());
+  // Diagnosis depends on this: the line used to print the URL originally asked
+  // for, so a run that failed over on every attempt logged the same host five
+  // times and read as though the failover had never happened.
+  stubFetch((host) =>
+    host.startsWith('portalfo2') ? { status: 500, body: '' } : { status: 200, body: '{}' },
+  );
+  const warnings: string[] = [];
+  mock.method(console, 'warn', (line: string) => void warnings.push(line));
+
+  await getJson(`${PRIMARY}/sudske-prodaje?page=0`);
+
+  assert.equal(warnings.length, 1);
+  assert.ok(
+    warnings[0].includes(`${MIRROR}/sudske-prodaje?page=0`),
+    `expected the retry line to name ${MIRROR}, got: ${warnings[0]}`,
+  );
+});
+
 test('a 404 is fatal on the first mirror rather than retried on the second', async (t) => {
   t.after(() => mock.restoreAll());
   // Only 429 and 5xx are worth a second host; a missing article is missing on

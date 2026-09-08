@@ -317,8 +317,20 @@ export async function run(opts: { full?: boolean; limit?: number } = {}) {
   console.log(`Loaded ${existing.size} existing listings`);
 
   console.log('Fetching central sales feed…');
-  const central = await fetchCentralFeed();
-  console.log(`  ${central.length} rows across ${new Set(central.map((r) => r.insId)).size} courts`);
+  // Supplementary, not canonical - and so not worth ending a run over. The
+  // per-court categories below carry roughly three times as many notices, and
+  // anything only this feed knows about is already in data/listings.json and
+  // carried forward at the end. Unguarded, this line killed a scheduled run
+  // outright: a transient ECONNRESET outlived the retry budget on the very
+  // first request of the crawl and the process died before reaching a single
+  // court category.
+  let central: CentralRow[] = [];
+  try {
+    central = await fetchCentralFeed();
+    console.log(`  ${central.length} rows across ${new Set(central.map((r) => r.insId)).size} courts`);
+  } catch (err) {
+    console.warn(`  ! central feed unavailable, continuing on categories alone: ${(err as Error).message}`);
+  }
 
   const candidates: Candidate[] = central.map(fromCentral);
 
@@ -352,6 +364,17 @@ export async function run(opts: { full?: boolean; limit?: number } = {}) {
       ),
     );
     console.log(`  ${candidates.length - central.length} notices from categories`);
+  }
+
+  // Both routes failing is not a quiet day, it is a broken crawl. Tolerating a
+  // central-feed failure above means the run can now reach this point having
+  // fetched nothing at all, and the archive carry-forward below would rebuild
+  // listings.json from the previous copy - a dataset that passes every check in
+  // scripts/verify.ts and commits as a "refresh" that refreshed nothing.
+  if (!candidates.length) {
+    throw new Error(
+      'no notices from the central feed or the court categories - refusing to republish the previous dataset as a fresh scrape',
+    );
   }
 
   // Deduplicate: a notice can surface in more than one category.

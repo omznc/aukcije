@@ -77,7 +77,12 @@ async function withRetry<T>(fn: (url: string) => Promise<T>, url: string): Promi
       const retriable = status === 0 || status === 429 || status >= 500;
       if (!retriable || attempt === POLITENESS.retries) break;
       const backoff = Math.min(30_000, POLITENESS.backoffMs * 2 ** attempt) + Math.random() * 500;
-      console.warn(`  retry ${attempt + 1}/${POLITENESS.retries} ${url} in ${Math.round(backoff)}ms`);
+      // Name the host the next attempt will use, not the one originally asked
+      // for. Logging the original made a real run print portalfo2 five times
+      // running, which reads as "the mirror failover never fired" - the exact
+      // wrong conclusion, since it had fired on every one of those attempts.
+      const next = urls[(attempt + 1) % urls.length];
+      console.warn(`  retry ${attempt + 1}/${POLITENESS.retries} ${next} in ${Math.round(backoff)}ms`);
       await sleep(backoff);
     }
   }
