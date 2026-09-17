@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-17T09:51:15.255Z",
-  "listings": 2752,
-  "comparable": 294,
-  "disagreements": 73,
+  "generatedAt": "2026-09-17T20:02:21.362Z",
+  "listings": 2757,
+  "comparable": 296,
+  "disagreements": 75,
   "byField": {
-    "caseNumber": 10,
-    "appraisedValue": 47,
+    "caseNumber": 11,
+    "appraisedValue": 46,
     "startingPrice": 10,
     "saleTime": 4,
-    "deposit": 2
+    "deposit": 4
   },
   "worst": [
     {
@@ -99,6 +99,15 @@
       "field": "caseNumber",
       "llm": "94 0 Ip 041687 24 Ip",
       "rules": "94 0 Ip 041687 24 Ip 2",
+      "ratio": null
+    },
+    {
+      "id": "65-176927",
+      "court": "Općinski sud u Sarajevu",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/65/article/176927",
+      "field": "caseNumber",
+      "llm": "65 0 I 1175763 25 I",
+      "rules": "65 0 I 1175763 25 I 1",
       "ratio": null
     },
     {
@@ -300,21 +309,21 @@
       "ratio": 1.5
     },
     {
-      "id": "90-128248",
-      "court": "Osnovni sud Brčko distrikta BiH",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/128248",
-      "field": "startingPrice",
-      "llm": 6239.82,
-      "rules": 9359.74,
-      "ratio": 1.5
-    },
-    {
       "id": "90-128246",
       "court": "Osnovni sud Brčko distrikta BiH",
       "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/128246",
       "field": "startingPrice",
       "llm": 19860.98,
       "rules": 29791.48,
+      "ratio": 1.5
+    },
+    {
+      "id": "90-128248",
+      "court": "Osnovni sud Brčko distrikta BiH",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/128248",
+      "field": "startingPrice",
+      "llm": 6239.82,
+      "rules": 9359.74,
       "ratio": 1.5
     },
     {
@@ -424,6 +433,24 @@
       "llm": 172440,
       "rules": 1724.4,
       "ratio": 100
+    },
+    {
+      "id": "65-176927",
+      "court": "Općinski sud u Sarajevu",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/65/article/176927",
+      "field": "deposit",
+      "llm": 135,
+      "rules": 10000,
+      "ratio": 74.07
+    },
+    {
+      "id": "32-177006",
+      "court": "Općinski sud u Tuzli",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/32/article/177006",
+      "field": "deposit",
+      "llm": 9060,
+      "rules": 6000,
+      "ratio": 1.51
     }
   ]
 }
