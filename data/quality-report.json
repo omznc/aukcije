@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-22T09:39:53.457Z",
-  "listings": 2767,
-  "comparable": 295,
-  "disagreements": 74,
+  "generatedAt": "2026-09-22T20:02:28.758Z",
+  "listings": 2768,
+  "comparable": 296,
+  "disagreements": 76,
   "byField": {
-    "appraisedValue": 47,
+    "appraisedValue": 48,
     "startingPrice": 11,
     "caseNumber": 10,
     "saleTime": 4,
-    "deposit": 2
+    "deposit": 3
   },
   "worst": [
     {
@@ -174,21 +174,21 @@
       "ratio": 2.92
     },
     {
+      "id": "51-180150",
+      "court": "Općinski sud u Travniku",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/51/article/180150",
+      "field": "appraisedValue",
+      "llm": 36285,
+      "rules": 100000,
+      "ratio": 2.76
+    },
+    {
       "id": "90-166557",
       "court": "Osnovni sud Brčko distrikta BiH",
       "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/166557",
       "field": "appraisedValue",
       "llm": 70973.73,
       "rules": 177434.33,
-      "ratio": 2.5
-    },
-    {
-      "id": "90-166549",
-      "court": "Osnovni sud Brčko distrikta BiH",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/166549",
-      "field": "appraisedValue",
-      "llm": 180744.04,
-      "rules": 451905.1,
       "ratio": 2.5
     },
     {
@@ -433,6 +433,15 @@
       "llm": 172440,
       "rules": 1724.4,
       "ratio": 100
+    },
+    {
+      "id": "51-180150",
+      "court": "Općinski sud u Travniku",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/51/article/180150",
+      "field": "deposit",
+      "llm": 3628.5,
+      "rules": 10000,
+      "ratio": 2.76
     }
   ]
 }
