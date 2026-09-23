@@ -72,9 +72,26 @@ jobs:
         env:
           SITE_URL: ${{ vars.SITE_URL }}
 
+      # The address table the live site serves right now, before this deploy
+      # replaces it. The IndexNow step below compares it with the new one to
+      # find which listings are new. A failed fetch leaves `{}`, and then every
+      # listing counts as new - which is right for the first deploy.
+      - name: Save the live address table
+        run: curl -sf "${SITE_URL:-https://sudskeprodaje.omarzunic.com}/adrese.json" -o previous-adrese.json || echo '{}' > previous-adrese.json
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+
       - name: Publish to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=sudske-prodaje --branch=main
+
+      # New notices reach Bing the same day instead of at its next crawl. Not
+      # fatal: a missed ping costs crawl delay, not the deploy.
+      - name: Ping IndexNow
+        continue-on-error: true
+        run: node scripts/seo/indexnow.ts previous-adrese.json
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}

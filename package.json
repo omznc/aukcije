@@ -16,7 +16,8 @@
     "dev": "astro dev",
     "verify": "node scripts/verify.ts",
     "discover": "node scripts/discover-courts.ts",
-    "geo": "node scripts/build-geo.ts"
+    "geo": "node scripts/build-geo.ts",
+    "seo": "node scripts/seo/report.ts"
   },
   "keywords": [
     "bosnia",
