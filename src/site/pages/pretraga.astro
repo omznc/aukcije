@@ -20,7 +20,10 @@ const SORTS = [
 ];
 ---
 
-<Base title="Pretraga sudskih prodaja - BiH">
+<Base
+  title="Pretraga sudskih prodaja - BiH"
+  description={`Pretraga sudskih prodaja u BiH po predmetu, mjestu, sudu i cijeni - stanovi, kuće, zemljišta, vozila, mašine i oprema. Oglasa u arhivi: ${listings.length.toLocaleString('bs-BA')}.`}
+>
   <div class="gut border-b border-rule pb-[26px] pt-[34px]">
     <h1 class="font-serif text-[2rem] leading-title tracking-title sm:text-[2.5rem] sm:leading-display sm:tracking-display">
       Pretraga svih {listings.length.toLocaleString('bs-BA')} oglasa
@@ -131,13 +134,13 @@ const SORTS = [
   </div>
 </Base>
 
-<!--
+{/*
   Pagefind's bundle is produced by its CLI *after* `astro build`, so this stays
   `is:inline`: Vite would otherwise try to resolve the import at build time and
   fail on a file that does not exist yet. The default Pagefind widget is not used
   - results are rendered here so they carry the same columns as the rest of the
   site (status, hearing date, court, hearing number, price).
--->
+*/}
 <script is:inline>
   (async () => {
     const form = document.getElementById('search-form');

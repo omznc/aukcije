@@ -28,11 +28,11 @@ import { SALE_TYPE_ICONS, iconBody } from '../lib/icons.ts';
     </p>
   </div>
 
-  <!--
+  {/*
     The rows are built in the browser, where the build-time <Icon> is out of
     reach, so the five sale-type glyphs ship once as a sprite and each row points
     at one with <use>. Hidden, but still referencable.
-  -->
+  */}
   <svg hidden aria-hidden="true">
     {
       Object.entries(SALE_TYPE_ICONS).map(([type, icon]) => (
@@ -72,7 +72,7 @@ import { SALE_TYPE_ICONS, iconBody } from '../lib/icons.ts';
         Kategorije koje pratite
       </h2>
     </div>
-    <!-- Rows hide by class, not by the `hidden` attribute: `display:flex` beats it. -->
+    {/* Rows hide by class, not by the `hidden` attribute: `display:flex` beats it. */}
     <div class="gut bg-blank pb-5 pt-1">
       {
         itemCategories.map((t) => (
@@ -100,11 +100,11 @@ import { SALE_TYPE_ICONS, iconBody } from '../lib/icons.ts';
     </div>
   </section>
 
-  <!--
+  {/*
     The saved list is the one thing here the build cannot see, so its calendar
     has to be assembled in the browser from the same generator the server-side
     feeds use - lib/ics.ts carries no dataset import for exactly this reason.
-  -->
+  */}
   <div class="gut flex flex-wrap items-center gap-3 border-t border-rule bg-band py-4">
     <button
       type="button"
@@ -177,7 +177,7 @@ import { SALE_TYPE_ICONS, iconBody } from '../lib/icons.ts';
     // the browser from what localStorage holds, and that is an id and a
     // snapshot of the card - not a slug. A headline improves between runs, so a
     // slug built here could point at an address this build never generated. The
-    // id always resolves; see lib/slug.ts.
+    // id always resolves, with a 301 to the current slug; see lib/legacy-url.ts.
     //
     // Note this whole function returns a *string*, not markup: a JSX-style
     // comment here is not compiled away, it is printed to the page.

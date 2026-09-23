@@ -300,6 +300,27 @@ usual. `scripts/verify-build.ts` asserts the blocks are present, since a
 serialisation that broke would otherwise show up only as a slow decline months
 later.
 
+## Search engines
+
+The site carries no analytics, so what search engines report is the whole of
+what is measured. `npm run seo` prints it: Search Console clicks, queries and
+pages, the index state of the hub pages, and Bing's numbers. It reads a
+service-account key from `~/.config/sudskeprodaje/gsc.json` (or `GSC_KEY`) and a
+Bing Webmaster API key from `~/.config/sudskeprodaje/bing.key`. Neither belongs
+in this repository.
+
+Three things keep the crawl clean:
+
+- **One page per listing.** The old `/oglas/{id}/` addresses answer with a real
+  301 from `functions/oglas/[[path]].ts`, using the id → path table the build
+  writes to `/adrese.json`. They used to be a second, `noindex` meta-refresh page
+  per listing, which made half the site pages a crawler was told to drop.
+- **A description per page.** Listing pages describe the price, the hearing and
+  the court (`src/site/lib/meta.ts`); court and category pages carry their counts.
+- **IndexNow.** After each deploy, `scripts/seo/indexnow.ts` compares the live
+  address table with the new one and submits the new listings and the pages that
+  list them. The key in `public/` is public by design.
+
 ## Privacy
 
 Auction notices name the debtor. This project deliberately publishes less than
@@ -362,9 +383,13 @@ src/
     lib/geo.ts         GENERATED: country outline + place coordinates
     lib/og.ts          share cards (satori + resvg), cached by what they print
     lib/jsonld.ts      schema.org for listings and for the site
+    lib/meta.ts        search-result title and description for a listing
+    lib/legacy-url.ts  old /oglas/{id}/ address -> 301 target
     lib/stats.ts       everything derived: drops, chains, medians, map buckets
     lib/theme.ts       paper or dark, and the toggle that chooses
     styles/global.css  fonts, motion, and the one place a colour is spelled out
+functions/oglas/       Pages Function: the 301 for old listing addresses
+scripts/seo/           Search Console / Bing report, IndexNow ping
 scripts/verify.ts      post-scrape assertions
 scripts/build-geo.ts   regenerates site/lib/geo.ts; run by hand, not by the build
 docs/API.md            the reverse-engineered upstream API

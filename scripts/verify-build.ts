@@ -39,8 +39,7 @@ const courts = new Set(listings.map((l) => l.courtId)).size;
 console.log('Verifying built site\n');
 
 // Checked against the slug each listing computes rather than by counting the
-// directory, which since the move to readable URLs also holds one redirect stub
-// per listing. A count would be satisfied by 2,694 stubs and no pages at all.
+// directory, so a build that wrote pages to the wrong addresses cannot pass.
 const missingPages = (
   await Promise.all(
     listings.map(async (l) => ((await exists(`dist${hrefOf(l)}index.html`)) ? null : l.id)),
@@ -110,6 +109,9 @@ for (const page of [
   'dist/robots.txt',
   'dist/sitemap.xml',
   'dist/llms.txt',
+  // Without it, Cloudflare Pages answers every unknown address with the home
+  // page and a 200 - a soft 404 on every mistyped or removed URL.
+  'dist/404.html',
 ]) {
   check(await exists(page), `${page} exists`);
 }
@@ -140,15 +142,28 @@ const listingHtml = await readFile(`dist${hrefOf(sampleListing)}index.html`, 'ut
 );
 
 // The old address has to keep working: it is what is indexed, what is shared,
-// and what the saved-listings page rebuilds from an id in localStorage.
-const legacyHtml = await readFile(
-  `dist/oglas/${sampleListing.id}/index.html`,
-  'utf8',
-).catch(() => '');
+// and what the saved-listings page rebuilds from an id in localStorage. The
+// Pages Function answers it with a 301 from this table, so the table must hold
+// every listing that moved - and no static stub may shadow the function.
+const addresses = JSON.parse(await readFile('dist/adrese.json', 'utf8').catch(() => '{}'));
+const moved = listings.filter((l) => hrefOf(l) !== `/oglas/${l.id}/`);
 check(
-  legacyHtml.includes(hrefOf(sampleListing)) && legacyHtml.includes('rel="canonical"'),
-  'the bare-id url still resolves and points at its slug',
+  moved.every((l) => addresses[l.id] === hrefOf(l)),
+  `the redirect table covers every moved listing (${Object.keys(addresses).length} of ${moved.length})`,
 );
+const stubs = (
+  await Promise.all(moved.map(async (l) => ((await exists(`dist/oglas/${l.id}/index.html`)) ? l.id : null)))
+).filter(Boolean);
+check(stubs.length === 0, `no bare-id stub pages (${stubs.length})`);
+check(await exists('functions/oglas/[[path]].ts'), 'the redirect function is in place');
+
+// A listing page's description is what a search result shows under the title.
+// The default one on every listing would make them all look like one page.
+check(
+  /<meta name="description" content="[^"]*(KM|održano|Ročište)/.test(listingHtml),
+  'listing pages carry their own description',
+);
+check(!listingHtml.includes('<!--'), 'no HTML comments shipped in listing pages');
 check(listingHtml.includes('"@type":"SaleEvent"'), 'listing pages carry SaleEvent structured data');
 // A `Product` node here enrols the page in Google's merchant listing checks,
 // which want a shipping option and a return policy for a repossessed flat.
@@ -182,5 +197,5 @@ if (failures.length) {
   process.exit(1);
 }
 console.log(
-  `Build looks complete: ${listings.length} listing pages (plus a redirect stub each), ${courtPages} court pages.`,
+  `Build looks complete: ${listings.length} listing pages, ${courtPages} court pages.`,
 );

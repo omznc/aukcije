@@ -44,7 +44,10 @@ const CHIP =
   'chip press press-give border border-edge px-2.5 py-2 text-[0.71875rem] font-medium leading-none text-ink-mid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-on-ink';
 ---
 
-<Base title="Arhiva sudskih prodaja - BiH">
+<Base
+  title="Arhiva sudskih prodaja - BiH"
+  description={`Održane sudske prodaje u BiH od ${years[0]?.year ?? ''}. godine, po godinama: početne cijene, procjene i ponovljena ročišta. Oglasa u arhivi: ${past.length.toLocaleString('bs-BA')}.`}
+>
   <div class="gut border-b border-rule pb-6 pt-[30px]">
     <nav class="mb-3 font-mono text-[0.6875rem] leading-none text-dim">
       <a href="/" class="hover:text-ink">AKTUELNE</a> / ARHIVA
