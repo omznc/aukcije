@@ -85,7 +85,7 @@ const isActive = (href: string) =>
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <!--
+        {/*
           Both sheets exist, so the browser is told both are on offer. This is
           what it paints its own canvas with in the moment between one page
           leaving and the next one drawing - the window Firefox otherwise shows
@@ -97,9 +97,9 @@ const isActive = (href: string) =>
           only lever available this early is this one, and it cannot see
           localStorage. The script below closes that gap as soon as there is a
           document to close it on.
-        -->
+        */}
         <meta name="color-scheme" content="light dark" />
-        <!--
+        {/*
           The visitor's own choice of sheet, applied before anything is painted.
           Inline, un-bundled and first in the head on purpose: a module would be
           deferred until after the first paint, and the paint it would come after
@@ -111,7 +111,7 @@ const isActive = (href: string) =>
           the `light-dark()` palette in global.css, and this script having run to
           write the choice down. Neither is true of the fallback path, and a
           control that cannot do anything is worse than no control.
-        -->
+        */}
         <script is:inline define:vars={{ themeKey: THEME_KEY }}>
             (function () {
                 if (
@@ -149,10 +149,10 @@ const isActive = (href: string) =>
         <meta property="og:url" content={canonical} />
         <meta property="og:site_name" content="Sudske prodaje BiH" />
         <meta property="og:locale" content="bs_BA" />
-        <!--
+        {/*
           These notices circulate by being pasted into a chat, so the card is
           the first thing most people see of a listing. Every page has one.
-        -->
+        */}
         <meta property="og:image" content={shareImage} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
@@ -167,7 +167,7 @@ const isActive = (href: string) =>
             href="/rss.xml"
         />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <!--
+        {/*
           The faces themselves are declared in global.css and served from here;
           see the note there for why they are not fetched from Google. These
           two are the ones every page is set in - the body and the mono that
@@ -177,7 +177,7 @@ const isActive = (href: string) =>
           means the text is set right on the first paint rather than one swap
           later. The other four faces are the accented and serif cuts, which
           are worth discovering the ordinary way.
-        -->
+        */}
         <link
             rel="preload"
             as="font"
@@ -198,7 +198,7 @@ const isActive = (href: string) =>
             class="mx-auto min-h-screen max-w-[1180px] border-rule bg-sheet sm:border-x"
         >
             <header>
-                <!-- Same band as the tab strip below it, so the header reads as one block. -->
+                {/* Same band as the tab strip below it, so the header reads as one block. */}
                 <div
                     class="gut flex flex-wrap items-center justify-between gap-x-3.5 gap-y-1.5 bg-band pb-3 pt-3.5"
                 >
@@ -216,12 +216,12 @@ const isActive = (href: string) =>
                         </span>
                     </div>
                     <div class="flex items-center gap-4">
-                        <!--
+                        {/*
                           Hidden until the head script has said the browser can
                           honour it; see the note there. The two labels sit in
                           one grid cell and cross-fade, which is what keeps the
                           header from reflowing when the wider of them arrives.
-                        -->
+                        */}
                         <button
                             type="button"
                             data-theme-toggle
@@ -256,13 +256,13 @@ const isActive = (href: string) =>
                     </div>
                 </div>
 
-                <!--
+                {/*
                   Which way the toggle is already pointing, written while the
                   header is still being parsed rather than by the module at the
                   foot of the page - the same reason as the saved counter below,
                   and the same shape of fix. The head script has resolved the
                   theme by now; this only reflects it onto the control.
-                -->
+                */}
                 <script is:inline>
                     if (document.documentElement.dataset.theme === "dark") {
                         var toggle = document.querySelector(
@@ -272,13 +272,13 @@ const isActive = (href: string) =>
                     }
                 </script>
 
-                <!--
+                {/*
                   Tabs, drawn like a browser's: the strip sits on the tinted band
                   and the active tab is a notch of the sheet below, so the two
                   read as one surface. The rule under the strip is an inset shadow
                   rather than a border, which lets the active tab's own background
                   paint over it without a negative margin fighting the scroll box.
-                -->
+                */}
                 <nav
                     id="tabs"
                     data-default-order={JSON.stringify(tabs.map((t) => t.href))}
@@ -347,14 +347,14 @@ const isActive = (href: string) =>
                     </button>
                 </nav>
 
-                <!--
+                {/*
                   The saved order, applied while the header is still being
                   parsed. The module at the foot of the page owns the dragging,
                   but it is deferred, so leaving this to it would show the
                   shipped order for a frame and then shuffle it - on every page,
                   since each one is its own document. Same reason as the theme
                   script in the head and the counter below.
-                -->
+                */}
                 <script is:inline define:vars={{ orderKey: TAB_ORDER_KEY }}>
                     try {
                         var saved = JSON.parse(
@@ -391,7 +391,7 @@ const isActive = (href: string) =>
                     } catch (e) {}
                 </script>
 
-                <!--
+                {/*
                   The badge is the one thing in the header only this browser
                   knows, so it ships empty and hidden. Filling it from the module
                   below would pop it into the strip a frame after the header has
@@ -400,7 +400,7 @@ const isActive = (href: string) =>
                   instead, so the tab is drawn its final width the first time.
                   Inline and un-bundled on purpose: a module would be deferred,
                   which is exactly the delay being avoided.
-                -->
+                */}
                 <script
                     is:inline
                     define:vars={{ adPrefix: AD_PREFIX, tagPrefix: TAG_PREFIX }}
@@ -451,12 +451,12 @@ const isActive = (href: string) =>
                         obrađuju automatski. Mjerodavan je isključivo zaključak
                         suda. Nema računa, kolačića ni praćenja.
                     </p>
-                    <!--
+                    {/*
                       The scraper, the extraction rules and the redaction pass
                       are all in the open. For a site that republishes court
                       documents with names taken out, "how" is a fair question
                       to ask, and the answer should not need asking for.
-                    -->
+                    */}
                     <p class="mt-3 flex flex-wrap gap-x-4 gap-y-2 font-mono text-[0.6875rem] leading-none text-dim">
                         <a
                             href="https://omarzunic.com"

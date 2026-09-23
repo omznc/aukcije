@@ -14,11 +14,11 @@ const { storeKey, label, activeLabel } = Astro.props;
   class="press press-give border border-ink bg-ink px-3 py-2.5 text-[0.75rem] font-semibold leading-none text-on-ink aria-pressed:border-edge aria-pressed:bg-transparent aria-pressed:text-ink"
   aria-pressed="false"
 >
-  <!--
+  {/*
     Both labels ship in the markup so the button is as wide as the longer one
     from the start; pressing it cross-fades them instead of resizing the button
     under the finger.
-  -->
+  */}
   <span class="swap">
     <span data-idle>{label}</span>
     <span data-done aria-hidden="true">{activeLabel}</span>

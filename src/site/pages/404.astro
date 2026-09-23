@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+
+/*
+  Without a 404.html, Cloudflare Pages answers every unknown address with the
+  home page and a 200. To a crawler that is an endless supply of duplicate home
+  pages, and a listing that left the archive would never read as gone. With this
+  file present, Pages serves it with a real 404 status.
+*/
+---
+
+<Base title="Stranica nije pronađena" description="Ova adresa ne postoji na sajtu Sudske prodaje BiH.">
+  <div class="gut pb-12 pt-[34px]">
+    <h1 class="font-serif text-[2rem] leading-title tracking-title sm:text-[2.5rem] sm:leading-display sm:tracking-display">
+      Stranica nije pronađena
+    </h1>
+    <p class="mt-3 max-w-[60ch] text-[0.875rem] leading-relaxed text-muted">
+      Ova adresa ne postoji. Oglas je možda uklonjen na zahtjev, ili je link pogrešno kopiran.
+    </p>
+    <div class="mt-6 flex flex-wrap gap-2">
+      <a
+        href="/"
+        class="press press-give flex items-center gap-1.5 border border-ink bg-ink px-3 py-2.5 text-[0.75rem] font-semibold leading-none text-on-ink"
+      >
+        <Icon name="clock-countdown" size={14} />
+        Aktuelne prodaje
+      </a>
+      <a
+        href="/pretraga/"
+        class="press press-give flex items-center gap-1.5 border border-rule px-3 py-2.5 text-[0.75rem] font-semibold leading-none hover:border-ink"
+      >
+        <Icon name="magnifying-glass" size={14} class="text-dim" />
+        Pretraga
+      </a>
+      <a
+        href="/arhiva/"
+        class="press press-give flex items-center gap-1.5 border border-rule px-3 py-2.5 text-[0.75rem] font-semibold leading-none hover:border-ink"
+      >
+        <Icon name="archive" size={14} class="text-dim" />
+        Arhiva
+      </a>
+    </div>
+  </div>
+</Base>

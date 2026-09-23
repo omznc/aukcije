@@ -74,18 +74,21 @@ const stats = [
 ];
 ---
 
-<Base title="Sudske prodaje u BiH - aktuelne licitacije">
+<Base
+  title="Sudske prodaje u BiH - aktuelne licitacije"
+  description={`Sudske prodaje u BiH: stanovi, kuće, zemljišta, vozila i oprema. Aktuelnih ročišta: ${upcoming.length}. Početne cijene, datumi i kapara sa pravosudje.ba na jednom mjestu.`}
+>
   <script type="application/ld+json" is:inline set:html={jsonLd} />
 
   <section class="gut grid gap-8 border-b border-rule pb-[26px] pt-[34px] lg:grid-cols-[1fr_320px]">
     <div>
-      <!--
+      {/*
         This one starts at display size rather than stepping up to it, so it
         keeps display leading at both widths and only tightens its tracking.
         The measure is set wide enough that the line breaks where the column
         runs out rather than where a narrow cap forces it, and `text-balance`
         evens the two lines it does take.
-      -->
+      */}
       <h1
         class="max-w-[26ch] text-balance font-serif text-[2.375rem] leading-display tracking-title sm:text-[2.875rem] sm:tracking-display"
       >
@@ -114,7 +117,7 @@ const stats = [
       </p>
     </div>
 
-    <!-- The icon rides the figure's line; on the label it pushed the longer ones onto two rows. -->
+    {/* The icon rides the figure's line; on the label it pushed the longer ones onto two rows. */}
     <dl class="grid grid-cols-2 gap-px border border-rule bg-rule">
       {
         stats.map((s) => (
@@ -347,7 +350,7 @@ const stats = [
           ))}
         </div>
 
-        <!-- Stays a block: the script toggles `hidden`, and a flex row would win over it. -->
+        {/* Stays a block: the script toggles `hidden`, and a flex row would win over it. */}
         <p id="empty" class="gut hidden bg-blank py-10 text-[0.8125rem] text-muted">
           <Icon name="funnel" size={16} class="mr-1.5 text-ghost" />
           Nema rezultata za zadane filtere.

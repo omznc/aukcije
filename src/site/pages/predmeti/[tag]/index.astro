@@ -101,7 +101,7 @@ const peakBin = histogram ? histogram.bins.indexOf(maxBin) : -1;
 
 <Base
   title={`${label} na sudskim prodajama u BiH`}
-  description={`Aktuelne i prošle sudske prodaje: ${label.toLowerCase()} u Bosni i Hercegovini.`}
+  description={`${label} na sudskim prodajama u BiH. Aktuelnih: ${live.length}, održanih: ${archiveTotal}${medianAppraisal ? `, medijan procjene ${Math.round(medianAppraisal).toLocaleString('bs-BA')} KM` : ''}. Početne cijene, ročišta i kapara.`}
 >
   <div class="gut border-b border-rule pb-6 pt-[30px]">
     <nav class="mb-3 font-mono text-[0.6875rem] leading-none text-dim">
@@ -116,10 +116,10 @@ const peakBin = histogram ? histogram.bins.indexOf(maxBin) : -1;
           {' '}prodaja u arhivi{firstYear ? ` od ${firstYear}.` : '.'} Arhiva je referenca cijena, ne
           ponuda. <span class="text-dim">Porodica: {group}.</span>
         </p>
-        <!--
+        {/*
           The feed the portal cannot offer at all: its own categories stop at
           five, so "sve nove mašine i alati, iz svih sudova" exists only here.
-        -->
+        */}
         <div class="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 font-mono text-[0.6875rem] leading-none text-dim">
           <a href={`/predmeti/${tagId}/rss.xml`} class="press flex items-center gap-1.5 text-rust">
             <Icon name="rss-simple" size={13} />

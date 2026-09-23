@@ -15,7 +15,8 @@ import { headline } from './headline.ts';
  * break a link. Instead the words are decoration on a stable key, and the route
  * resolves on the key.
  *
- * That is also why `/oglas/42-165677/` keeps working - see `oglas/[slug].astro`.
+ * That is also why `/oglas/42-165677/` keeps working, as a 301 - see
+ * `lib/legacy-url.ts`.
  * Around 2,700 of them are already indexed, and the saved-listings page builds
  * its links from ids held in localStorage, where no headline is guaranteed to
  * still be current.

@@ -44,38 +44,27 @@ import {
   type Entity,
 } from '../../lib/costs.ts';
 import { listingJsonLd } from '../../lib/jsonld.ts';
+import { listingTitle, listingDescription } from '../../lib/meta.ts';
 
 /**
- * Two paths per listing, and only one of them is a page.
+ * One page per listing, at its slug.
  *
- * The slug is where a notice actually lives. The bare id is where it used to
- * live - roughly 2,700 of those are indexed, shared and bookmarked, and the
- * saved-listings page still builds links from ids held in localStorage, where
- * no headline is guaranteed to match the current build. So the old address
- * stays, as a stub that sends the reader on.
- *
- * A static host has no 301 to offer, so the stub is a meta refresh carrying the
- * canonical of the real page. It is what a search engine follows and what a
- * browser follows, and it is the only honest option without a server in front.
+ * The bare id is where a notice used to live, and it still resolves - but as a
+ * 301 from `functions/oglas/[[path]].ts`, not as a second page here. See
+ * lib/legacy-url.ts for why.
  */
 export function getStaticPaths() {
-  return listings.flatMap((l) => {
+  return listings.map((l) => {
     const slug = slugOf(l);
-    const canonical = { params: { slug: `${slug}-${l.id}` }, props: { listing: l, redirect: false } };
-    // A listing with no usable headline is already at its bare id; emitting the
-    // stub too would be a page redirecting to itself.
-    return slug
-      ? [canonical, { params: { slug: l.id }, props: { listing: l, redirect: true } }]
-      : [{ params: { slug: l.id }, props: { listing: l, redirect: false } }];
+    // A listing with no usable headline lives at its bare id.
+    return { params: { slug: slug ? `${slug}-${l.id}` : l.id }, props: { listing: l } };
   });
 }
 
 interface Props {
   listing: Listing;
-  redirect: boolean;
 }
-const { listing: l, redirect } = Astro.props;
-const destination = new URL(hrefOf(l), Astro.site).href;
+const { listing: l } = Astro.props;
 
 const days = daysUntil(l.saleDate);
 const state = urgency(days);
@@ -167,30 +156,9 @@ const jsonLd = JSON.stringify(
 ).replace(/</g, '\\u003c');
 ---
 
-{/*
-  The old address. A static host cannot answer 301, so this is the closest
-  honest equivalent: a canonical pointing at the real page for anything that
-  indexes, a meta refresh for anything that renders, `noindex, follow` so the
-  stub itself never competes with the page it points at, and a plain link for
-  the case where neither runs.
-*/}
-{redirect ? (
-  <html lang="bs">
-    <head>
-      <meta charset="utf-8" />
-      <meta http-equiv="refresh" content={`0; url=${destination}`} />
-      <link rel="canonical" href={destination} />
-      <meta name="robots" content="noindex, follow" />
-      <title>{headline(l)}</title>
-    </head>
-    <body>
-      <a href={destination}>{headline(l)}</a>
-    </body>
-  </html>
-) : (
 <Base
-  title={`${title.slice(0, 70)} - ${l.court}`}
-  description={`Sudska prodaja: ${title.slice(0, 150)}`}
+  title={listingTitle(l)}
+  description={listingDescription(l)}
   image={`/og/${l.id}.png`}
 >
   <script type="application/ld+json" is:inline set:html={jsonLd} />
@@ -227,7 +195,7 @@ const jsonLd = JSON.stringify(
       >
         {title}
       </h1>
-      <!-- Reference line, not content: indexing it opened every search excerpt on it. -->
+      {/* Reference line, not content: indexing it opened every search excerpt on it. */}
       <p class="mt-3 max-w-[80ch] font-mono text-[0.78125rem] leading-relaxed text-dim" data-pagefind-ignore>
         Naslov iz sudskog dokumenta: „{l.title}”
       </p>
@@ -264,11 +232,11 @@ const jsonLd = JSON.stringify(
 
     <div class="grid lg:grid-cols-[1fr_340px]">
       <div class="gut border-rule pb-[30px] pt-6 lg:border-r">
-        <!--
+        {/*
           Kept out of the search index: the amounts are carried as metadata, and
           leaving them in the body made every excerpt open on a wall of figures
           instead of on the description that matched.
-        -->
+        */}
         <dl class="grid grid-cols-1 gap-px border border-rule bg-rule sm:grid-cols-3" data-pagefind-ignore>
           <div class="bg-blank px-4 py-3.5">
             <dt class="flex items-center gap-1.5 font-mono text-[0.625rem] leading-none text-dim">
@@ -760,13 +728,13 @@ const jsonLd = JSON.stringify(
           )
         }
 
-        <!--
+        {/*
           Nothing here can e-mail a reminder, so the calendar file is the only
           way a static site puts this date in front of someone on the day it
           matters. It carries two alarms, the earlier one a week out, because
           the deadline that actually binds is the deposit rather than the
           hearing.
-        -->
+        */}
         <div class="mt-6 border border-edge bg-sheet p-[13px]">
           <h2 class="flex items-center gap-1.5 text-[0.6875rem] font-semibold uppercase leading-none tracking-label">
             <Icon name="calendar-plus" size={13} class="text-pine" />
@@ -810,7 +778,6 @@ const jsonLd = JSON.stringify(
     </div>
   </article>
 </Base>
-)}
 
 <script>
   // The arithmetic lives in lib/costs.ts so the rules are written down once;
