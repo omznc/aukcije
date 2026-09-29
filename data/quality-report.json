@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-29T11:09:24.801Z",
-  "listings": 2778,
-  "comparable": 296,
-  "disagreements": 74,
+  "generatedAt": "2026-09-29T21:18:10.801Z",
+  "listings": 2781,
+  "comparable": 298,
+  "disagreements": 75,
   "byField": {
     "appraisedValue": 47,
     "startingPrice": 11,
     "caseNumber": 10,
     "saleTime": 4,
-    "deposit": 2
+    "deposit": 3
   },
   "worst": [
     {
@@ -219,21 +219,21 @@
       "ratio": 1.5
     },
     {
-      "id": "90-128248",
-      "court": "Osnovni sud Brčko distrikta BiH",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/128248",
-      "field": "startingPrice",
-      "llm": 6239.82,
-      "rules": 9359.74,
-      "ratio": 1.5
-    },
-    {
       "id": "90-128246",
       "court": "Osnovni sud Brčko distrikta BiH",
       "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/128246",
       "field": "startingPrice",
       "llm": 19860.98,
       "rules": 29791.48,
+      "ratio": 1.5
+    },
+    {
+      "id": "90-128248",
+      "court": "Osnovni sud Brčko distrikta BiH",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/128248",
+      "field": "startingPrice",
+      "llm": 6239.82,
+      "rules": 9359.74,
       "ratio": 1.5
     },
     {
@@ -433,6 +433,15 @@
       "llm": 172440,
       "rules": 1724.4,
       "ratio": 100
+    },
+    {
+      "id": "65-184830",
+      "court": "Općinski sud u Sarajevu",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/65/article/184830",
+      "field": "deposit",
+      "llm": 2750,
+      "rules": 10000,
+      "ratio": 3.64
     }
   ]
 }
