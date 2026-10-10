@@ -59,7 +59,7 @@ jobs:
         run: node src/main.ts ${{ inputs.full && '--full' || '' }}
         env:
           # Optional. Without it the pipeline uses rule-based extraction only.
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           LLM_MODEL: ${{ vars.LLM_MODEL }}
 
       - name: Sanity-check the result

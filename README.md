@@ -99,13 +99,13 @@ cents. Ongoing cost is a few dozen new notices a month.
 Copy `.env.example` to `.env`:
 
 ```bash
-OPENROUTER_API_KEY=sk-or-v1-...          # https://openrouter.ai/keys
-LLM_MODEL=google/gemini-2.5-flash-lite   # any OpenRouter model id
+ANTHROPIC_API_KEY=sk-ant-...             # https://platform.claude.com/settings/keys
+LLM_MODEL=claude-haiku-5-5               # any Claude model id
 LLM_CONCURRENCY=4
 LLM_MAX_CALLS=2000                       # per-run cap, so a bad run can't overspend
 ```
 
-In CI, set `OPENROUTER_API_KEY` as a repository secret and optionally
+In CI, set `ANTHROPIC_API_KEY` as a repository secret and optionally
 `LLM_MODEL` as a repository variable. Without a key the pipeline runs fully
 offline on the rule-based path.
 
@@ -438,7 +438,7 @@ What that needs configured on the repository:
 | --- | --- | --- |
 | Secret | `CLOUDFLARE_API_TOKEN` | token with **Cloudflare Pages: Edit** |
 | Secret | `CLOUDFLARE_ACCOUNT_ID` | the target account |
-| Secret | `OPENROUTER_API_KEY` | used by the scrape job only |
+| Secret | `ANTHROPIC_API_KEY` | used by the scrape job only |
 | Variable | `SITE_URL` | e.g. `https://sudskeprodaje.omarzunic.com` |
 | Variable | `LLM_MODEL` | optional override |
 

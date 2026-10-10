@@ -33,17 +33,17 @@ export function env(name: string, fallback: string): string {
 export const SITE_URL = env('SITE_URL', 'https://sudskeprodaje.omarzunic.com');
 
 /**
- * Default OpenRouter model for extraction and OCR.
+ * Default Claude model for extraction and OCR.
  *
- * It must support `response_format: json_schema` - extraction asks for a strict
- * schema and treats the reply as already conforming. A model that ignores the
+ * It must support structured outputs (`output_config.format`) - extraction asks
+ * for a strict schema and treats the reply as already conforming. A model that ignores the
  * parameter still answers, just in prose or near-JSON, which is precisely the
  * plausible-but-wrong output this pipeline is built to avoid.
  *
  * Note that this string is part of the analysis cache key, so changing it
  * re-analyses the whole archive rather than reusing anything.
  */
-export const DEFAULT_MODEL = 'google/gemini-2.5-flash-lite';
+export const DEFAULT_MODEL = 'claude-haiku-5-5';
 
 /** Where takedown and correction requests go. Must be a real, monitored address. */
 export const CONTACT_EMAIL = 'contact@omarzunic.com';

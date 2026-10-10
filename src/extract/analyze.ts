@@ -5,6 +5,7 @@ import pLimit from 'p-limit';
 import { ITEM_TAGS } from './items.ts';
 import { PROMPT_VERSION } from '../version.ts';
 import { DEFAULT_MODEL, env } from '../config.ts';
+import { claude, claudeEnabled, responseText } from './claude.ts';
 
 /**
  * LLM-first extraction: hand the model the whole notice, get every field back
@@ -34,11 +35,8 @@ const MODEL = env('LLM_MODEL', DEFAULT_MODEL);
 const CONCURRENCY = Number(env('LLM_CONCURRENCY', '4'));
 const MAX_CALLS = Number(env('LLM_MAX_CALLS', '2000'));
 const CACHE_DIR = '.cache/llm';
-const ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions';
 
-export function llmEnabled(): boolean {
-  return Boolean(process.env.OPENROUTER_API_KEY);
-}
+export const llmEnabled = claudeEnabled;
 
 const TAG_IDS = ITEM_TAGS.map((t) => t.id);
 
@@ -172,51 +170,21 @@ async function writeCache(key: string, value: Analysis): Promise<void> {
 }
 
 async function callModel(text: string): Promise<Analysis | null> {
-  const res = await fetch(ENDPOINT, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-      'Content-Type': 'application/json',
-      'HTTP-Referer': 'https://github.com/omznc/aukcije',
-      'X-Title': 'aukcije-bot',
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      temperature: 0,
-      messages: [
-        { role: 'system', content: SYSTEM },
-        { role: 'user', content: text.slice(0, 16_000) },
-      ],
-      response_format: {
-        type: 'json_schema',
-        json_schema: { name: 'sudska_prodaja', strict: true, schema: SCHEMA },
-      },
-    }),
+  const res = await claude().messages.create({
+    model: MODEL,
+    // Thinking counts toward this cap. The JSON answer itself is short.
+    max_tokens: 4096,
+    system: SYSTEM,
+    messages: [{ role: 'user', content: text.slice(0, 16_000) }],
+    output_config: { effort: 'low', format: { type: 'json_schema', schema: SCHEMA } },
   });
 
-  if (!res.ok) {
-    console.warn(`  ! OpenRouter ${res.status}: ${(await res.text()).slice(0, 160)}`);
+  if (res.stop_reason !== 'end_turn') {
+    console.warn(`  ! Claude stopped with ${res.stop_reason}`);
     return null;
   }
-  const body = (await res.json()) as {
-    choices?: Array<{ message?: { content?: string } }>;
-    error?: { message?: string };
-  };
-  if (body.error) {
-    console.warn(`  ! OpenRouter: ${body.error.message}`);
-    return null;
-  }
-  const raw = body.choices?.[0]?.message?.content;
-  if (!raw) return null;
-
-  const parse = (s: string) => {
-    try {
-      return JSON.parse(s) as Analysis;
-    } catch {
-      return null;
-    }
-  };
-  return parse(raw) ?? parse(raw.match(/```(?:json)?\s*([\s\S]*?)```/)?.[1] ?? '');
+  const raw = responseText(res);
+  return raw ? (JSON.parse(raw) as Analysis) : null;
 }
 
 /**
@@ -250,7 +218,10 @@ export async function analyzeAll(
   await Promise.all(
     budget.map(([id, text, key]) =>
       limit(async () => {
-        const result = await callModel(text).catch(() => null);
+        const result = await callModel(text).catch((err: Error) => {
+          console.warn(`  ! Claude: ${err.message.slice(0, 160)}`);
+          return null;
+        });
         if (!result) {
           failed++;
         } else {
@@ -267,7 +238,7 @@ export async function analyzeAll(
   // Refuse to return a half-empty result when the model call is systemically
   // broken. Every id missing here falls back to rule-based extraction, which
   // succeeds quietly at lower quality - so a bad key, a model that rejects the
-  // schema, or an OpenRouter outage would otherwise produce a complete-looking
+  // schema, or an API outage would otherwise produce a complete-looking
   // dataset that then gets committed and published. That is not hypothetical:
   // an empty LLM_MODEL sent 295 notices down the fallback path and the run
   // committed the result.
@@ -279,7 +250,7 @@ export async function analyzeAll(
       `${failed} of ${budget.length} model calls failed (${Math.round(
         (failed / budget.length) * 100,
       )}%) - refusing to publish a dataset that quietly fell back to rules. ` +
-        `Check OPENROUTER_API_KEY and that "${MODEL}" exists and supports json_schema response format.`,
+        `Check ANTHROPIC_API_KEY and that "${MODEL}" exists and supports structured outputs.`,
     );
   }
   return out;

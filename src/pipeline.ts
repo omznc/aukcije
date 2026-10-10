@@ -442,7 +442,7 @@ export async function run(opts: { full?: boolean; limit?: number } = {}) {
     const texts = new Map([...prepared].map(([id, p]) => [id, p.prepared.text]));
     analyses = await analyzeAll(texts);
   } else {
-    console.log('\nNo OPENROUTER_API_KEY - using rule-based extraction only.');
+    console.log('\nNo ANTHROPIC_API_KEY - using rule-based extraction only.');
   }
 
   // Pass 3 - build, redact and validate.
