@@ -131,7 +131,8 @@ async function resolveText(c: Candidate): Promise<{
       if (extracted.needsOcr) {
         // A scanned, image-only PDF. The model reads these far better than a
         // local tesseract install, and needs nothing installed to do it.
-        const ocr = visionOcrAvailable() ? await ocrPdfWithModel(buf) : await ocrPdf(buf);
+        // A model failure or a PDF that is too large falls back to tesseract.
+        const ocr = (visionOcrAvailable() ? await ocrPdfWithModel(buf) : '') || (await ocrPdf(buf));
         if (ocr.replace(/\s/g, '').length > 120) {
           return { text: ocr, source: 'ocr', docHashes };
         }
