@@ -107,6 +107,12 @@ function fromCategory(a: NewsCategoryArticle, courtId: number, courtName: string
   };
 }
 
+/** A model failure or a PDF that is too large falls back to tesseract. */
+async function ocrScanned(buf: Buffer): Promise<string> {
+  const text = visionOcrAvailable() ? await ocrPdfWithModel(buf) : '';
+  return text || ocrPdf(buf);
+}
+
 /** Pull the best available text for a notice, cheapest source first. */
 async function resolveText(c: Candidate): Promise<{
   text: string;
@@ -131,8 +137,7 @@ async function resolveText(c: Candidate): Promise<{
       if (extracted.needsOcr) {
         // A scanned, image-only PDF. The model reads these far better than a
         // local tesseract install, and needs nothing installed to do it.
-        // A model failure or a PDF that is too large falls back to tesseract.
-        const ocr = (visionOcrAvailable() ? await ocrPdfWithModel(buf) : '') || (await ocrPdf(buf));
+        const ocr = await ocrScanned(buf);
         if (ocr.replace(/\s/g, '').length > 120) {
           return { text: ocr, source: 'ocr', docHashes };
         }
