@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-10-14T20:29:58.314Z",
+  "generatedAt": "2026-10-15T09:39:09.352Z",
   "listings": 2831,
-  "comparable": 291,
+  "comparable": 289,
   "disagreements": 61,
   "byField": {
     "appraisedValue": 44,
     "startingPrice": 8,
-    "caseNumber": 4,
     "saleTime": 4,
+    "caseNumber": 4,
     "deposit": 1
   },
   "worst": [
@@ -219,21 +219,21 @@
       "ratio": 1.5
     },
     {
-      "id": "90-186712",
-      "court": "Osnovni sud Brčko distrikta BiH",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/186712",
-      "field": "startingPrice",
-      "llm": 32325.72,
-      "rules": 48488.57,
-      "ratio": 1.5
-    },
-    {
       "id": "90-185441",
       "court": "Osnovni sud Brčko distrikta BiH",
       "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/185441",
       "field": "startingPrice",
       "llm": 7101.85,
       "rules": 10652.77,
+      "ratio": 1.5
+    },
+    {
+      "id": "90-186712",
+      "court": "Osnovni sud Brčko distrikta BiH",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/186712",
+      "field": "startingPrice",
+      "llm": 32325.72,
+      "rules": 48488.57,
       "ratio": 1.5
     },
     {
@@ -262,42 +262,6 @@
       "llm": 28904.33,
       "rules": 43356.5,
       "ratio": 1.5
-    },
-    {
-      "id": "90-186712",
-      "court": "Osnovni sud Brčko distrikta BiH",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/186712",
-      "field": "caseNumber",
-      "llm": "96 0 I 148509 26 I",
-      "rules": "96 0 I 148509 26 I 2",
-      "ratio": null
-    },
-    {
-      "id": "80-149583",
-      "court": "Osnovni sud u Bijeljini",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/80/article/149583",
-      "field": "caseNumber",
-      "llm": "80 0 I 128756",
-      "rules": "80 0 I 128756 21 I",
-      "ratio": null
-    },
-    {
-      "id": "90-112707",
-      "court": "Osnovni sud Brčko distrikta BiH",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/112707",
-      "field": "caseNumber",
-      "llm": "96 0 Ip 114522 21",
-      "rules": "96 0 Ip 114522 21 Kom 2",
-      "ratio": null
-    },
-    {
-      "id": "32-154037",
-      "court": "Općinski sud u Tuzli",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/32/article/154037",
-      "field": "caseNumber",
-      "llm": "32 0 St 494441 25 St",
-      "rules": "126 0 Ip 166950 14 Ip",
-      "ratio": null
     },
     {
       "id": "90-185441",
@@ -333,6 +297,42 @@
       "field": "saleTime",
       "llm": "11:30",
       "rules": "11:00",
+      "ratio": null
+    },
+    {
+      "id": "90-186712",
+      "court": "Osnovni sud Brčko distrikta BiH",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/186712",
+      "field": "caseNumber",
+      "llm": "96 0 I 148509 26 I",
+      "rules": "96 0 I 148509 26 I 2",
+      "ratio": null
+    },
+    {
+      "id": "80-149583",
+      "court": "Osnovni sud u Bijeljini",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/80/article/149583",
+      "field": "caseNumber",
+      "llm": "80 0 I 128756",
+      "rules": "80 0 I 128756 21 I",
+      "ratio": null
+    },
+    {
+      "id": "90-112707",
+      "court": "Osnovni sud Brčko distrikta BiH",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/112707",
+      "field": "caseNumber",
+      "llm": "96 0 Ip 114522 21",
+      "rules": "96 0 Ip 114522 21 Kom 2",
+      "ratio": null
+    },
+    {
+      "id": "32-154037",
+      "court": "Općinski sud u Tuzli",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/32/article/154037",
+      "field": "caseNumber",
+      "llm": "32 0 St 494441 25 St",
+      "rules": "126 0 Ip 166950 14 Ip",
       "ratio": null
     },
     {
