@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-10-26T21:24:22.694Z",
+  "generatedAt": "2026-10-27T10:14:48.623Z",
   "listings": 2895,
-  "comparable": 296,
+  "comparable": 294,
   "disagreements": 62,
   "byField": {
     "appraisedValue": 44,
     "startingPrice": 8,
-    "caseNumber": 5,
     "saleTime": 4,
+    "caseNumber": 5,
     "deposit": 1
   },
   "worst": [
@@ -219,21 +219,21 @@
       "ratio": 1.5
     },
     {
-      "id": "90-186712",
-      "court": "Osnovni sud Brčko distrikta BiH",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/186712",
-      "field": "startingPrice",
-      "llm": 32325.72,
-      "rules": 48488.57,
-      "ratio": 1.5
-    },
-    {
       "id": "90-185441",
       "court": "Osnovni sud Brčko distrikta BiH",
       "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/185441",
       "field": "startingPrice",
       "llm": 7101.85,
       "rules": 10652.77,
+      "ratio": 1.5
+    },
+    {
+      "id": "90-186712",
+      "court": "Osnovni sud Brčko distrikta BiH",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/186712",
+      "field": "startingPrice",
+      "llm": 32325.72,
+      "rules": 48488.57,
       "ratio": 1.5
     },
     {
@@ -262,6 +262,42 @@
       "llm": 28904.33,
       "rules": 43356.5,
       "ratio": 1.5
+    },
+    {
+      "id": "90-185441",
+      "court": "Osnovni sud Brčko distrikta BiH",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/185441",
+      "field": "saleTime",
+      "llm": "09:10",
+      "rules": "16:00",
+      "ratio": null
+    },
+    {
+      "id": "90-127488",
+      "court": "Osnovni sud Brčko distrikta BiH",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/127488",
+      "field": "saleTime",
+      "llm": "11:00",
+      "rules": "12:00",
+      "ratio": null
+    },
+    {
+      "id": "25-102068",
+      "court": "Općinski sud u Orašju",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/25/article/102068",
+      "field": "saleTime",
+      "llm": "11:00",
+      "rules": "10:00",
+      "ratio": null
+    },
+    {
+      "id": "25-81648",
+      "court": "Općinski sud u Orašju",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/25/article/81648",
+      "field": "saleTime",
+      "llm": "11:30",
+      "rules": "11:00",
+      "ratio": null
     },
     {
       "id": "90-186712",
@@ -306,42 +342,6 @@
       "field": "caseNumber",
       "llm": "32 0 St 494441 25 St",
       "rules": "126 0 Ip 166950 14 Ip",
-      "ratio": null
-    },
-    {
-      "id": "90-185441",
-      "court": "Osnovni sud Brčko distrikta BiH",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/185441",
-      "field": "saleTime",
-      "llm": "09:10",
-      "rules": "16:00",
-      "ratio": null
-    },
-    {
-      "id": "90-127488",
-      "court": "Osnovni sud Brčko distrikta BiH",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/127488",
-      "field": "saleTime",
-      "llm": "11:00",
-      "rules": "12:00",
-      "ratio": null
-    },
-    {
-      "id": "25-102068",
-      "court": "Općinski sud u Orašju",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/25/article/102068",
-      "field": "saleTime",
-      "llm": "11:00",
-      "rules": "10:00",
-      "ratio": null
-    },
-    {
-      "id": "25-81648",
-      "court": "Općinski sud u Orašju",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/25/article/81648",
-      "field": "saleTime",
-      "llm": "11:30",
-      "rules": "11:00",
       "ratio": null
     },
     {
