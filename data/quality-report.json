@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-11-02T23:49:00.744Z",
-  "listings": 2904,
-  "comparable": 295,
+  "generatedAt": "2026-11-03T12:40:02.802Z",
+  "listings": 2909,
+  "comparable": 298,
   "disagreements": 65,
   "byField": {
-    "appraisedValue": 46,
-    "startingPrice": 9,
-    "saleTime": 4,
-    "caseNumber": 5,
+    "appraisedValue": 45,
+    "startingPrice": 10,
+    "saleTime": 5,
+    "caseNumber": 4,
     "deposit": 1
   },
   "worst": [
@@ -273,6 +273,15 @@
       "ratio": 1.5
     },
     {
+      "id": "161-208196",
+      "court": "Okružni privredni sud u Banjaluci",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/161/article/208196",
+      "field": "startingPrice",
+      "llm": 162959.36,
+      "rules": 131902.13,
+      "ratio": 1.24
+    },
+    {
       "id": "90-185441",
       "court": "Osnovni sud Brčko distrikta BiH",
       "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/185441",
@@ -291,6 +300,15 @@
       "ratio": null
     },
     {
+      "id": "161-208196",
+      "court": "Okružni privredni sud u Banjaluci",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/161/article/208196",
+      "field": "saleTime",
+      "llm": "15:00",
+      "rules": "16:00",
+      "ratio": null
+    },
+    {
       "id": "25-102068",
       "court": "Općinski sud u Orašju",
       "sourceUrl": "https://pravosudje.ba/vstvfo/B/25/article/102068",
@@ -306,15 +324,6 @@
       "field": "saleTime",
       "llm": "11:30",
       "rules": "11:00",
-      "ratio": null
-    },
-    {
-      "id": "46-207612",
-      "court": "Općinski sud u Bugojnu",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/46/article/207612",
-      "field": "caseNumber",
-      "llm": "46 0 P 124131 26 I",
-      "rules": "46 0 P 124131 26 I 1",
       "ratio": null
     },
     {
