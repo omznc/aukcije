@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-11-04T12:49:34.383Z",
-  "listings": 2909,
-  "comparable": 296,
-  "disagreements": 63,
+  "generatedAt": "2026-11-04T22:27:18.311Z",
+  "listings": 2911,
+  "comparable": 298,
+  "disagreements": 65,
   "byField": {
-    "appraisedValue": 45,
+    "appraisedValue": 46,
     "startingPrice": 9,
+    "deposit": 2,
     "saleTime": 4,
-    "caseNumber": 4,
-    "deposit": 1
+    "caseNumber": 4
   },
   "worst": [
     {
@@ -273,6 +273,24 @@
       "ratio": 1.5
     },
     {
+      "id": "90-112707",
+      "court": "Osnovni sud Brčko distrikta BiH",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/112707",
+      "field": "deposit",
+      "llm": 33046.3,
+      "rules": 33.05,
+      "ratio": 999.89
+    },
+    {
+      "id": "46-208970",
+      "court": "Općinski sud u Bugojnu",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/46/article/208970",
+      "field": "deposit",
+      "llm": 800,
+      "rules": 10000,
+      "ratio": 12.5
+    },
+    {
       "id": "90-185441",
       "court": "Osnovni sud Brčko distrikta BiH",
       "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/185441",
@@ -343,15 +361,6 @@
       "llm": "32 0 St 447703 23 St",
       "rules": "27 0 Ip 055417 23 Kom",
       "ratio": null
-    },
-    {
-      "id": "90-112707",
-      "court": "Osnovni sud Brčko distrikta BiH",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/112707",
-      "field": "deposit",
-      "llm": 33046.3,
-      "rules": 33.05,
-      "ratio": 999.89
     }
   ]
 }
