@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-11-19T23:25:54.185Z",
-  "listings": 2956,
-  "comparable": 289,
+  "generatedAt": "2026-11-20T13:53:02.477Z",
+  "listings": 2959,
+  "comparable": 290,
   "disagreements": 58,
   "byField": {
-    "appraisedValue": 41,
-    "caseNumber": 4,
+    "appraisedValue": 42,
     "startingPrice": 9,
+    "caseNumber": 3,
     "saleTime": 3,
     "deposit": 1
   },
@@ -82,6 +82,15 @@
       "llm": 4050,
       "rules": 16200,
       "ratio": 4
+    },
+    {
+      "id": "162-219955",
+      "court": "Okružni privredni sud u Bijeljini",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/162/article/219955",
+      "field": "appraisedValue",
+      "llm": 3254.72,
+      "rules": 10000,
+      "ratio": 3.07
     },
     {
       "id": "90-214533",
@@ -183,51 +192,6 @@
       "ratio": 2.1
     },
     {
-      "id": "80-114908",
-      "court": "Osnovni sud u Bijeljini",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/80/article/114908",
-      "field": "appraisedValue",
-      "llm": 750,
-      "rules": 1560,
-      "ratio": 2.08
-    },
-    {
-      "id": "161-219516",
-      "court": "Okružni privredni sud u Banjaluci",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/161/article/219516",
-      "field": "caseNumber",
-      "llm": "57 0 Ip 149166 26 Komr",
-      "rules": "57 0 Ip 149166 26 Kom",
-      "ratio": null
-    },
-    {
-      "id": "80-149583",
-      "court": "Osnovni sud u Bijeljini",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/80/article/149583",
-      "field": "caseNumber",
-      "llm": "80 0 I 128756",
-      "rules": "80 0 I 128756 21 I",
-      "ratio": null
-    },
-    {
-      "id": "90-112707",
-      "court": "Osnovni sud Brčko distrikta BiH",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/112707",
-      "field": "caseNumber",
-      "llm": "96 0 Ip 114522 21",
-      "rules": "96 0 Ip 114522 21 Kom 2",
-      "ratio": null
-    },
-    {
-      "id": "32-198161",
-      "court": "Općinski sud u Tuzli",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/32/article/198161",
-      "field": "caseNumber",
-      "llm": "32 0 St 447703 23 St",
-      "rules": "27 0 Ip 055417 23 Kom",
-      "ratio": null
-    },
-    {
       "id": "90-204895",
       "court": "Osnovni sud Brčko distrikta BiH",
       "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/204895",
@@ -255,15 +219,6 @@
       "ratio": 2
     },
     {
-      "id": "90-214538",
-      "court": "Osnovni sud Brčko distrikta BiH",
-      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/214538",
-      "field": "startingPrice",
-      "llm": 68024.03,
-      "rules": 102036.05,
-      "ratio": 1.5
-    },
-    {
       "id": "90-214535",
       "court": "Osnovni sud Brčko distrikta BiH",
       "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/214535",
@@ -279,6 +234,15 @@
       "field": "startingPrice",
       "llm": 24834.5,
       "rules": 37251.74,
+      "ratio": 1.5
+    },
+    {
+      "id": "90-214538",
+      "court": "Osnovni sud Brčko distrikta BiH",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/214538",
+      "field": "startingPrice",
+      "llm": 68024.03,
+      "rules": 102036.05,
       "ratio": 1.5
     },
     {
@@ -307,6 +271,33 @@
       "llm": 28904.33,
       "rules": 43356.5,
       "ratio": 1.5
+    },
+    {
+      "id": "80-149583",
+      "court": "Osnovni sud u Bijeljini",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/80/article/149583",
+      "field": "caseNumber",
+      "llm": "80 0 I 128756",
+      "rules": "80 0 I 128756 21 I",
+      "ratio": null
+    },
+    {
+      "id": "90-112707",
+      "court": "Osnovni sud Brčko distrikta BiH",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/90/article/112707",
+      "field": "caseNumber",
+      "llm": "96 0 Ip 114522 21",
+      "rules": "96 0 Ip 114522 21 Kom 2",
+      "ratio": null
+    },
+    {
+      "id": "32-198161",
+      "court": "Općinski sud u Tuzli",
+      "sourceUrl": "https://pravosudje.ba/vstvfo/B/32/article/198161",
+      "field": "caseNumber",
+      "llm": "32 0 St 447703 23 St",
+      "rules": "27 0 Ip 055417 23 Kom",
+      "ratio": null
     },
     {
       "id": "90-127488",
